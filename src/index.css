@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@100..900&family=Outfit:wght@100..900&family=Urbanist:ital,wght@0,100..900;1,100..900&family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-large: 'Outfit', 'sans-serif';
+  --font-medium-buttons: 'Urbanist', 'sans-serif';
+  --font-small-nav-footer: 'Onest', 'sans-serif';
+  --font-text: 'Zain', 'sans-serif';
+
+  --color-main-light: #0d87a2;
+  --color-main-dark: #076276;
+  --color-dark: #383939;
+  --color-light: #f0f1f0;
+  --color-highlight: #b5cdd2;
+}
