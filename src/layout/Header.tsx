@@ -4,8 +4,20 @@ import { useState } from 'react';
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
   return (
     <header className="bg-main-light">
+      {!searchOpen && (
+        <div>
+          <button
+            onClick={() => setMenuOpen((prev) => !prev)}
+            aria-label="Toggle menu"
+            className="text-white"
+          ></button>
+        </div>
+      )}
       <div className="max-w-screen-6xl px-4 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center" aria-label="Holidaze home">
           <img src={Logo} alt="Logo" className="h-10" />
