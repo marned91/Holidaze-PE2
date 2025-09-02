@@ -105,7 +105,7 @@ export function Header() {
             aria-label="Toggle menu"
             className="text-white"
           >
-            <FaBars className="text-md" />
+            <FaBars className="text-lg" />
           </button>
 
           <Link to="/" onClick={() => setMenuOpen(false)}>
