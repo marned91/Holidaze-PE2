@@ -2,18 +2,12 @@ import { Link, NavLink } from 'react-router-dom';
 import Logo from '../assets/holidaze-logo-transparent.png';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faBars,
-  faSearch,
-  faArrowLeft,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUser } from '@fortawesome/free-solid-svg-icons';
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <header className="w-full bg-main-light">
