@@ -1,25 +1,24 @@
 import { Link, NavLink } from 'react-router-dom';
 import Logo from '../assets/holidaze-logo-transparent.png';
 import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faUser } from '@fortawesome/free-solid-svg-icons';
+import { FaBars, FaUser } from 'react-icons/fa';
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="w-full bg-main-light">
+      {/* DESKTOP */}
       <div className="hidden md:block">
-        <div className=" flex max-w-[100%] items-center justify-between gap-12 px-6 py-3">
+        <div className="flex max-w-[100%] items-center justify-between gap-12 px-6 py-3">
           <Link to="/" className="flex items-center" aria-label="Holidaze home">
-            <img src={Logo} alt="holidaZe" className="h-7 w-auto" />
+            <img src={Logo} alt="Holidaze logo" className="h-7 w-auto" />
           </Link>
 
           <div className="flex items-center gap-4">
             <nav aria-label="Primary">
-              <ul className=" flex list-none items-center gap-4 p-0 font-small-nav-footer">
+              <ul className="flex list-none items-center gap-4 p-0 font-small-nav-footer">
                 {!isLoggedIn ? (
                   <>
                     <li>
@@ -45,10 +44,7 @@ export function Header() {
                         aria-label="Login"
                         title="Login"
                       >
-                        <FontAwesomeIcon
-                          icon={faUser}
-                          className="text-lg text-white"
-                        />
+                        <FaUser className="text-lg text-white" />
                       </NavLink>
                     </li>
                   </>
@@ -65,10 +61,7 @@ export function Header() {
                         aria-label="Profile"
                         title="Profile"
                       >
-                        <FontAwesomeIcon
-                          icon={faUser}
-                          className="text-lg text-white"
-                        />
+                        <FaUser className="text-lg text-white" />
                       </NavLink>
                     </li>
                     <li>
@@ -112,15 +105,14 @@ export function Header() {
             aria-label="Toggle menu"
             className="text-white"
           >
-            <FontAwesomeIcon icon={faBars} className="text-md" />
+            <FaBars className="text-md" />
           </button>
 
           <Link to="/" onClick={() => setMenuOpen(false)}>
-            <img src={Logo} alt="holidaZe" className="h-8" />
+            <img src={Logo} alt="Holidaze logo" className="h-8" />
           </Link>
 
           {!isLoggedIn ? (
-            // logged out → profile icon goes to /login
             <NavLink
               to="/login"
               className={({ isActive }) =>
@@ -132,10 +124,9 @@ export function Header() {
               title="Login"
               onClick={() => setMenuOpen(false)}
             >
-              <FontAwesomeIcon icon={faUser} className="text-md text-white" />
+              <FaUser className="text-md text-white" />
             </NavLink>
           ) : (
-            // logged in → profile icon goes to /profile
             <NavLink
               to="/profile"
               className={({ isActive }) =>
@@ -147,7 +138,7 @@ export function Header() {
               title="Profile"
               onClick={() => setMenuOpen(false)}
             >
-              <FontAwesomeIcon icon={faUser} className="text-md text-white" />
+              <FaUser className="text-md text-white" />
             </NavLink>
           )}
         </div>
@@ -206,7 +197,7 @@ export function Header() {
                   <input
                     id="site-search-mobile"
                     placeholder="Search"
-                    className="w-full rounded-2xl bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
+                    className="w-full rounded-2xl bg-white px-4 py-1.5 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
                   />
                 </form>
               </>
