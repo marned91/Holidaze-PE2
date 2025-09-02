@@ -16,11 +16,11 @@ export function Footer() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <div className="bg-white text-dark rounded-full p-2 cursor-pointer group-hover:scale-110 transition-transform">
+          <div className="bg-white text-dark rounded-full p-2 cursor-pointer hover:scale-110 transition-transform">
             <FaFacebookF size={26} />
           </div>
         </a>
-        <div className="bg-white text-dark rounded-full p-2 cursor-pointer group-hover:scale-110 transition-transform">
+        <div className="bg-white text-dark rounded-full p-2 cursor-pointer hover:scale-110 transition-transform">
           <a
             href="https://instagram.com"
             target="_blank"

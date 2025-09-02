@@ -25,7 +25,7 @@ export function Header() {
                       <NavLink
                         to="/signup"
                         className={({ isActive }) =>
-                          `uppercase text-white hover:border px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 font-bold ${
+                          `uppercase text-white hover:border px-3 py-2 rounded-lg bg-white/20 font-bold ${
                             isActive ? 'ring-2 ring-white/60' : ''
                           }`
                         }
@@ -37,7 +37,7 @@ export function Header() {
                       <NavLink
                         to="/login"
                         className={({ isActive }) =>
-                          `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 ${
+                          `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:border text-white ${
                             isActive ? 'ring-2 ring-white/60' : ''
                           }`
                         }
