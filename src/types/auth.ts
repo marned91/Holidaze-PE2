@@ -1,3 +1,5 @@
+export type AccountType = 'customer' | 'venueManager';
+
 export type TAvatar = {
   url: string;
   alt?: string;
