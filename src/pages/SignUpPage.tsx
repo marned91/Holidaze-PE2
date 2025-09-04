@@ -69,12 +69,14 @@ export function SignUpPage() {
   return (
     <main className="min-h-[calc(100vh-120px)] flex items-center justify-center bg-light px-4">
       <section className="w-full max-w-lg bg-white rounded-lg shadow-xl p-10 my-10">
-        <h1 className="text-3xl font-semibold text-dark mb-6">
+        <h1 className="text-3xl font-semibold text-dark mb-6 font-large">
           Create account
         </h1>
 
         <div className="mb-8">
-          <p className="mb-2 text-sm text-gray-700">Select account type:</p>
+          <p className="mb-2 text-sm text-gray-700 font-text">
+            Select account type:
+          </p>
 
           <div
             role="tablist"
@@ -101,7 +103,7 @@ export function SignUpPage() {
               onClick={() => setAccountType('customer')}
               disabled={loading}
               className={[
-                'relative z-10 px-5 py-2 rounded-lg text-sm transition-colors transition-shadow focus-visible:outline-none',
+                'font-text relative z-10 px-5 py-2 rounded-lg text-sm transition-colors transition-shadow focus-visible:outline-none',
                 accountType === 'customer'
                   ? 'text-dark font-medium ring-2 ring-highlight ring-offset-2'
                   : 'text-gray-600 focus-visible:ring-2 focus-visible:ring-highlight',
@@ -118,7 +120,7 @@ export function SignUpPage() {
               onClick={() => setAccountType('venueManager')}
               disabled={loading}
               className={[
-                'relative z-10 px-5 py-2 rounded-lg text-sm transition-colors',
+                'font-text relative z-10 px-5 py-2 rounded-lg text-sm transition-colors',
                 accountType === 'venueManager'
                   ? 'text-dark font-medium ring-2 ring-highlight ring-offset-2'
                   : 'text-gray-600 focus-visible:ring-2 focus-visible:ring-highlight',
@@ -130,19 +132,19 @@ export function SignUpPage() {
         </div>
 
         <div id="account-type-description" role="tabpanel" className="mb-6">
-          <h2 className="font-semibold mb-1">
+          <h2 className="font-semibold mb-1 text-xl font-medium-buttons">
             {accountType === 'venueManager'
               ? 'Venue manager account'
               : 'Customer account'}
           </h2>
 
           {accountType === 'venueManager' ? (
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 font-text">
               Create and manage venues, set availability and prices, and view
               upcoming bookings for your venues.
             </p>
           ) : (
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 font-text">
               Discover and book venues securely, manage your reservations, and
               save favourites.
             </p>
@@ -153,7 +155,7 @@ export function SignUpPage() {
           <div>
             <label
               htmlFor="name"
-              className="block text-md font-medium text-gray-700 mb-1"
+              className="block text-md text-gray-700 mb-1 font-text"
             >
               Name
             </label>
@@ -167,17 +169,19 @@ export function SignUpPage() {
                 if (nameError) setNameError(null);
               }}
               disabled={loading}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-highlight disabled:bg-gray-100"
+              className="w-full font-text border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-300 disabled:bg-gray-100"
             />
             {nameError && (
-              <p className="mt-1 text-sm text-red-600">{nameError}</p>
+              <p className="mt-1 text-sm text-red-600 font-text italic">
+                {nameError}
+              </p>
             )}
           </div>
 
           <div>
             <label
               htmlFor="email"
-              className="block text-md font-medium text-gray-700 mb-1"
+              className="block text-md text-gray-700 mb-1 font-text"
             >
               Email
             </label>
@@ -192,17 +196,19 @@ export function SignUpPage() {
               }}
               disabled={loading}
               autoComplete="email"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-highlight disabled:bg-gray-100"
+              className="w-full font-text border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-300 disabled:bg-gray-100"
             />
             {emailError && (
-              <p className="mt-1 text-sm text-red-600">{emailError}</p>
+              <p className="mt-1 text-sm text-red-600 font-text italic">
+                {emailError}
+              </p>
             )}
           </div>
 
           <div>
             <label
               htmlFor="password"
-              className="block text-md font-medium text-gray-700 mb-1"
+              className="block text-mdtext-gray-700 mb-1 font-text"
             >
               Password
             </label>
@@ -217,17 +223,19 @@ export function SignUpPage() {
               }}
               disabled={loading}
               autoComplete="new-password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-highlight disabled:bg-gray-100"
+              className="w-full font-text border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-300 disabled:bg-gray-100"
             />
             {passwordError && (
-              <p className="mt-1 text-sm text-red-600">{passwordError}</p>
+              <p className="mt-1 text-sm text-red-600 font-text italic">
+                {passwordError}
+              </p>
             )}
           </div>
 
           <div>
             <label
               htmlFor="avatarUrl"
-              className="block text-md font-medium text-gray-700 mb-1"
+              className="block text-md text-gray-700 mb-1 font-text"
             >
               Profile Image (URL)
             </label>
@@ -242,17 +250,19 @@ export function SignUpPage() {
               }}
               disabled={loading}
               inputMode="url"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-highlight disabled:bg-gray-100"
+              className="w-full font-text border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-300 disabled:bg-gray-100"
             />
             {avatarUrlError && (
-              <p className="mt-1 text-sm text-red-600">{avatarUrlError}</p>
+              <p className="mt-1 text-sm text-red-600 font-text italic">
+                {avatarUrlError}
+              </p>
             )}
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-main-dark text-white py-2 rounded-lg font-medium hover:bg-dark-highlight disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full font-medium-buttons bg-main-dark text-white py-2 rounded-lg font-medium hover:bg-dark-highlight disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? 'Creating…' : 'Create account'}
           </button>
