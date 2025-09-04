@@ -22,20 +22,29 @@ export async function doFetch<T>(
 
     const response = await fetch(url, { ...options, headers });
 
-    if (response.status === 204) {
-      return null;
-    }
+    if (response.status === 204) return null;
 
-    const json = await response.json();
+    let json: any = null;
+    try {
+      json = await response.clone().json();
+    } catch {}
 
     if (response.ok) {
-      return json.data as T;
-    } else {
-      const errorMessage = json.errors
-        ? json.errors[0].message
-        : 'Unknown error';
-      throw new Error(errorMessage);
+      return (json?.data as T) ?? null;
     }
+
+    const message =
+      json?.errors?.[0]?.message ||
+      json?.message ||
+      `${response.status} ${response.statusText}`;
+
+    const error = new Error(message) as Error & {
+      status?: number;
+      details?: any;
+    };
+    error.status = response.status;
+    error.details = json;
+    throw error;
   } catch (error) {
     console.error('Error fetching data:', error);
     throw error;

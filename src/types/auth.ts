@@ -37,3 +37,10 @@ export type TRegisterData = {
   banner?: TBanner;
   venueManager?: boolean;
 };
+
+export type TRegisterFieldErrors = {
+  name?: string;
+  email?: string;
+  password?: string;
+  avatarUrl?: string;
+};
