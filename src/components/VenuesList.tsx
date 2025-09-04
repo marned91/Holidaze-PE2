@@ -49,7 +49,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   }, []);
 
   const norwegianVenues = allVenues.filter((venue) =>
-    /norway|norge/i.test(venue.location?.country ?? '')
+    /Norway|Norge|norway|norge/i.test(venue.location?.country ?? '')
   );
 
   const total = norwegianVenues.length;
@@ -116,7 +116,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
                         : 'People'}
                       <br />
                       <span className="font-semibold">Price</span>{' '}
-                      {typeof v.price === 'number' ? v.price : ''}
+                      {typeof v.price === 'number' ? v.price : ''} NOK
                     </p>
                   </div>
                 </article>
