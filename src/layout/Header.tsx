@@ -1,11 +1,21 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Logo from '../assets/holidaze-logo-transparent.png';
 import { useState } from 'react';
 import { FaBars, FaUser } from 'react-icons/fa';
+import { logout } from '../api/authApi';
 
 export function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const isLoggedIn = Boolean(localStorage.getItem('token'));
+
+  function handleLogout() {
+    logout();
+    alert('You have been logged out.');
+    setMenuOpen(false);
+    navigate('/');
+  }
 
   return (
     <header className="w-full bg-main-light">
@@ -25,7 +35,7 @@ export function Header() {
                       <NavLink
                         to="/signup"
                         className={({ isActive }) =>
-                          `uppercase text-white hover:border px-3 py-2 rounded-lg bg-white/20 font-bold ${
+                          `uppercase text-white hover:border px-3 py-2 rounded-lg bg-white/20 font-medium ${
                             isActive ? 'ring-2 ring-white/60' : ''
                           }`
                         }
@@ -51,6 +61,15 @@ export function Header() {
                 ) : (
                   <>
                     <li>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="uppercase text-white hover:border px-3 py-2 rounded-lg bg-white/20 font-medium"
+                      >
+                        Log out
+                      </button>
+                    </li>
+                    <li>
                       <NavLink
                         to="/profile"
                         className={({ isActive }) =>
@@ -63,15 +82,6 @@ export function Header() {
                       >
                         <FaUser className="text-lg text-white" />
                       </NavLink>
-                    </li>
-                    <li>
-                      <button
-                        type="button"
-                        onClick={() => setIsLoggedIn(false)} // demo logout
-                        className="rounded-2xl bg-white px-5 py-2 font-semibold text-gray-900 shadow-sm hover:opacity-95"
-                      >
-                        Log out
-                      </button>
                     </li>
                   </>
                 )}
@@ -97,7 +107,7 @@ export function Header() {
       </div>
 
       {/* MOBILE */}
-      <div className="px-4 py-3 md:hidden">
+      <div className="px-4 py-5 md:hidden">
         {/* top row: hamburger | logo | profile icon */}
         <div className="flex items-center justify-between">
           <button
@@ -176,11 +186,8 @@ export function Header() {
               <>
                 <button
                   type="button"
-                  onClick={() => {
-                    setIsLoggedIn(false); // demo logout
-                    setMenuOpen(false);
-                  }}
-                  className="block text-left text-white"
+                  onClick={handleLogout}
+                  className="block text-left uppercase text-white"
                 >
                   Log out
                 </button>
