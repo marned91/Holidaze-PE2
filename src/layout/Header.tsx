@@ -23,7 +23,7 @@ export function Header() {
       <div className="hidden md:block">
         <div className="flex max-w-[100%] items-center justify-between gap-12 px-6 py-3">
           <Link to="/" className="flex items-center" aria-label="Holidaze home">
-            <img src={Logo} alt="Holidaze logo" className="h-7 w-auto" />
+            <img src={Logo} alt="Holidaze logo" className="h-6 w-auto" />
           </Link>
 
           <div className="flex items-center gap-4">
@@ -108,7 +108,6 @@ export function Header() {
 
       {/* MOBILE */}
       <div className="px-4 py-5 md:hidden">
-        {/* top row: hamburger | logo | profile icon */}
         <div className="flex items-center justify-between">
           <button
             onClick={() => setMenuOpen((p) => !p)}
@@ -166,7 +165,6 @@ export function Header() {
                   Join us!
                 </NavLink>
 
-                {/* search field in dropdown (logged out) */}
                 <form
                   role="search"
                   onSubmit={(e) => e.preventDefault()}
@@ -192,7 +190,6 @@ export function Header() {
                   Log out
                 </button>
 
-                {/* search field in dropdown (logged in) */}
                 <form
                   role="search"
                   onSubmit={(e) => e.preventDefault()}
