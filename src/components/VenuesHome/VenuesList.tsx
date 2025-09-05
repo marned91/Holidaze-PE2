@@ -4,6 +4,7 @@ import { API_VENUES } from '../../api/endpoints';
 import { type TVenue } from '../../types/venues';
 import { VenueSort } from './VenueSort';
 import { VenueCard } from './VenueCard';
+import { VenuesFilters, type DateRange } from './VenuesFilters';
 
 type VenuesListProps = { pageSize?: number };
 
@@ -15,6 +16,10 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   const [sortOrder, setSortOrder] = useState<
     'newest' | 'oldest' | 'priceLow' | 'priceHigh'
   >('newest');
+
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [minGuests, setMinGuests] = useState<number | null>(null);
+  const [dateRange, setDateRange] = useState<DateRange>({});
 
   useEffect(() => {
     let isComponentActive = true;
@@ -53,9 +58,35 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
     };
   }, []);
 
+  const cityOptions = Array.from(
+    new Set(
+      (allVenues ?? [])
+        .filter((venue) => /norway|norge/i.test(venue.location?.country ?? ''))
+        .map((venue) => (venue.location?.city || '').trim())
+        .filter((city) => city.length > 0)
+    )
+  ).sort((a, b) => a.localeCompare(b));
+
   const norwegianVenues = allVenues.filter((venue) =>
     /norway|norge/i.test(venue.location?.country ?? '')
   );
+
+  let filteredVenues: TVenue[] = [...norwegianVenues];
+
+  if (selectedCity) {
+    filteredVenues = filteredVenues.filter(
+      (venue) =>
+        (venue.location?.city || '').toLowerCase() ===
+        selectedCity.toLowerCase()
+    );
+  }
+
+  if (minGuests != null) {
+    filteredVenues = filteredVenues.filter(
+      (venue) =>
+        (typeof venue.maxGuests === 'number' ? venue.maxGuests : 0) >= minGuests
+    );
+  }
 
   let sortedVenues: TVenue[] = [...norwegianVenues];
   if (sortOrder === 'newest') {
@@ -108,6 +139,18 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
 
   return (
     <section className="m-auto w-full px-10 py-10">
+      <div className="mb-4 flex justify-center">
+        <VenuesFilters
+          cities={cityOptions}
+          selectedCity={selectedCity}
+          onCityChange={setSelectedCity}
+          minGuests={minGuests}
+          onMinGuestsChange={setMinGuests}
+          dateRange={dateRange}
+          onDateRangeChange={setDateRange}
+        />
+      </div>
+      <div className="mb-6 border-b border-gray-200" />
       <div className="mb-4 flex items-end justify-between gap-5">
         <h2 className="text-2xl font-medium">Venues</h2>
         {!loading && !loadError && totalVenues > 0 && (
@@ -135,7 +178,6 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
             ))}
           </div>
 
-          {/* Pagination */}
           <div className="mt-6 flex items-center justify-center gap-3">
             <button
               type="button"
