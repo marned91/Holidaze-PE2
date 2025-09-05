@@ -1,3 +1,8 @@
+export type TVenueBooking = {
+  dateFrom: string;
+  dateTo: string;
+};
+
 export type TVenue = {
   id: string;
   name: string;
@@ -26,4 +31,5 @@ export type TVenue = {
     lat?: number;
     lng?: number;
   };
+  bookings?: TVenueBooking[];
 };

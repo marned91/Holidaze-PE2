@@ -1,5 +1,5 @@
 import { HeroSection } from '../components/HeroSection';
-import { VenuesList } from '../components/Venues/VenuesList';
+import { VenuesList } from '../components/VenuesHome/VenuesList';
 
 export function HomePage() {
   return (
