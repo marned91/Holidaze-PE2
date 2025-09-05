@@ -54,7 +54,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   }, []);
 
   const norwegianVenues = allVenues.filter((venue) =>
-    /Norway|Norge|norway|norge/i.test(venue.location?.country ?? '')
+    /norway|norge/i.test(venue.location?.country ?? '')
   );
 
   let sortedVenues: TVenue[] = [...norwegianVenues];
@@ -88,6 +88,10 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   const totalPages = Math.max(1, Math.ceil(totalVenues / pageSize));
   const startIndex = (currentPage - 1) * pageSize;
   const pageItems = sortedVenues.slice(startIndex, startIndex + pageSize);
+
+  useEffect(() => {
+    setCurrentPage((previousPage) => Math.min(previousPage, totalPages));
+  }, [totalPages]);
 
   useEffect(() => {
     setCurrentPage(1);

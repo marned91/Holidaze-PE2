@@ -21,7 +21,7 @@ export function VenueCard({ venue }: VenueCardProps) {
       : 'Guests';
 
   return (
-    <article className="rounded-lg overflow-hidden bg-white shadow-lg">
+    <article className="rounded-lg overflow-hidden bg-white shadow-lg transition duration-300 ease-out hover:scale-105 cursor-pointer">
       <img src={imageUrl} alt={imageAlt} className="h-40 w-full object-cover" />
       <div className="p-3">
         <h3 className="font-medium font-small-nav-footer">{venue.name}</h3>
