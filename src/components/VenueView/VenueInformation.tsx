@@ -69,7 +69,7 @@ export function VenueInformation({
           {facilities?.wifi && (
             <li className="inline-flex items-center gap-2 font-text">
               <FaWifi className="text-main-light" />
-              Wifi
+              Wi-Fi
             </li>
           )}
           {facilities?.parking && (
@@ -92,7 +92,9 @@ export function VenueInformation({
           )}
         </ul>
       ) : (
-        <p className="mt-2 text-gray-600">No facilities listed.</p>
+        <p className="mt-2 text-gray-600 font-text italic">
+          No facilities listed
+        </p>
       )}
     </section>
   );
