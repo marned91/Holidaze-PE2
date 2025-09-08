@@ -32,6 +32,14 @@ function dateRangesOverlapInclusive(
   );
 }
 
+function getTodayYyyyMmDd(): string {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 export function VenueDates({
   value,
   onChange,
@@ -50,6 +58,10 @@ export function VenueDates({
     [value.endDate]
   );
 
+  const todayString = useMemo(() => getTodayYyyyMmDd(), []);
+  const isStartInPast = !!value.startDate && value.startDate < todayString;
+  const isEndInPast = !!value.endDate && value.endDate < todayString;
+
   const isRangeInvalid =
     !!startDateObject &&
     !!endDateObject &&
@@ -64,10 +76,11 @@ export function VenueDates({
     if (!startDateObject || !endDateObject || isRangeInvalid) return null;
 
     const hasOverlap = bookings.some((booking) => {
-      const bookingStart = new Date(booking.dateFrom);
-      const bookingEnd = new Date(booking.dateTo);
-      if (isNaN(bookingStart.getTime()) || isNaN(bookingEnd.getTime()))
-        return false;
+      const startStr = booking.dateFrom.split('T')[0];
+      const endStr = booking.dateTo.split('T')[0];
+      const bookingStart = parseLocalDateFromYyyyMmDd(startStr);
+      const bookingEnd = parseLocalDateFromYyyyMmDd(endStr);
+      if (!bookingStart || !bookingEnd) return false;
       return dateRangesOverlapInclusive(
         startDateObject,
         endDateObject,
@@ -81,7 +94,7 @@ export function VenueDates({
 
   return (
     <section className={className ?? ''}>
-      <h2 className="text-2xl font-medium">Select dates</h2>
+      <h2 className="text-2xl font-medium font-medium-buttons">Select dates</h2>
 
       <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
@@ -92,6 +105,7 @@ export function VenueDates({
             id={startId}
             type="date"
             value={value.startDate ?? ''}
+            min={todayString}
             onChange={(event) =>
               onChange({ ...value, startDate: event.target.value || undefined })
             }
@@ -107,6 +121,7 @@ export function VenueDates({
             id={endId}
             type="date"
             value={value.endDate ?? ''}
+            min={value.startDate || todayString}
             onChange={(event) =>
               onChange({ ...value, endDate: event.target.value || undefined })
             }
@@ -120,8 +135,15 @@ export function VenueDates({
           The end date must be after the start date.
         </p>
       )}
+      {!isRangeInvalid && (isStartInPast || isEndInPast) && (
+        <p className="mt-2 text-sm text-red-600">
+          Dates in the past are not allowed.
+        </p>
+      )}
 
       {!isRangeInvalid &&
+        !isStartInPast &&
+        !isEndInPast &&
         availabilityStatus === 'available' &&
         startDateObject &&
         endDateObject && (
@@ -130,11 +152,14 @@ export function VenueDates({
           </p>
         )}
 
-      {!isRangeInvalid && availabilityStatus === 'unavailable' && (
-        <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-          Not available for the selected dates.
-        </p>
-      )}
+      {!isRangeInvalid &&
+        !isStartInPast &&
+        !isEndInPast &&
+        availabilityStatus === 'unavailable' && (
+          <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+            Not available for the selected dates.
+          </p>
+        )}
     </section>
   );
 }
