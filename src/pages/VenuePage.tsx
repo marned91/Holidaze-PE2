@@ -4,11 +4,12 @@ import { useMemo, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { doFetch } from '../api/doFetch';
 import { API_VENUES } from '../api/endpoints';
-import {
-  ImageCarousel,
-  type CarouselImage,
-} from '../components/VenueView/ImageCarousel';
+import { ImageCarousel } from '../components/VenueView/ImageCarousel';
 import { VenueInformation } from '../components/VenueView/VenueInformation';
+import {
+  VenueDates,
+  type DateRangeValue,
+} from '../components/VenueView/VenueDates';
 import type { TVenue } from '../types/venues';
 
 export function VenuePage() {
@@ -17,6 +18,8 @@ export function VenuePage() {
   const [venue, setVenue] = useState<TVenue | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+
+  const [selectedDates, setSelectedDates] = useState<DateRangeValue>({});
 
   useEffect(() => {
     let isActive = true;
@@ -44,12 +47,9 @@ export function VenuePage() {
     };
   }, [venueId]);
 
-  const carouselImages: CarouselImage[] = useMemo(() => {
-    const mediaList = (venue?.media ?? []).filter((m) => !!m?.url);
-    return mediaList.map((m) => ({
-      url: m.url,
-      alt: m.alt || venue?.name || 'Venue image',
-    }));
+  const carouselImages = useMemo(() => {
+    const list = (venue?.media ?? []).filter((item) => !!item?.url);
+    return list;
   }, [venue]);
 
   if (loading) return <div className="mx-auto max-w-6xl p-6">Loading…</div>;
@@ -75,6 +75,13 @@ export function VenuePage() {
           rating={venue.rating}
           description={venue.description ?? undefined}
           facilities={venue.meta}
+        />
+      </div>
+      <div className="mt-6">
+        <VenueDates
+          value={selectedDates}
+          onChange={setSelectedDates}
+          bookings={venue.bookings ?? []}
         />
       </div>
     </div>

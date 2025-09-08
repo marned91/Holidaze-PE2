@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import type { KeyboardEvent } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import type { TVenue } from '../../types/venues';
 import PlaceholderImage from '../../assets/placeholder.png';
 
-export type CarouselImage = { url: string; alt?: string };
+type VenueMediaItem = NonNullable<TVenue['media']>[number];
 
 type ImageCarouselProps = {
-  images: CarouselImage[];
+  images: VenueMediaItem[];
   className?: string;
 };
 
