@@ -3,7 +3,7 @@ import { type TVenue } from '../../types/venues';
 import { VenueSort } from './VenueSort';
 import { VenueCard } from './VenueCard';
 import { VenuesFilters, type DateRange } from './VenuesFilters';
-import { useVenues } from './useVenues';
+import { useVenues } from './hooks/useVenues';
 import { Pagination } from './Pagination';
 import {
   getCityOptions,

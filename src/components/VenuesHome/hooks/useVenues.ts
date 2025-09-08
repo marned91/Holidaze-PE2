@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { doFetch } from '../../api/doFetch';
-import { API_VENUES } from '../../api/endpoints';
-import { type TVenue } from '../../types/venues';
+import { doFetch } from '../../../api/doFetch';
+import { API_VENUES } from '../../../api/endpoints';
+import { type TVenue } from '../../../types/venues';
 
 export type UseVenuesResult = {
   venues: TVenue[];
