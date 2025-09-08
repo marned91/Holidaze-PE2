@@ -4,8 +4,11 @@ import { useMemo, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { doFetch } from '../api/doFetch';
 import { API_VENUES } from '../api/endpoints';
-import { ImageCarousel } from '../components/VenueView/ImageCarousel';
-import { type CarouselImage } from '../components/VenueView/ImageCarousel';
+import {
+  ImageCarousel,
+  type CarouselImage,
+} from '../components/VenueView/ImageCarousel';
+import { VenueInformation } from '../components/VenueView/VenueInformation';
 import type { TVenue } from '../types/venues';
 
 export function VenuePage() {
@@ -42,15 +45,11 @@ export function VenuePage() {
   }, [venueId]);
 
   const carouselImages: CarouselImage[] = useMemo(() => {
-    const mediaList: Array<{ url: string; alt?: string }> = (venue?.media ??
-      []) as Array<{ url: string; alt?: string }>;
-
-    return mediaList
-      .filter((mediaItem) => Boolean(mediaItem.url))
-      .map((mediaItem) => ({
-        url: mediaItem.url,
-        alt: mediaItem.alt || venue?.name || 'Venue image',
-      }));
+    const mediaList = (venue?.media ?? []).filter((m) => !!m?.url);
+    return mediaList.map((m) => ({
+      url: m.url,
+      alt: m.alt || venue?.name || 'Venue image',
+    }));
   }, [venue]);
 
   if (loading) return <div className="mx-auto max-w-6xl p-6">Loading…</div>;
@@ -61,9 +60,23 @@ export function VenuePage() {
   if (!venue)
     return <div className="mx-auto max-w-6xl p-6">Venue not found.</div>;
 
+  const locationText =
+    [venue.location?.city, venue.location?.country]
+      .filter(Boolean)
+      .join(', ') || 'Location';
+
   return (
-    <div className="mx-auto max-w-6xl p-6">
+    <div className="mx-auto max-w-7xl p-6">
       <ImageCarousel images={carouselImages} />
+      <div className="mt-6">
+        <VenueInformation
+          title={venue.name}
+          locationText={locationText}
+          rating={venue.rating}
+          description={venue.description ?? undefined}
+          facilities={venue.meta}
+        />
+      </div>
     </div>
   );
 }
