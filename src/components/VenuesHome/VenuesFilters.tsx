@@ -39,10 +39,7 @@ export function VenuesFilters({
   );
   const [endDraft, setEndDraft] = useState<string>(dateRange.endDate ?? '');
 
-  const sortedCities = useMemo(
-    () => [...cities].filter(Boolean).sort((a, b) => a.localeCompare(b)),
-    [cities]
-  );
+  const cityList = useMemo(() => cities.filter(Boolean), [cities]);
 
   function applyCity() {
     onCityChange(cityDraft || null);
@@ -111,7 +108,7 @@ export function VenuesFilters({
                 >
                   All Norway
                 </button>
-                {sortedCities.map((city) => (
+                {cityList.map((city) => (
                   <button
                     key={city}
                     type="button"

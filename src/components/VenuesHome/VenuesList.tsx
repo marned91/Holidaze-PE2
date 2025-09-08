@@ -49,6 +49,10 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
 
   useEffect(() => {
     setCurrentPage(1);
+  }, [pageSize]);
+
+  useEffect(() => {
+    setCurrentPage(1);
   }, [selectedCity, minGuests, dateRange.startDate, dateRange.endDate]);
 
   useEffect(() => {
