@@ -85,10 +85,6 @@ export function VenuePage() {
           </section>
         </div>
         <div className="self-start">
-          {/* Optional separate heading like in your mock */}
-          <h3 className="mb-3 text-xl font-semibold hidden lg:block">
-            Availability
-          </h3>
           <BookingSidebar
             venue={venue}
             value={selectedDates}

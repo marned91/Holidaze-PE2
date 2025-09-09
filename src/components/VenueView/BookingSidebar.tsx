@@ -99,8 +99,8 @@ export function BookingSidebar({
             value={value}
             onChange={onChange}
             variant="native"
-            labelFrom="Start date"
-            labelTo="End date"
+            labelFrom="Start"
+            labelTo="End"
           />
         </div>
 
@@ -129,7 +129,7 @@ export function BookingSidebar({
 
         {normalized && isAvailable === true && (
           <p className="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-700 font-text">
-            Available for the selected dates.
+            Available for the selected dates!
           </p>
         )}
         {normalized && isAvailable === false && (
