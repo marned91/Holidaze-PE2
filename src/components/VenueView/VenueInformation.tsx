@@ -6,12 +6,14 @@ import {
   FaWifi,
   FaParking,
   FaCoffee,
+  FaUser,
 } from 'react-icons/fa';
 
 type VenueInformationProps = {
   title: string;
   locationText: string;
   rating?: number;
+  maxGuests?: number;
   description?: string;
   facilities?: TVenue['meta'];
   className?: string;
@@ -21,6 +23,7 @@ export function VenueInformation({
   title,
   locationText,
   rating,
+  maxGuests,
   description,
   facilities,
   className,
@@ -35,11 +38,18 @@ export function VenueInformation({
     <section className={className ?? ''}>
       <h1 className="text-3xl font-medium font-large">{title}</h1>
 
-      <div className="mt-2 flex flex-wrap items-center gap-4 text-gray-700">
+      <div className="mt-4 flex flex-wrap items-center gap-4 text-gray-700">
         <span className="flex items-center font-text">
           <FaMapMarkerAlt className="mr-2 text-main-light" />
           {locationText || 'Location'}
         </span>
+
+        {typeof maxGuests === 'number' && (
+          <span className="flex items-center font-text">
+            <FaUser className="mr-2 text-main-light" />
+            {maxGuests} {maxGuests === 1 ? 'guest' : 'guests'}
+          </span>
+        )}
 
         {typeof rating === 'number' && (
           <span className="flex items-center font-text">

@@ -72,6 +72,7 @@ export function VenuePage() {
             title={venue.name}
             locationText={locationText}
             rating={venue.rating}
+            maxGuests={venue.maxGuests}
             description={venue.description ?? undefined}
             facilities={venue.meta}
           />
