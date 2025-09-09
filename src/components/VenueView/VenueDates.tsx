@@ -2,7 +2,7 @@
 import { useMemo } from 'react';
 import type { TVenueBooking } from '../../types/venues';
 import type { TDateRange } from '../../types/date';
-import { RangeCalendar } from './RangeCalendar';
+import { RangeCalendarRC as RangeCalendar } from './RangeCalendarRC';
 import {
   normalizeDateRange,
   parseLocal,
