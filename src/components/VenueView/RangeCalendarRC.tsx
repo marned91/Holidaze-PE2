@@ -1,4 +1,3 @@
-// RangeCalendarRC.tsx
 import { useMemo, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import type { TVenueBooking } from '../../types/venues';
@@ -26,7 +25,6 @@ function inInclusive(d: Date, a: Date, b: Date) {
   return t >= a.getTime() && t <= b.getTime();
 }
 
-/** Small helper: match a media query (Tailwind sm = 640px) */
 function useMedia(query: string) {
   const [matches, setMatches] = useState<boolean>(
     () =>
@@ -36,7 +34,7 @@ function useMedia(query: string) {
     if (typeof window === 'undefined') return;
     const mql = window.matchMedia(query);
     const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
-    // Safari support: addEventListener exists on modern Safari
+
     mql.addEventListener?.('change', handler);
     return () => mql.removeEventListener?.('change', handler);
   }, [query]);
@@ -47,7 +45,7 @@ type Props = {
   value: TDateRange;
   onChange: (next: TDateRange) => void;
   bookings?: TVenueBooking[];
-  months?: number; // still 2 by default for desktop
+  months?: number;
   className?: string;
 };
 
@@ -62,7 +60,6 @@ export function RangeCalendarRC({
   const to = parseISO(value.endDate);
   const today = startOfToday();
 
-  // Double view only from sm (≥640px). On smaller screens show one month.
   const isSmUp = useMedia('(min-width: 640px)');
   const showDouble = isSmUp && months >= 2;
 

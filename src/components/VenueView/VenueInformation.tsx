@@ -16,7 +16,6 @@ type VenueInformationProps = {
   maxGuests?: number;
   description?: string;
   facilities?: TVenue['meta'];
-  className?: string;
 };
 
 export function VenueInformation({
@@ -26,7 +25,6 @@ export function VenueInformation({
   maxGuests,
   description,
   facilities,
-  className,
 }: VenueInformationProps) {
   const hasAnyFacility =
     !!facilities?.wifi ||
@@ -35,8 +33,8 @@ export function VenueInformation({
     !!facilities?.pets;
 
   return (
-    <section className={className ?? ''}>
-      <h1 className="text-3xl font-medium font-large">{title}</h1>
+    <section>
+      <h1 className="text-4xl font-medium font-large">{title}</h1>
 
       <div className="mt-4 flex flex-wrap items-center gap-4 text-gray-700">
         <span className="flex items-center font-text">
@@ -63,9 +61,9 @@ export function VenueInformation({
 
       {description && (
         <>
-          <h2 className="text-2xl font-medium font-medium-buttons">
+          <h3 className="text-2xl font-medium font-small-nav-footer">
             Description
-          </h2>
+          </h3>
           <p className="mt-2 whitespace-pre-line text-gray-700 font-text">
             {description}
           </p>
@@ -73,7 +71,7 @@ export function VenueInformation({
         </>
       )}
 
-      <h2 className="text-2xl font-medium font-medium-buttons">Facilities</h2>
+      <h3 className="text-2xl font-medium font-small-nav-footer">Facilities</h3>
       {hasAnyFacility ? (
         <ul className="mt-2 grid grid-cols-2 gap-2 text-gray-800 sm:grid-cols-3">
           {facilities?.wifi && (

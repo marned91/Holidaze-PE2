@@ -10,6 +10,7 @@ import {
 } from '../components/VenueView/VenueDates';
 import { BookingSidebar } from '../components/VenueView/BookingSidebar';
 import type { TVenue } from '../types/venues';
+import type { TDateRange } from '../types/date';
 
 export function VenuePage() {
   const { venueId } = useParams<{ venueId: string }>();
@@ -64,7 +65,7 @@ export function VenuePage() {
       .join(', ') || 'Location';
 
   return (
-    <div className="mx-auto max-w-7xl p-6">
+    <div className="mx-auto max-w-7xl p-6 h-screen overflow-y-scroll">
       <ImageCarousel images={carouselImages} />
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-8 lg:gap-12 xl:gap-16 items-start">
         <div className="space-y-8 lg:max-w-[760px] xl:max-w-[820px] 2xl:max-w-[880px]">
@@ -84,7 +85,7 @@ export function VenuePage() {
             />
           </section>
         </div>
-        <div className="self-start">
+        <div className="sticky top-15 z-55 shadow-xl">
           <BookingSidebar
             venue={venue}
             value={selectedDates}
