@@ -25,7 +25,7 @@ export function BookingSidebar({
   guestCount,
   onGuestCountChange,
 }: BookingSidebarProps) {
-  const [localGuests, setLocalGuests] = useState<number>(2);
+  const [localGuests, setLocalGuests] = useState<number>(1);
   const guests = guestCount ?? localGuests;
   const setGuests = (n: number) =>
     onGuestCountChange ? onGuestCountChange(n) : setLocalGuests(n);
@@ -76,7 +76,7 @@ export function BookingSidebar({
   const guestOptions = Array.from({ length: maxGuests }, (_, i) => i + 1);
 
   return (
-    <div className=" rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+    <div className=" rounded-lg border border-gray-200 p-5 shadow-sm">
       <h2 className="text-3xl font-semibold font-medium-buttons">Book Now</h2>
 
       <div className="mt-2 text-lg font-text">

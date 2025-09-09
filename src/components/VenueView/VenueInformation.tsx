@@ -64,7 +64,7 @@ export function VenueInformation({
           <h3 className="text-2xl font-medium font-small-nav-footer">
             Description
           </h3>
-          <p className="mt-2 whitespace-pre-line text-gray-700 font-text">
+          <p className="mt-5 whitespace-pre-line text-gray-700 font-text">
             {description}
           </p>
           <div className="my-5 border-b border-gray-400" />
@@ -76,7 +76,7 @@ export function VenueInformation({
           Facilities
         </h3>
         {hasAnyFacility ? (
-          <ul className="mt-2 grid grid-cols-2 gap-2 text-gray-800 sm:grid-cols-3">
+          <ul className="mt-5 grid grid-cols-2 gap-2 text-gray-800 sm:grid-cols-3 my-5">
             {facilities?.wifi && (
               <li className="inline-flex items-center gap-2 font-text">
                 <FaWifi className="text-main-light" />

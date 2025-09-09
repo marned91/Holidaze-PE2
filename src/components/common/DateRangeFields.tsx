@@ -62,7 +62,7 @@ export function DateRangeFields({
               onChange={(e) =>
                 onChange({ ...value, startDate: e.target.value || undefined })
               }
-              className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight"
+              className="w-full rounded-md border bg-white border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight"
             />
           ) : (
             <input
@@ -92,7 +92,7 @@ export function DateRangeFields({
               onChange={(e) =>
                 onChange({ ...value, endDate: e.target.value || undefined })
               }
-              className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight"
+              className="w-full rounded-md border bg-white border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight"
             />
           ) : (
             <input
