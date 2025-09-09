@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { DateRangeFields } from '../common/DateRangeFields';
 
 export type DateRange = {
   startDate?: string;
@@ -221,37 +222,18 @@ export function VenuesFilters({
 
           {isDatesOpen && (
             <div className="absolute z-10 mt-2 w-72 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label
-                    htmlFor="start-date"
-                    className="block text-sm text-gray-700 mb-1"
-                  >
-                    From
-                  </label>
-                  <input
-                    id="start-date"
-                    type="date"
-                    value={startDraft}
-                    onChange={(event) => setStartDraft(event.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-highlight"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="end-date"
-                    className="block text-sm text-gray-700 mb-1"
-                  >
-                    To
-                  </label>
-                  <input
-                    id="end-date"
-                    type="date"
-                    value={endDraft}
-                    onChange={(event) => setEndDraft(event.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-highlight"
-                  />
-                </div>
+              <div className="mt-1">
+                <DateRangeFields
+                  value={{
+                    startDate: startDraft || undefined,
+                    endDate: endDraft || undefined,
+                  }}
+                  onChange={(next) => {
+                    setStartDraft(next.startDate ?? '');
+                    setEndDraft(next.endDate ?? '');
+                  }}
+                  variant="native"
+                />
               </div>
 
               <div className="mt-3 flex justify-between gap-2">

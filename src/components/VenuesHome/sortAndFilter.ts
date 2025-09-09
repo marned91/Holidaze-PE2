@@ -1,12 +1,16 @@
-import { type TVenue } from '../../types/venues';
-import { type DateRange } from './VenuesFilters';
+import type { TVenue } from '../../types/venues';
+import type { TDateRange } from '../../types/date';
+import {
+  normalizeDateRange,
+  isVenueAvailableForRange,
+} from '../../utils/dateRange';
 
 export type SortOrder = 'newest' | 'oldest' | 'priceLow' | 'priceHigh';
 
 export type VenueFilterOptions = {
   selectedCity: string | null;
   minGuests: number | null;
-  dateRange: DateRange;
+  dateRange: TDateRange;
 };
 
 export function isInNorway(venue: TVenue): boolean {
@@ -23,49 +27,11 @@ export function getCityOptions(allVenues: TVenue[]): string[] {
   return Array.from(uniqueCities).sort((a, b) => a.localeCompare(b));
 }
 
-function parseLocalDate(dateString: string): Date | null {
-  if (!dateString) return null;
-  const [year, month, day] = dateString.split('-').map(Number);
-  if (!year || !month || !day) return null;
-  const date = new Date(year, month - 1, day, 0, 0, 0, 0);
-  return isNaN(date.getTime()) ? null : date;
-}
-
-function normalizeDateRange(
-  dateRange: DateRange
-): { from: Date; to: Date } | null {
-  const from = dateRange.startDate ? parseLocalDate(dateRange.startDate) : null;
-  const to = dateRange.endDate ? parseLocalDate(dateRange.endDate) : null;
-  if (!from || !to) return null;
-  if (from.getTime() > to.getTime()) return null;
-  return { from, to };
-}
-
-function rangesOverlap(
-  aStart: Date,
-  aEnd: Date,
-  bStart: Date,
-  bEnd: Date
-): boolean {
-  return (
-    aStart.getTime() <= bEnd.getTime() && bStart.getTime() <= aEnd.getTime()
-  );
-}
-
 export function isVenueAvailable(
   venue: TVenue,
   wanted: { from: Date; to: Date }
 ): boolean {
-  const bookings = venue.bookings ?? [];
-  if (bookings.length === 0) return true;
-
-  return bookings.every((booking) => {
-    const bookingStart = new Date(booking.dateFrom);
-    const bookingEnd = new Date(booking.dateTo);
-    if (isNaN(bookingStart.getTime()) || isNaN(bookingEnd.getTime()))
-      return true;
-    return !rangesOverlap(wanted.from, wanted.to, bookingStart, bookingEnd);
-  });
+  return isVenueAvailableForRange(venue, wanted);
 }
 
 export function filterVenues(
@@ -91,7 +57,9 @@ export function filterVenues(
 
   const normalized = normalizeDateRange(dateRange);
   if (normalized) {
-    result = result.filter((venue) => isVenueAvailable(venue, normalized));
+    result = result.filter((venue) =>
+      isVenueAvailableForRange(venue, normalized)
+    );
   }
 
   return result;

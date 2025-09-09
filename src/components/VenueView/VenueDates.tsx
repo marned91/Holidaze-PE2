@@ -1,10 +1,15 @@
-import { useId, useMemo } from 'react';
-import { type TVenueBooking } from '../../types/venues';
+import { useMemo } from 'react';
+import type { TVenueBooking } from '../../types/venues';
+import type { TDateRange } from '../../types/date';
+import { DateRangeFields } from '../common/DateRangeFields';
+import {
+  normalizeDateRange,
+  parseLocal,
+  rangesOverlapInclusive,
+  todayYmd,
+} from '../../utils/dateRange';
 
-export type DateRangeValue = {
-  startDate?: string;
-  endDate?: string;
-};
+export type DateRangeValue = TDateRange;
 
 type VenueDatesProps = {
   value: DateRangeValue;
@@ -13,121 +18,44 @@ type VenueDatesProps = {
   className?: string;
 };
 
-function parseLocalDateFromYyyyMmDd(dateString?: string): Date | null {
-  if (!dateString) return null;
-  const [y, m, d] = dateString.split('-').map(Number);
-  if (!y || !m || !d) return null;
-  const dt = new Date(y, m - 1, d, 0, 0, 0, 0);
-  return isNaN(dt.getTime()) ? null : dt;
-}
-
-function dateRangesOverlapInclusive(
-  aStart: Date,
-  aEnd: Date,
-  bStart: Date,
-  bEnd: Date
-): boolean {
-  return (
-    aStart.getTime() <= bEnd.getTime() && bStart.getTime() <= aEnd.getTime()
-  );
-}
-
-function getTodayYyyyMmDd(): string {
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, '0');
-  const d = String(now.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-
 export function VenueDates({
   value,
   onChange,
   bookings,
   className,
 }: VenueDatesProps) {
-  const startId = useId();
-  const endId = useId();
+  const today = useMemo(() => todayYmd(), []);
 
-  const startDateObject = useMemo(
-    () => parseLocalDateFromYyyyMmDd(value.startDate),
-    [value.startDate]
-  );
-  const endDateObject = useMemo(
-    () => parseLocalDateFromYyyyMmDd(value.endDate),
-    [value.endDate]
-  );
+  const normalized = useMemo(() => normalizeDateRange(value), [value]);
 
-  const todayString = useMemo(() => getTodayYyyyMmDd(), []);
-  const isStartInPast = !!value.startDate && value.startDate < todayString;
-  const isEndInPast = !!value.endDate && value.endDate < todayString;
-
-  const isRangeInvalid =
-    !!startDateObject &&
-    !!endDateObject &&
-    startDateObject.getTime() > endDateObject.getTime();
+  const isStartInPast = !!value.startDate && value.startDate < today;
+  const isEndInPast = !!value.endDate && value.endDate < today;
+  const isRangeInvalid = !normalized && !!value.startDate && !!value.endDate;
 
   const availabilityStatus = useMemo<null | 'available' | 'unavailable'>(() => {
-    if (!bookings || bookings.length === 0) {
-      if (startDateObject && endDateObject && !isRangeInvalid)
-        return 'available';
-      return null;
-    }
-    if (!startDateObject || !endDateObject || isRangeInvalid) return null;
+    if (!normalized) return null;
+    const list = bookings ?? [];
+    if (list.length === 0) return 'available';
 
-    const hasOverlap = bookings.some((booking) => {
-      const startStr = booking.dateFrom.split('T')[0];
-      const endStr = booking.dateTo.split('T')[0];
-      const bookingStart = parseLocalDateFromYyyyMmDd(startStr);
-      const bookingEnd = parseLocalDateFromYyyyMmDd(endStr);
-      if (!bookingStart || !bookingEnd) return false;
-      return dateRangesOverlapInclusive(
-        startDateObject,
-        endDateObject,
-        bookingStart,
-        bookingEnd
+    const hasOverlap = list.some((b) => {
+      const bs = parseLocal(b.dateFrom?.split('T')[0]);
+      const be = parseLocal(b.dateTo?.split('T')[0]);
+      return (
+        bs &&
+        be &&
+        rangesOverlapInclusive(normalized.from, normalized.to, bs, be)
       );
     });
 
     return hasOverlap ? 'unavailable' : 'available';
-  }, [bookings, startDateObject, endDateObject, isRangeInvalid]);
+  }, [bookings, normalized]);
 
   return (
     <section className={className ?? ''}>
       <h2 className="text-2xl font-medium font-medium-buttons">Select dates</h2>
 
-      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div>
-          <label htmlFor={startId} className="mb-1 block text-sm text-gray-700">
-            From
-          </label>
-          <input
-            id={startId}
-            type="date"
-            value={value.startDate ?? ''}
-            min={todayString}
-            onChange={(event) =>
-              onChange({ ...value, startDate: event.target.value || undefined })
-            }
-            className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight"
-          />
-        </div>
-
-        <div>
-          <label htmlFor={endId} className="mb-1 block text-sm text-gray-700">
-            To
-          </label>
-          <input
-            id={endId}
-            type="date"
-            value={value.endDate ?? ''}
-            min={value.startDate || todayString}
-            onChange={(event) =>
-              onChange({ ...value, endDate: event.target.value || undefined })
-            }
-            className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight"
-          />
-        </div>
+      <div className="mt-3">
+        <DateRangeFields value={value} onChange={onChange} variant="native" />
       </div>
 
       {isRangeInvalid && (
@@ -140,18 +68,15 @@ export function VenueDates({
           Dates in the past are not allowed.
         </p>
       )}
-
       {!isRangeInvalid &&
         !isStartInPast &&
         !isEndInPast &&
         availabilityStatus === 'available' &&
-        startDateObject &&
-        endDateObject && (
+        normalized && (
           <p className="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
-            Available for the selected dates.
+            Available for the selected dates!
           </p>
         )}
-
       {!isRangeInvalid &&
         !isStartInPast &&
         !isEndInPast &&
