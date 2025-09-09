@@ -67,43 +67,47 @@ export function VenueInformation({
           <p className="mt-2 whitespace-pre-line text-gray-700 font-text">
             {description}
           </p>
-          <div className="my-4 border-b border-gray-400" />
+          <div className="my-5 border-b border-gray-400" />
         </>
       )}
 
-      <h3 className="text-2xl font-medium font-small-nav-footer">Facilities</h3>
-      {hasAnyFacility ? (
-        <ul className="mt-2 grid grid-cols-2 gap-2 text-gray-800 sm:grid-cols-3">
-          {facilities?.wifi && (
-            <li className="inline-flex items-center gap-2 font-text">
-              <FaWifi className="text-main-light" />
-              Wi-Fi
-            </li>
-          )}
-          {facilities?.parking && (
-            <li className="inline-flex items-center gap-2 font-text">
-              <FaParking className="text-main-light" />
-              Parking
-            </li>
-          )}
-          {facilities?.breakfast && (
-            <li className="inline-flex items-center gap-2 font-text">
-              <FaCoffee className="text-main-light" />
-              Breakfast
-            </li>
-          )}
-          {facilities?.pets && (
-            <li className="inline-flex items-center gap-2 font-text">
-              <FaDog className="text-main-light" />
-              Pets
-            </li>
-          )}
-        </ul>
-      ) : (
-        <p className="mt-2 text-gray-600 font-text italic">
-          No facilities listed
-        </p>
-      )}
+      <div className="my-5 border-b border-gray-400">
+        <h3 className="text-2xl font-medium font-small-nav-footer">
+          Facilities
+        </h3>
+        {hasAnyFacility ? (
+          <ul className="mt-2 grid grid-cols-2 gap-2 text-gray-800 sm:grid-cols-3">
+            {facilities?.wifi && (
+              <li className="inline-flex items-center gap-2 font-text">
+                <FaWifi className="text-main-light" />
+                Wi-Fi
+              </li>
+            )}
+            {facilities?.parking && (
+              <li className="inline-flex items-center gap-2 font-text">
+                <FaParking className="text-main-light" />
+                Parking
+              </li>
+            )}
+            {facilities?.breakfast && (
+              <li className="inline-flex items-center gap-2 font-text">
+                <FaCoffee className="text-main-light" />
+                Breakfast
+              </li>
+            )}
+            {facilities?.pets && (
+              <li className="inline-flex items-center gap-2 font-text">
+                <FaDog className="text-main-light" />
+                Pets
+              </li>
+            )}
+          </ul>
+        ) : (
+          <p className="mt-2 text-gray-600 font-text italic my-5">
+            No facilities listed
+          </p>
+        )}
+      </div>
     </section>
   );
 }
