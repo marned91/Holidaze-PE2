@@ -142,7 +142,6 @@ export function VenuesFilters({
           )}
         </div>
 
-        {/* How many? */}
         <div className="relative">
           <button
             type="button"
@@ -197,7 +196,6 @@ export function VenuesFilters({
           )}
         </div>
 
-        {/* Select dates */}
         <div className="relative">
           <button
             type="button"
