@@ -20,14 +20,13 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
   const next = () => hasMany && setIndex((i) => (i + 1) % count);
   const prev = () => hasMany && setIndex((i) => (i - 1 + count) % count);
 
-  function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (!hasMany) return;
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
       prev();
-    }
-    if (e.key === 'ArrowRight') {
-      e.preventDefault();
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault();
       next();
     }
   }
@@ -50,24 +49,25 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
     <div
       className="group relative overflow-hidden rounded-2xl shadow-xl"
       tabIndex={0}
-      onKeyDown={onKeyDown}
+      onKeyDown={handleKeyDown}
       aria-roledescription="carousel"
       aria-label="Venue images"
     >
+      {/* Slides with fade transition */}
       <div className="relative aspect-[21/9] w-full bg-gray-100">
         {slides.map((img, i) => (
           <img
             key={`${img.url}-${i}`}
             src={img.url}
             alt={img.alt ?? 'Venue image'}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out
-                        ${i === index ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out ${
+              i === index ? 'opacity-100' : 'opacity-0'
+            }`}
             draggable={false}
             loading="lazy"
             decoding="async"
           />
         ))}
-
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/35 to-transparent" />
       </div>
 
@@ -78,7 +78,7 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
             onClick={prev}
             className="absolute left-3 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full
                        bg-white/80 backdrop-blur-sm shadow-md ring-1 ring-black/5 transition
-                       hover:bg-white hover:shadow-lg focus:outline-none focus:ring-2
+                       hover:bg-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-highlight
                        opacity-0 group-hover:opacity-100 sm:opacity-100"
             aria-label="Previous image"
           >
@@ -89,13 +89,14 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
             onClick={next}
             className="absolute right-3 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full
                        bg-white/80 backdrop-blur-sm shadow-md ring-1 ring-black/5 transition
-                       hover:bg-white hover:shadow-lg focus:outline-none focus:ring-2
+                       hover:bg-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-highlight
                        opacity-0 group-hover:opacity-100 sm:opacity-100"
             aria-label="Next image"
           >
             <FaChevronRight className="text-gray-800" />
           </button>
 
+          {/* Dots */}
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/35 px-2 py-1">
             {slides.map((_, i) => (
               <button
