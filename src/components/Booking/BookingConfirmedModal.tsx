@@ -1,4 +1,3 @@
-// src/components/Booking/BookingConfirmedModal.tsx
 import { FaCheckCircle, FaMapMarkerAlt } from 'react-icons/fa';
 import { Modal } from '../common/Modal';
 
@@ -35,15 +34,16 @@ export function BookingConfirmedModal({
         >
           <FaCheckCircle className="h-8 w-8" />
         </div>
-        <h3 className="text-2xl font-semibold">You’re booked!</h3>
-        <p className="mt-1 text-sm text-gray-600">
+        <h3 className="text-2xl font-semibold font-small-nav-footer">
+          You’re booked!
+        </h3>
+        <p className="mt-1 text-sm text-gray-600 font-text">
           You can view your booking in your profile.
         </p>
       </div>
 
       <div className="mt-6 grid w-full gap-4 rounded-xl border border-gray-200 bg-white p-4">
         <div className="grid gap-4 sm:grid-cols-[160px,1fr] sm:items-start">
-          {/* Image */}
           <div className="overflow-hidden rounded-lg bg-gray-100">
             {imageUrl ? (
               <img
@@ -57,10 +57,9 @@ export function BookingConfirmedModal({
             )}
           </div>
 
-          {/* Textual summary */}
           <div className="text-left">
-            <h4 className="text-lg font-medium">{venueTitle}</h4>
-            <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
+            <h4 className="text-lg font-medium font-text">{venueTitle}</h4>
+            <div className="mt-1 flex items-center gap-2 text-sm text-gray-600 font-text">
               <FaMapMarkerAlt className="text-main-light" />
               <span>{locationText}</span>
             </div>
@@ -68,16 +67,20 @@ export function BookingConfirmedModal({
             <dl className="mt-4 space-y-2">
               <div className="flex items-start justify-between gap-4">
                 <dt className="text-sm text-gray-500">Dates</dt>
-                <dd className="text-sm font-medium">{dateRangeText}</dd>
+                <dd className="text-sm font-medium font-text">
+                  {dateRangeText}
+                </dd>
               </div>
               <div className="flex items-start justify-between gap-4">
                 <dt className="text-sm text-gray-500">Guests</dt>
-                <dd className="text-sm font-medium">{guestsText}</dd>
+                <dd className="text-sm font-medium font-text">{guestsText}</dd>
               </div>
               <div className="mt-2 border-t pt-3">
                 <div className="flex items-start justify-between gap-4">
                   <dt className="text-sm text-gray-500">Total</dt>
-                  <dd className="text-base font-semibold">{totalText}</dd>
+                  <dd className="text-base font-semibold font-text">
+                    {totalText}
+                  </dd>
                 </div>
               </div>
             </dl>
@@ -85,25 +88,23 @@ export function BookingConfirmedModal({
         </div>
       </div>
 
-      {/* Actions */}
       <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <button
           type="button"
           onClick={onClose}
-          className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 font-medium-buttons"
         >
           Close
         </button>
         <button
           type="button"
           onClick={onViewBooking}
-          className="rounded-lg bg-main-dark px-4 py-2 text-sm font-medium text-white hover:bg-dark-highlight"
+          className="rounded-lg bg-main-dark px-4 py-2 text-sm font-medium text-white hover:bg-dark-highlight font-medium-buttons"
         >
           View booking
         </button>
       </div>
 
-      {/* A11y: announce success politely */}
       <div className="sr-only" aria-live="polite">
         Booking confirmed for {dateRangeText}. Total {totalText}.
       </div>

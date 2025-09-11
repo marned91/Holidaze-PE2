@@ -44,15 +44,15 @@ export function BookingReviewModal({
 
           <div className="mt-3 flex items-center gap-2 text-gray-700">
             <FaMapMarkerAlt className="text-main-light" />
-            <span>{locationText}</span>
+            <span className="font-text">{locationText}</span>
           </div>
 
-          <div className="mt-4 text-gray-800">{dateRangeText}</div>
-          <div className="mt-1 text-gray-800">{guestsText}</div>
-          <div className="mt-4 text-xl font-semibold">{totalText}</div>
+          <div className="mt-4 text-gray-800 font-text">{dateRangeText}</div>
+          <div className="mt-1 text-gray-800 font-text">{guestsText}</div>
+          <div className="mt-4 text-xl font-bold font-text">{totalText}</div>
 
           {error && (
-            <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+            <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 font-text">
               {error}
             </p>
           )}
@@ -61,7 +61,7 @@ export function BookingReviewModal({
             type="button"
             onClick={onConfirm}
             disabled={!!submitting}
-            className="mt-6 w-full rounded-2xl bg-main-dark px-4 py-3 text-lg font-medium text-white hover:bg-dark-highlight disabled:opacity-60"
+            className="mt-6 w-full rounded-2xl bg-main-dark px-4 py-3 text-lg font-medium font-medium-buttons text-white hover:bg-dark-highlight disabled:opacity-60"
           >
             {submitting ? 'Confirming…' : 'Confirm booking'}
           </button>

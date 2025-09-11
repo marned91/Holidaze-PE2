@@ -41,7 +41,7 @@ export function Modal({
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative w-full max-w-[980px] rounded-2xl bg-white shadow-2xl max-h-[85vh] overflow-y-auto">
+      <div className="relative w-[50%] max-w-[980px] rounded-2xl bg-white shadow-2xl max-h-[85vh] overflow-y-auto">
         <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-gray-200 bg-white/95 px-6 py-4">
           {title ? (
             <h3 className="text-3xl font-medium font-small-nav-footer">
