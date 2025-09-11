@@ -12,7 +12,6 @@ type Props = {
 };
 
 function parseDotToISO(v: string): string | undefined {
-  // dd.mm.yyyy
   const m = v.trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
   if (!m) return undefined;
   const d = Number(m[1]),

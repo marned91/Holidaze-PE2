@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import Calendar from 'react-calendar';
 import type { TVenueBooking } from '../../types/venues';
 import type { TDateRange } from '../../types/date';
@@ -9,6 +9,7 @@ function parseISO(ymd?: string): Date | undefined {
   const dt = new Date(y, m - 1, d, 0, 0, 0, 0);
   return isNaN(dt.getTime()) ? undefined : dt;
 }
+
 function fmt(date?: Date): string | undefined {
   if (!date) return undefined;
   const y = date.getFullYear();
@@ -25,43 +26,22 @@ function inInclusive(d: Date, a: Date, b: Date) {
   return t >= a.getTime() && t <= b.getTime();
 }
 
-function useMedia(query: string) {
-  const [matches, setMatches] = useState<boolean>(
-    () =>
-      typeof window !== 'undefined' ? window.matchMedia(query).matches : true // SSR-safe default
-  );
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const mql = window.matchMedia(query);
-    const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
-
-    mql.addEventListener?.('change', handler);
-    return () => mql.removeEventListener?.('change', handler);
-  }, [query]);
-  return matches;
-}
-
 type Props = {
   value: TDateRange;
   onChange: (next: TDateRange) => void;
   bookings?: TVenueBooking[];
-  months?: number;
-  className?: string;
+  months?: number; // default 2
 };
 
-export function RangeCalendarRC({
+export function RangeCalendar({
   value,
   onChange,
   bookings,
   months = 2,
-  className,
 }: Props) {
   const from = parseISO(value.startDate);
   const to = parseISO(value.endDate);
   const today = startOfToday();
-
-  const isSmUp = useMedia('(min-width: 640px)');
-  const showDouble = isSmUp && months >= 2;
 
   const blocked = useMemo(() => {
     const list =
@@ -78,12 +58,12 @@ export function RangeCalendarRC({
   const rcValue = from && to ? ([from, to] as [Date, Date]) : from ?? undefined;
 
   return (
-    <div className={className}>
+    <div>
       <Calendar
         locale="en-GB"
         calendarType="iso8601"
         selectRange
-        showDoubleView={showDouble}
+        showDoubleView={months >= 2} // CSS handles stacking on small screens
         minDate={today}
         prev2Label={null}
         next2Label={null}

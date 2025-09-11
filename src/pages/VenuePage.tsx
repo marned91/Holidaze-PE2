@@ -4,13 +4,10 @@ import { doFetch } from '../api/doFetch';
 import { API_VENUES } from '../api/endpoints';
 import { ImageCarousel } from '../components/VenueView/ImageCarousel';
 import { VenueInformation } from '../components/VenueView/VenueInformation';
-import {
-  VenueDates,
-  type DateRangeValue,
-} from '../components/VenueView/VenueDates';
+import { VenueDates } from '../components/VenueView/VenueDates';
+import type { TDateRange } from '../types/date';
 import { BookingSidebar } from '../components/VenueView/BookingSidebar';
 import type { TVenue } from '../types/venues';
-import type { TDateRange } from '../types/date';
 
 export function VenuePage() {
   const { venueId } = useParams<{ venueId: string }>();
@@ -18,7 +15,7 @@ export function VenuePage() {
   const [venue, setVenue] = useState<TVenue | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [selectedDates, setSelectedDates] = useState<DateRangeValue>({});
+  const [selectedDates, setSelectedDates] = useState<TDateRange>({});
 
   useEffect(() => {
     let isActive = true;
