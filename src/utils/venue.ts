@@ -1,4 +1,5 @@
 import type { TVenue } from '../types/venues';
+import PlaceholderImage from '../assets/placeholder.png';
 
 export function getLocationText(venue: Pick<TVenue, 'location'>): string {
   const city = venue.location?.city?.trim();
@@ -6,13 +7,13 @@ export function getLocationText(venue: Pick<TVenue, 'location'>): string {
   return [city, country].filter(Boolean).join(', ') || 'Location';
 }
 
-export function getVenueImage(venue: Pick<TVenue, 'media' | 'name'>): {
-  url: string;
-  alt: string;
-} {
-  const first = venue.media?.find((m) => m?.url?.trim());
-  const url = first?.url ?? '';
-  const alt = first?.alt || venue.name || 'Venue image';
+export function getVenueImage(
+  venue: Pick<TVenue, 'media' | 'name'>,
+  options?: { fallback?: string }
+): { url: string; alt: string } {
+  const first = venue.media?.find((m) => (m?.url ?? '').trim().length > 0);
+  const url = first?.url?.trim() || options?.fallback || PlaceholderImage;
+  const alt = (first?.alt || venue.name || 'Venue image').trim();
   return { url, alt };
 }
 

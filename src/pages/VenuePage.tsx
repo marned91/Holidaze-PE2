@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { doFetch } from '../api/doFetch';
-import { API_VENUES, API_BOOKINGS } from '../api/endpoints';
+import { getVenue } from '../api/venues';
+import { createBooking, type CreateBookingPayload } from '../api/bookings';
 import { ImageCarousel } from '../components/VenueView/ImageCarousel';
 import { VenueInformation } from '../components/VenueView/VenueInformation';
 import { VenueDates } from '../components/VenueView/VenueDates';
@@ -16,14 +16,13 @@ import { formatCurrencyNOK } from '../utils/currency';
 import { getLocationText, getVenueImage } from '../utils/venue';
 import { dateRangeLabel, nightsBetween } from '../utils/date';
 
-type BookingPayload = {
-  dateFrom: string;
-  dateTo: string;
-  guests: number;
-  venueId: string;
-};
-
 type ModalView = 'none' | 'login' | 'review' | 'confirmed';
+
+function hasAuthToken(): boolean {
+  return Boolean(
+    localStorage.getItem('accessToken') || localStorage.getItem('token')
+  );
+}
 
 export function VenuePage() {
   const { venueId } = useParams<{ venueId: string }>();
@@ -41,32 +40,30 @@ export function VenuePage() {
 
   useEffect(() => {
     let isActive = true;
-    async function loadVenue() {
+
+    async function load() {
       if (!venueId) return;
       setLoading(true);
       setLoadError(null);
       try {
-        const data = await doFetch<TVenue>(
-          `${API_VENUES}/${encodeURIComponent(
-            venueId
-          )}?_bookings=true&_owner=true`,
-          { method: 'GET', auth: false }
-        );
+        const data = await getVenue(venueId, { bookings: true, owner: true });
         if (isActive) setVenue(data ?? null);
-      } catch (error: any) {
-        if (isActive) setLoadError(error?.message ?? 'Failed to load venue');
+      } catch (error) {
+        const message = (error as Error)?.message ?? 'Failed to load venue';
+        if (isActive) setLoadError(message);
       } finally {
         if (isActive) setLoading(false);
       }
     }
-    loadVenue();
+
+    load();
     return () => {
       isActive = false;
     };
   }, [venueId]);
 
   const carouselImages = useMemo(
-    () => (venue?.media ?? []).filter((m) => !!m?.url),
+    () => (venue?.media ?? []).filter((item) => Boolean(item?.url)),
     [venue]
   );
 
@@ -83,37 +80,25 @@ export function VenuePage() {
   const nightly = typeof venue.price === 'number' ? venue.price : 0;
   const total = nights * nightly;
 
-  const firstImageUrl = getVenueImage(venue).url;
+  const { url: firstImageUrl } = getVenueImage(venue);
   const dateText = normalized
     ? `${dateRangeLabel(normalized.from, normalized.to)} (${nights} ${
         nights === 1 ? 'night' : 'nights'
       })`
     : '';
   const totalText = formatCurrencyNOK(total);
-
   const locationText = getLocationText(venue);
 
-  function getAuthToken(): string | null {
-    return (
-      localStorage.getItem('accessToken') ||
-      localStorage.getItem('token') ||
-      null
-    );
-  }
-
-  async function confirmBooking(payload: BookingPayload) {
+  async function confirmBooking(payload: CreateBookingPayload) {
     setSubmitting(true);
     setSubmitError(null);
     try {
-      const created = await doFetch<{ id: string }>(API_BOOKINGS, {
-        method: 'POST',
-        auth: true,
-        body: JSON.stringify(payload),
-      });
-      setCreatedBookingId(created?.id ?? null);
+      const created = await createBooking(payload);
+      setCreatedBookingId(created.id);
       setModalView('confirmed');
-    } catch (error: any) {
-      setSubmitError(error?.message ?? 'Failed to create booking');
+    } catch (error) {
+      const message = (error as Error)?.message ?? 'Failed to create booking';
+      setSubmitError(message);
     } finally {
       setSubmitting(false);
     }
@@ -149,7 +134,7 @@ export function VenuePage() {
             value={selectedDates}
             onChange={setSelectedDates}
             onRequest={(range, guests = 1) => {
-              if (!getAuthToken()) {
+              if (!hasAuthToken()) {
                 setModalView('login');
                 return;
               }

@@ -73,7 +73,7 @@ export function ProfilePage() {
 
           {profile && (
             <>
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-6 py-6">
                 <div className="h-50 w-50 shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100">
                   {profile.avatar?.url ? (
                     <img
