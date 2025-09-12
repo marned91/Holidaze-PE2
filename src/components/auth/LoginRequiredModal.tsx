@@ -1,4 +1,4 @@
-import { Modal } from '../common/Modal';
+import { Modal } from '../Common/Modal';
 
 type LoginRequiredProps = {
   open: boolean;

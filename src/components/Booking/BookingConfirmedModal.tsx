@@ -1,5 +1,5 @@
 import { FaCheckCircle, FaMapMarkerAlt } from 'react-icons/fa';
-import { Modal } from '../common/Modal';
+import { Modal } from '../Common/Modal';
 
 type BookingConfirmedModalProps = {
   open: boolean;

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { DateRangeFields } from '../common/DateRangeFields';
+import { DateRangeFields } from '../Common/DateRangeFields';
 
 export type DateRange = {
   startDate?: string;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/authApi';
+import { authChanged } from '../hooks/useAuthStatus';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -10,20 +11,34 @@ export function LoginPage() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
     setEmailError(null);
     setPasswordError(null);
     setLoading(true);
 
     try {
-      await login(email, password);
-      alert('Login successful!');
-      navigate('/');
-    } catch (err: any) {
-      console.error('Login failed:', err);
+      const account = await login(email, password);
 
-      if (err?.message?.toLowerCase().includes('invalid')) {
+      const username =
+        (account as any)?.name ??
+        (account as any)?.data?.name ??
+        (JSON.parse(localStorage.getItem('user') || 'null')?.name as
+          | string
+          | undefined) ??
+        '';
+
+      if (username) {
+        localStorage.setItem('username', username);
+      }
+
+      authChanged();
+      alert('Login successful!');
+      navigate(username ? `/profile/${encodeURIComponent(username)}` : '/');
+    } catch (error: unknown) {
+      console.error('Login failed:', error);
+      const message = (error as Error)?.message?.toLowerCase() ?? '';
+      if (message.includes('invalid')) {
         setEmailError('Invalid email or password');
         setPasswordError('Invalid email or password');
       } else {

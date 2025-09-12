@@ -6,6 +6,7 @@ import {
   type TRegisterData,
   type TRegisterFieldErrors,
 } from '../types/auth.ts';
+import { AUTH_CHANGED_EVENT } from '../hooks/authEvents';
 
 export async function login(email: string, password: string) {
   const body = JSON.stringify({ email, password });
@@ -65,7 +66,6 @@ export async function register(userData: TRegisterData) {
           fieldErrors.avatarUrl;
       }
 
-      // 🔹 Fallback: hvis API kun ga en message, putt den på riktig felt
       if (
         !fieldErrors.name &&
         !fieldErrors.email &&
@@ -90,6 +90,11 @@ export async function register(userData: TRegisterData) {
 }
 
 export function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
+  ['token', 'user', 'username'].forEach((key) => localStorage.removeItem(key));
+  if (
+    typeof window !== 'undefined' &&
+    typeof window.dispatchEvent === 'function'
+  ) {
+    window.dispatchEvent(new Event(AUTH_CHANGED_EVENT));
+  }
 }

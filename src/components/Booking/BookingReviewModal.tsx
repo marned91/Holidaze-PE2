@@ -1,4 +1,4 @@
-import { Modal } from '../common/Modal';
+import { Modal } from '../Common/Modal';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
 type BookingReviewProps = {

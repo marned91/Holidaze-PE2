@@ -3,12 +3,18 @@ import Logo from '../assets/holidaze-logo-transparent.png';
 import { useState } from 'react';
 import { FaBars, FaUser } from 'react-icons/fa';
 import { logout } from '../api/authApi';
+import { useAuthStatus } from '../hooks/useAuthStatus';
+
+function getProfileHref(): string {
+  const stored = localStorage.getItem('username');
+  return stored ? `/profile/${encodeURIComponent(stored)}` : '/login';
+}
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const isLoggedIn = Boolean(localStorage.getItem('token'));
+  const { isLoggedIn } = useAuthStatus();
 
   function handleLogout() {
     logout();
@@ -19,7 +25,7 @@ export function Header() {
 
   return (
     <header className="w-full bg-main-light">
-      {/* DESKTOP */}
+      {/* Desktop */}
       <div className="hidden md:block">
         <div className="flex max-w-[100%] items-center justify-between gap-12 px-6 py-3">
           <Link to="/" className="flex items-center" aria-label="Holidaze home">
@@ -71,7 +77,7 @@ export function Header() {
                     </li>
                     <li>
                       <NavLink
-                        to="/profile"
+                        to={getProfileHref()}
                         className={({ isActive }) =>
                           `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 ${
                             isActive ? 'ring-2 ring-white/60' : ''
@@ -106,11 +112,11 @@ export function Header() {
         </div>
       </div>
 
-      {/* MOBILE */}
+      {/* Mobile */}
       <div className="px-4 py-5 md:hidden">
         <div className="flex items-center justify-between">
           <button
-            onClick={() => setMenuOpen((p) => !p)}
+            onClick={() => setMenuOpen((previous) => !previous)}
             aria-label="Toggle menu"
             className="text-white"
           >
@@ -137,7 +143,7 @@ export function Header() {
             </NavLink>
           ) : (
             <NavLink
-              to="/profile"
+              to={getProfileHref()}
               className={({ isActive }) =>
                 `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 ${
                   isActive ? 'ring-2 ring-white/60' : ''
@@ -152,7 +158,6 @@ export function Header() {
           )}
         </div>
 
-        {/* dropdown under header when hamburger is open */}
         {menuOpen && (
           <div className="mt-4 space-y-3">
             {!isLoggedIn ? (
@@ -167,7 +172,7 @@ export function Header() {
 
                 <form
                   role="search"
-                  onSubmit={(e) => e.preventDefault()}
+                  onSubmit={(event) => event.preventDefault()}
                   className="pt-1"
                 >
                   <label htmlFor="site-search-mobile" className="sr-only">
@@ -192,7 +197,7 @@ export function Header() {
 
                 <form
                   role="search"
-                  onSubmit={(e) => e.preventDefault()}
+                  onSubmit={(event) => event.preventDefault()}
                   className="pt-1"
                 >
                   <label htmlFor="site-search-mobile" className="sr-only">

@@ -8,7 +8,7 @@ import { VenueDates } from '../components/VenueView/VenueDates';
 import type { TDateRange } from '../types/date';
 import { BookingSidebar } from '../components/VenueView/BookingSidebar';
 import type { TVenue } from '../types/venues';
-import { LoginRequiredModal } from '../components/auth/LoginRequiredModal';
+import { LoginRequiredModal } from '../components/Auth/LoginRequiredModal';
 import { BookingReviewModal } from '../components/Booking/BookingReviewModal';
 import { BookingConfirmedModal } from '../components/Booking/BookingConfirmedModal';
 import { normalizeDateRange } from '../utils/dateRange';
@@ -135,8 +135,8 @@ export function VenuePage() {
       });
       setCreatedBookingId(created?.id ?? null);
       setModalView('confirmed');
-    } catch (err: any) {
-      setSubmitError(err?.message ?? 'Failed to create booking');
+    } catch (error: any) {
+      setSubmitError(error?.message ?? 'Failed to create booking');
     } finally {
       setSubmitting(false);
     }
