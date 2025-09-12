@@ -1,10 +1,19 @@
-// src/api/profiles.ts
 import { API_PROFILES } from './endpoints';
 import { doFetch } from './doFetch';
 import type { TProfile } from '../types/profiles';
 
-export async function getProfile(username: string): Promise<TProfile> {
-  const url = `${API_PROFILES}/${encodeURIComponent(username)}`;
+export async function getProfile(
+  username: string,
+  options?: { venues?: boolean; bookings?: boolean }
+): Promise<TProfile> {
+  const params: string[] = [];
+  if (options?.venues) params.push('_venues=true');
+  if (options?.bookings) params.push('_bookings=true');
+
+  const url =
+    `${API_PROFILES}/${encodeURIComponent(username)}` +
+    (params.length ? `?${params.join('&')}` : '');
+
   try {
     const data = await doFetch<TProfile>(url, { method: 'GET', auth: true });
     if (!data) throw new Error('Profile not found');
