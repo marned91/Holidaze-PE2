@@ -1,8 +1,9 @@
 import { useId } from 'react';
 import type { TDateRange } from '../../types/date';
 import { todayYmd } from '../../utils/dateRange';
+import { parseDotToISO, formatDotFromISO } from '../../utils/date';
 
-type Props = {
+type props = {
   value: TDateRange;
   onChange: (next: TDateRange) => void;
   className?: string;
@@ -11,25 +12,6 @@ type Props = {
   labelTo?: string;
 };
 
-function parseDotToISO(v: string): string | undefined {
-  const m = v.trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
-  if (!m) return undefined;
-  const d = Number(m[1]),
-    mo = Number(m[2]),
-    y = Number(m[3]);
-  const dt = new Date(y, mo - 1, d);
-  if (isNaN(dt.getTime()) || dt.getDate() !== d || dt.getMonth() !== mo - 1)
-    return undefined;
-  const mm = String(mo).padStart(2, '0');
-  const dd = String(d).padStart(2, '0');
-  return `${y}-${mm}-${dd}`;
-}
-function formatDot(iso?: string): string {
-  if (!iso) return '';
-  const [y, m, d] = iso.split('-');
-  return `${d}.${m}.${y}`;
-}
-
 export function DateRangeFields({
   value,
   onChange,
@@ -37,7 +19,7 @@ export function DateRangeFields({
   variant = 'native',
   labelFrom = 'From',
   labelTo = 'To',
-}: Props) {
+}: props) {
   const startId = useId();
   const endId = useId();
 
@@ -69,7 +51,7 @@ export function DateRangeFields({
               type="text"
               inputMode="numeric"
               placeholder="dd.mm.yyyy"
-              value={formatDot(value.startDate)}
+              value={formatDotFromISO(value.startDate)}
               onChange={(e) =>
                 onChange({ ...value, startDate: parseDotToISO(e.target.value) })
               }
@@ -99,7 +81,7 @@ export function DateRangeFields({
               type="text"
               inputMode="numeric"
               placeholder="dd.mm.yyyy"
-              value={formatDot(value.endDate)}
+              value={formatDotFromISO(value.endDate)}
               onChange={(e) =>
                 onChange({ ...value, endDate: parseDotToISO(e.target.value) })
               }

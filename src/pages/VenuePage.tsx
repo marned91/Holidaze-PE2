@@ -12,6 +12,9 @@ import { LoginRequiredModal } from '../components/Auth/LoginRequiredModal';
 import { BookingReviewModal } from '../components/Booking/BookingReviewModal';
 import { BookingConfirmedModal } from '../components/Booking/BookingConfirmedModal';
 import { normalizeDateRange } from '../utils/dateRange';
+import { formatCurrencyNOK } from '../utils/currency';
+import { getLocationText, getVenueImage } from '../utils/venue';
+import { dateRangeLabel, nightsBetween } from '../utils/date';
 
 type BookingPayload = {
   dateFrom: string;
@@ -19,29 +22,6 @@ type BookingPayload = {
   guests: number;
   venueId: string;
 };
-
-function formatCurrencyNOK(n: number) {
-  return new Intl.NumberFormat('nb-NO', {
-    style: 'currency',
-    currency: 'NOK',
-    maximumFractionDigits: 0,
-  }).format(n);
-}
-function dateRangeLabel(from: Date, to: Date) {
-  const fmt: Intl.DateTimeFormatOptions = {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  };
-  return `${from.toLocaleDateString('en-GB', fmt)} – ${to.toLocaleDateString(
-    'en-GB',
-    fmt
-  )}`;
-}
-function nightsBetween(from: Date, to: Date) {
-  const ms = to.getTime() - from.getTime();
-  return Math.max(1, Math.round(ms / 86400000));
-}
 
 type ModalView = 'none' | 'login' | 'review' | 'confirmed';
 
@@ -103,7 +83,7 @@ export function VenuePage() {
   const nightly = typeof venue.price === 'number' ? venue.price : 0;
   const total = nights * nightly;
 
-  const firstImageUrl = venue.media?.find((m) => !!m?.url)?.url || undefined;
+  const firstImageUrl = getVenueImage(venue).url;
   const dateText = normalized
     ? `${dateRangeLabel(normalized.from, normalized.to)} (${nights} ${
         nights === 1 ? 'night' : 'nights'
@@ -111,10 +91,7 @@ export function VenuePage() {
     : '';
   const totalText = formatCurrencyNOK(total);
 
-  const locationText =
-    [venue.location?.city, venue.location?.country]
-      .filter(Boolean)
-      .join(', ') || 'Location';
+  const locationText = getLocationText(venue);
 
   function getAuthToken(): string | null {
     return (

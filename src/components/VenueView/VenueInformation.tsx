@@ -1,4 +1,5 @@
 import { type TVenue } from '../../types/venues';
+import { getGuestsText } from '../../utils/venue';
 import {
   FaMapMarkerAlt,
   FaStar,
@@ -45,7 +46,7 @@ export function VenueInformation({
         {typeof maxGuests === 'number' && (
           <span className="flex items-center font-text">
             <FaUser className="mr-2 text-main-light" />
-            {maxGuests} {maxGuests === 1 ? 'guest' : 'guests'}
+            {getGuestsText(maxGuests)}
           </span>
         )}
 

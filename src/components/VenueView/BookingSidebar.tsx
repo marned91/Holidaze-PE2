@@ -7,6 +7,8 @@ import {
   isVenueAvailableForRange,
 } from '../../utils/dateRange';
 import { FaUser } from 'react-icons/fa';
+import { formatCurrencyNOK } from '../../utils/currency';
+import { getGuestsText } from '../../utils/venue';
 
 type BookingSidebarProps = {
   venue: TVenue;
@@ -47,21 +49,11 @@ export function BookingSidebar({
 
   const priceText = useMemo(() => {
     return typeof venue.price === 'number'
-      ? new Intl.NumberFormat('nb-NO', {
-          style: 'currency',
-          currency: 'NOK',
-          maximumFractionDigits: 0,
-        }).format(venue.price)
+      ? formatCurrencyNOK(venue.price)
       : '—';
   }, [venue.price]);
 
-  const totalText = useMemo(() => {
-    return new Intl.NumberFormat('nb-NO', {
-      style: 'currency',
-      currency: 'NOK',
-      maximumFractionDigits: 0,
-    }).format(total);
-  }, [total]);
+  const totalText = useMemo(() => formatCurrencyNOK(total), [total]);
 
   const canRequest =
     !!normalized &&
@@ -86,9 +78,7 @@ export function BookingSidebar({
 
       <div className="mt-2 flex items-center gap-2 text-gray-700 font-text">
         <FaUser className="text-gray-600" />
-        <span>
-          {guests} {guests === 1 ? 'guest' : 'guests'}
-        </span>
+        <span>{getGuestsText(guests)}</span>
       </div>
 
       <div className="mt-4 font-text">
@@ -112,7 +102,7 @@ export function BookingSidebar({
         >
           {guestOptions.map((n) => (
             <option key={n} value={n}>
-              {n} {n === 1 ? 'guest' : 'guests'}
+              {getGuestsText(n)}
             </option>
           ))}
         </select>
