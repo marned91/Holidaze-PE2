@@ -25,19 +25,27 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
 
   useEffect(() => {
     if (!loading) setCurrentPage(1);
-  }, [loading]);
+  }, [
+    loading,
+    pageSize,
+    sortOrder,
+    selectedCity,
+    minGuests,
+    dateRange.startDate,
+    dateRange.endDate,
+  ]);
 
-  const cityOptions = useMemo(() => {
-    return getCityOptions(allVenues);
-  }, [allVenues]);
+  const cityOptions = useMemo(() => getCityOptions(allVenues), [allVenues]);
 
-  const filteredVenues = useMemo(() => {
-    return filterVenues(allVenues, { selectedCity, minGuests, dateRange });
-  }, [allVenues, selectedCity, minGuests, dateRange]);
+  const filteredVenues = useMemo(
+    () => filterVenues(allVenues, { selectedCity, minGuests, dateRange }),
+    [allVenues, selectedCity, minGuests, dateRange]
+  );
 
-  const sortedVenues = useMemo(() => {
-    return sortVenues(filteredVenues, sortOrder);
-  }, [filteredVenues, sortOrder]);
+  const sortedVenues = useMemo(
+    () => sortVenues(filteredVenues, sortOrder),
+    [filteredVenues, sortOrder]
+  );
 
   const totalVenues = sortedVenues.length;
   const totalPages = Math.max(1, Math.ceil(totalVenues / pageSize));
@@ -48,33 +56,21 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   }, [sortedVenues, currentPage, pageSize]);
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [pageSize]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedCity, minGuests, dateRange.startDate, dateRange.endDate]);
-
-  useEffect(() => {
     setCurrentPage((previousPage) => Math.min(previousPage, totalPages));
   }, [totalPages]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [sortOrder]);
-
-  function goToPreviousPage() {
+  function handlePreviousPage() {
     setCurrentPage((previousPage) => Math.max(1, previousPage - 1));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function goToNextPage() {
+  function handleNextPage() {
     setCurrentPage((previousPage) => Math.min(totalPages, previousPage + 1));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   return (
-    <section className="m-auto w-full px-10 py-10">
+    <section className="m-auto w-full px-10 py-10" aria-busy={loading}>
       <div className="mb-4 flex justify-center">
         <VenuesFilters
           cities={cityOptions}
@@ -108,16 +104,17 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
 
       {!loading && !loadError && totalVenues > 0 && (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {pageItems.map((venue) => (
               <VenueCard key={venue.id} venue={venue} />
             ))}
           </div>
+
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPrevious={goToPreviousPage}
-            onNext={goToNextPage}
+            onPrevious={handlePreviousPage}
+            onNext={handleNextPage}
           />
         </>
       )}

@@ -9,36 +9,39 @@ import {
   isWithinInclusiveDay,
 } from '../../utils/date';
 
-type Props = {
+type RangeCalendarProps = {
   value: TDateRange;
   onChange: (next: TDateRange) => void;
   bookings?: TVenueBooking[];
-  months?: number; // default 2
+  months?: number;
 };
 
 export function RangeCalendar({
   value,
   onChange,
-  bookings,
+  bookings = [],
   months = 2,
-}: Props) {
-  const from = parseISOYmd(value.startDate);
-  const to = parseISOYmd(value.endDate);
+}: RangeCalendarProps) {
+  const startDate = parseISOYmd(value.startDate);
+  const endDate = parseISOYmd(value.endDate);
   const today = startOfToday();
 
-  const blocked = useMemo(() => {
-    const list =
+  const blockedRanges = useMemo(() => {
+    const ranges =
       (bookings
-        ?.map((b) => {
-          const a = parseISOYmd(b.dateFrom?.split('T')[0]);
-          const z = parseISOYmd(b.dateTo?.split('T')[0]);
-          return a && z ? { a, z } : null;
+        ?.map((booking) => {
+          const start = parseISOYmd(booking.dateFrom?.split('T')[0]);
+          const end = parseISOYmd(booking.dateTo?.split('T')[0]);
+          return start && end ? { start, end } : null;
         })
-        .filter(Boolean) as { a: Date; z: Date }[]) ?? [];
-    return list;
+        .filter(Boolean) as { start: Date; end: Date }[]) ?? [];
+    return ranges;
   }, [bookings]);
 
-  const rcValue = from && to ? ([from, to] as [Date, Date]) : from ?? undefined;
+  const selectedValue =
+    startDate && endDate
+      ? ([startDate, endDate] as [Date, Date])
+      : startDate ?? undefined;
 
   return (
     <div>
@@ -46,27 +49,30 @@ export function RangeCalendar({
         locale="en-GB"
         calendarType="iso8601"
         selectRange
-        showDoubleView={months >= 2} // CSS handles stacking on small screens
+        showDoubleView={months >= 2}
         minDate={today}
         prev2Label={null}
         next2Label={null}
         className="w-full"
-        value={rcValue}
-        onChange={(val) => {
-          if (Array.isArray(val)) {
-            const [a, z] = val as [Date, Date];
-            onChange({ startDate: formatISOYmd(a), endDate: formatISOYmd(z) });
+        value={selectedValue}
+        onChange={(nextValue) => {
+          if (Array.isArray(nextValue)) {
+            const [nextStart, nextEnd] = nextValue as [Date, Date];
+            onChange({
+              startDate: formatISOYmd(nextStart),
+              endDate: formatISOYmd(nextEnd),
+            });
           } else {
             onChange({
-              startDate: formatISOYmd(val as Date),
+              startDate: formatISOYmd(nextValue as Date),
               endDate: undefined,
             });
           }
         }}
         tileDisabled={({ date, view }) => {
           if (view !== 'month') return false;
-          for (const r of blocked) {
-            if (isWithinInclusiveDay(date, r.a, r.z)) return true;
+          for (const range of blockedRanges) {
+            if (isWithinInclusiveDay(date, range.start, range.end)) return true;
           }
           return false;
         }}

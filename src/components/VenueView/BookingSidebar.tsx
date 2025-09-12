@@ -6,6 +6,7 @@ import {
   normalizeDateRange,
   isVenueAvailableForRange,
 } from '../../utils/dateRange';
+import { nightsBetween } from '../../utils/date';
 import { FaUser } from 'react-icons/fa';
 import { formatCurrencyNOK } from '../../utils/currency';
 import { getGuestsText } from '../../utils/venue';
@@ -28,11 +29,13 @@ export function BookingSidebar({
   onGuestCountChange,
 }: BookingSidebarProps) {
   const [localGuests, setLocalGuests] = useState<number>(1);
+
   const guests = guestCount ?? localGuests;
   const setGuests = (n: number) =>
     onGuestCountChange ? onGuestCountChange(n) : setLocalGuests(n);
 
   const normalized = useMemo(() => normalizeDateRange(value), [value]);
+
   const isAvailable = useMemo(
     () => (normalized ? isVenueAvailableForRange(venue, normalized) : null),
     [venue, normalized]
@@ -40,8 +43,7 @@ export function BookingSidebar({
 
   const nights = useMemo(() => {
     if (!normalized) return 0;
-    const ms = normalized.to.getTime() - normalized.from.getTime();
-    return Math.max(1, Math.round(ms / 86400000)); // at least 1 night
+    return nightsBetween(normalized.from, normalized.to);
   }, [normalized]);
 
   const nightly = typeof venue.price === 'number' ? venue.price : 0;
@@ -65,15 +67,18 @@ export function BookingSidebar({
     1,
     typeof venue.maxGuests === 'number' ? venue.maxGuests : 10
   );
-  const guestOptions = Array.from({ length: maxGuests }, (_, i) => i + 1);
+  const guestOptions = Array.from(
+    { length: maxGuests },
+    (_, indexNumber) => indexNumber + 1
+  );
 
   return (
-    <div className=" rounded-lg border border-gray-200 p-5 shadow-sm">
+    <div className="rounded-lg border border-gray-200 p-5 shadow-sm">
       <h2 className="text-3xl font-semibold font-medium-buttons">Book Now</h2>
 
       <div className="mt-2 text-lg font-text">
         <span className="font-semibold">{priceText}</span>
-        <span className="text-gray-600"> / Night</span>
+        <span className="text-gray-600"> / night</span>
       </div>
 
       <div className="mt-2 flex items-center gap-2 text-gray-700 font-text">
@@ -97,12 +102,12 @@ export function BookingSidebar({
         </label>
         <select
           value={guests}
-          onChange={(e) => setGuests(Number(e.target.value))}
+          onChange={(event) => setGuests(Number(event.target.value))}
           className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight font-text"
         >
-          {guestOptions.map((n) => (
-            <option key={n} value={n}>
-              {getGuestsText(n)}
+          {guestOptions.map((guestNumber) => (
+            <option key={guestNumber} value={guestNumber}>
+              {getGuestsText(guestNumber)}
             </option>
           ))}
         </select>

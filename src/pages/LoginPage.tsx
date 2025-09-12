@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/authApi';
 import { authChanged } from '../hooks/useAuthStatus';
@@ -6,23 +6,28 @@ import { authChanged } from '../hooks/useAuthStatus';
 export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+
     setEmailError(null);
     setPasswordError(null);
     setLoading(true);
 
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password;
+
     try {
-      const account = await login(email, password);
+      const account = await login(trimmedEmail, trimmedPassword);
 
       const username =
-        (account as any)?.name ??
-        (account as any)?.data?.name ??
+        account?.name ??
         (JSON.parse(localStorage.getItem('user') || 'null')?.name as
           | string
           | undefined) ??
@@ -35,9 +40,9 @@ export function LoginPage() {
       authChanged();
       alert('Login successful!');
       navigate(username ? `/profile/${encodeURIComponent(username)}` : '/');
-    } catch (error: unknown) {
-      console.error('Login failed:', error);
-      const message = (error as Error)?.message?.toLowerCase() ?? '';
+    } catch (unknownError: unknown) {
+      console.error('Login failed:', unknownError);
+      const message = (unknownError as Error)?.message?.toLowerCase() ?? '';
       if (message.includes('invalid')) {
         setEmailError('Invalid email or password');
         setPasswordError('Invalid email or password');
@@ -67,8 +72,8 @@ export function LoginPage() {
               type="email"
               required
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
+              onChange={(event) => {
+                setEmail(event.target.value);
                 if (emailError) setEmailError(null);
               }}
               disabled={loading}
@@ -98,8 +103,8 @@ export function LoginPage() {
               type="password"
               required
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
+              onChange={(event) => {
+                setPassword(event.target.value);
                 if (passwordError) setPasswordError(null);
               }}
               disabled={loading}

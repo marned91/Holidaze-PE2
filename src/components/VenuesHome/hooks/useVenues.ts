@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { doFetch } from '../../../api/doFetch';
-import { API_VENUES } from '../../../api/endpoints';
+import { listVenues } from '../../../api/venues';
 import { type TVenue } from '../../../types/venues';
 
 export type UseVenuesResult = {
@@ -25,26 +24,23 @@ export function useVenues(limit = 50): UseVenuesResult {
         setError(null);
 
         try {
-          const responseData = await doFetch<TVenue[]>(
-            `${API_VENUES}?limit=${limit}&_bookings=true`,
-            { method: 'GET', auth: false }
-          );
-
+          const fetched = await listVenues(limit);
           if (!isComponentActive) return;
 
-          const venuesSortedByNewest = (responseData ?? []).sort(
+          // sorter uten å mutere originalen
+          const venuesSortedByNewest = [...fetched].sort(
             (venueA, venueB) =>
               new Date(venueB.created).getTime() -
               new Date(venueA.created).getTime()
           );
 
           setVenues(venuesSortedByNewest);
-        } catch (caughtError: any) {
+        } catch (unknownError: unknown) {
           if (isComponentActive) {
-            setError(
-              caughtError?.message ??
-                'Failed to load venues, please reload the page'
-            );
+            const message =
+              (unknownError as Error)?.message ??
+              'Failed to load venues, please reload the page';
+            setError(message);
           }
         } finally {
           if (isComponentActive) setLoading(false);
@@ -52,7 +48,6 @@ export function useVenues(limit = 50): UseVenuesResult {
       }
 
       fetchVenues();
-
       return () => {
         isComponentActive = false;
       };

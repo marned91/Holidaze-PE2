@@ -1,6 +1,6 @@
-type SortOrder = 'newest' | 'oldest' | 'priceLow' | 'priceHigh';
+export type SortOrder = 'newest' | 'oldest' | 'priceLow' | 'priceHigh';
 
-type VenuesSortProps = {
+type VenueSortProps = {
   sortOrder: SortOrder;
   onChange: (nextSortOrder: SortOrder) => void;
   disabled?: boolean;
@@ -10,11 +10,14 @@ export function VenueSort({
   sortOrder,
   onChange,
   disabled = false,
-}: VenuesSortProps) {
+}: VenueSortProps) {
+  const selectId = 'venue-sort';
+
   return (
-    <label className="text-sm text-gray-700 inline-flex items-center gap-2">
-      Sort by:
+    <div className="inline-flex items-center gap-2 text-sm text-gray-700">
+      <label htmlFor={selectId}>Sort by:</label>
       <select
+        id={selectId}
         value={sortOrder}
         onChange={(event) => onChange(event.target.value as SortOrder)}
         disabled={disabled}
@@ -25,6 +28,6 @@ export function VenueSort({
         <option value="priceLow">Price: low to high</option>
         <option value="priceHigh">Price: high to low</option>
       </select>
-    </label>
+    </div>
   );
 }

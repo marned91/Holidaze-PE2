@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { DateRangeFields } from '../Common/DateRangeFields';
+import { FaTimes } from 'react-icons/fa';
+import { formatYmdAsDot } from '../../utils/date';
 
 export type DateRange = {
   startDate?: string;
@@ -42,14 +44,26 @@ export function VenuesFilters({
 
   const cityList = useMemo(() => cities.filter(Boolean), [cities]);
 
+  // ---- Helpers ----
+  function openOnly(which: 'city' | 'guests' | 'dates') {
+    setIsCityOpen(which === 'city');
+    setIsGuestsOpen(which === 'guests');
+    setIsDatesOpen(which === 'dates');
+  }
+  function closeAll() {
+    setIsCityOpen(false);
+    setIsGuestsOpen(false);
+    setIsDatesOpen(false);
+  }
+
   function applyCity() {
     onCityChange(cityDraft || null);
-    setIsCityOpen(false);
+    closeAll();
   }
   function clearCity() {
     setCityDraft(null);
     onCityChange(null);
-    setIsCityOpen(false);
+    closeAll();
   }
 
   function applyGuests() {
@@ -58,12 +72,12 @@ export function VenuesFilters({
     onMinGuestsChange(
       Number.isFinite(parsed as number) ? (parsed as number) : null
     );
-    setIsGuestsOpen(false);
+    closeAll();
   }
   function clearGuests() {
     setGuestsDraft('');
     onMinGuestsChange(null);
-    setIsGuestsOpen(false);
+    closeAll();
   }
 
   function applyDates() {
@@ -71,54 +85,89 @@ export function VenuesFilters({
       startDate: startDraft || undefined,
       endDate: endDraft || undefined,
     });
-    setIsDatesOpen(false);
+    closeAll();
   }
   function clearDates() {
     setStartDraft('');
     setEndDraft('');
     onDateRangeChange({ startDate: undefined, endDate: undefined });
-    setIsDatesOpen(false);
+    closeAll();
   }
 
+  // ---- Labels inside buttons ----
+  const cityLabel = selectedCity ? `Where: ${selectedCity}` : 'Where to?';
+  const guestsLabel = minGuests != null ? `Guests: ${minGuests}` : 'How many?';
+  const datesLabel =
+    dateRange.startDate || dateRange.endDate
+      ? `Dates: ${formatYmdAsDot(dateRange.startDate) || '…'} → ${
+          formatYmdAsDot(dateRange.endDate) || '…'
+        }`
+      : 'Dates';
+
+  // ---- Styles ----
+  const baseButton =
+    'relative inline-flex items-center gap-3 rounded-full border px-4 py-2 shadow-sm transition-colors';
+  const inactiveButton = `${baseButton} border-gray-300 bg-white hover:bg-gray-50`;
+  const activeButton = `${baseButton} border-gray-400 bg-gray-50`;
+
   return (
-    <div className="mx-auto max-w-6xl px-4 mb-4">
+    <div className="mx-auto mb-4 max-w-6xl px-4">
       <div className="relative flex flex-wrap gap-3">
-        <div className="relative">
+        {/* City */}
+        <div className="relative inline-block">
           <button
             type="button"
             onClick={() => {
               const willOpen = !isCityOpen;
-              setIsCityOpen(willOpen);
-              setIsGuestsOpen(false);
-              setIsDatesOpen(false);
               if (willOpen) setCityDraft(selectedCity ?? null);
+              openOnly(willOpen ? 'city' : 'dates');
+              if (!willOpen) closeAll();
             }}
-            className="rounded-full border border-gray-300 bg-white px-4 py-2 shadow-sm hover:bg-gray-50"
+            className={selectedCity ? activeButton : inactiveButton}
+            aria-haspopup="dialog"
+            aria-expanded={isCityOpen}
           >
-            {selectedCity ? `Where: ${selectedCity}` : 'Where to?'}
+            <span>{cityLabel}</span>
+
+            {selectedCity && (
+              <button
+                type="button"
+                aria-label="Clear city filter"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  clearCity();
+                }}
+                className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100"
+              >
+                <FaTimes className="h-3 w-3" />
+              </button>
+            )}
           </button>
+
           {isCityOpen && (
             <div className="absolute z-10 mt-2 w-64 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
               <div className="max-h-60 overflow-auto">
                 <button
                   type="button"
                   onClick={() => setCityDraft(null)}
-                  className={`mb-2 w-full text-left rounded-md px-2 py-1 ${
+                  className={`mb-2 w-full rounded-md px-2 py-1 text-left ${
                     cityDraft == null ? 'bg-gray-100' : 'hover:bg-gray-50'
                   }`}
                 >
                   All Norway
                 </button>
-                {cityList.map((city) => (
+                {cityList.map((cityName) => (
                   <button
-                    key={city}
+                    key={cityName}
                     type="button"
-                    onClick={() => setCityDraft(city)}
-                    className={`mb-1 w-full text-left rounded-md px-2 py-1 ${
-                      cityDraft === city ? 'bg-gray-100' : 'hover:bg-gray-50'
+                    onClick={() => setCityDraft(cityName)}
+                    className={`mb-1 w-full rounded-md px-2 py-1 text-left ${
+                      cityDraft === cityName
+                        ? 'bg-gray-100'
+                        : 'hover:bg-gray-50'
                     }`}
                   >
-                    {city}
+                    {cityName}
                   </button>
                 ))}
               </div>
@@ -142,27 +191,43 @@ export function VenuesFilters({
           )}
         </div>
 
-        <div className="relative">
+        {/* Guests */}
+        <div className="relative inline-block">
           <button
             type="button"
             onClick={() => {
               const willOpen = !isGuestsOpen;
-              setIsGuestsOpen(willOpen);
-              setIsCityOpen(false);
-              setIsDatesOpen(false);
               if (willOpen)
                 setGuestsDraft(minGuests != null ? String(minGuests) : '');
+              openOnly(willOpen ? 'guests' : 'dates');
+              if (!willOpen) closeAll();
             }}
-            className="rounded-full border border-gray-300 bg-white px-4 py-2 shadow-sm hover:bg-gray-50"
+            className={minGuests != null ? activeButton : inactiveButton}
+            aria-haspopup="dialog"
+            aria-expanded={isGuestsOpen}
           >
-            {minGuests != null ? `Guests: ${minGuests}` : 'How many?'}
+            <span>{guestsLabel}</span>
+
+            {minGuests != null && (
+              <button
+                type="button"
+                aria-label="Clear guests filter"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  clearGuests();
+                }}
+                className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100"
+              >
+                <FaTimes className="h-3 w-3" />
+              </button>
+            )}
           </button>
 
           {isGuestsOpen && (
             <div className="absolute z-10 mt-2 w-56 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
               <label
                 htmlFor="guests-input"
-                className="block text-sm text-gray-700 mb-1"
+                className="mb-1 block text-sm text-gray-700"
               >
                 Minimum guests
               </label>
@@ -196,26 +261,42 @@ export function VenuesFilters({
           )}
         </div>
 
-        <div className="relative">
+        {/* Dates */}
+        <div className="relative inline-block">
           <button
             type="button"
             onClick={() => {
               const willOpen = !isDatesOpen;
-              setIsDatesOpen(willOpen);
-              setIsCityOpen(false);
-              setIsGuestsOpen(false);
               if (willOpen) {
                 setStartDraft(dateRange.startDate ?? '');
                 setEndDraft(dateRange.endDate ?? '');
               }
+              openOnly(willOpen ? 'dates' : 'city');
+              if (!willOpen) closeAll();
             }}
-            className="rounded-full border border-gray-300 bg-white px-4 py-2 shadow-sm hover:bg-gray-50"
+            className={
+              dateRange.startDate || dateRange.endDate
+                ? activeButton
+                : inactiveButton
+            }
+            aria-haspopup="dialog"
+            aria-expanded={isDatesOpen}
           >
-            {dateRange.startDate || dateRange.endDate
-              ? `Dates: ${dateRange.startDate ?? '…'} → ${
-                  dateRange.endDate ?? '…'
-                }`
-              : 'Select dates'}
+            <span>{datesLabel}</span>
+
+            {(dateRange.startDate || dateRange.endDate) && (
+              <button
+                type="button"
+                aria-label="Clear dates filter"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  clearDates();
+                }}
+                className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100"
+              >
+                <FaTimes className="h-3 w-3" />
+              </button>
+            )}
           </button>
 
           {isDatesOpen && (

@@ -46,10 +46,11 @@ export function VenuePage() {
       setLoading(true);
       setLoadError(null);
       try {
-        const data = await getVenue(venueId, { bookings: true, owner: true });
+        const data = await getVenue(venueId); // ✅ ikke send options her
         if (isActive) setVenue(data ?? null);
-      } catch (error) {
-        const message = (error as Error)?.message ?? 'Failed to load venue';
+      } catch (unknownError: unknown) {
+        const message =
+          (unknownError as Error)?.message ?? 'Failed to load venue';
         if (isActive) setLoadError(message);
       } finally {
         if (isActive) setLoading(false);
@@ -63,7 +64,7 @@ export function VenuePage() {
   }, [venueId]);
 
   const carouselImages = useMemo(
-    () => (venue?.media ?? []).filter((item) => Boolean(item?.url)),
+    () => (venue?.media ?? []).filter((mediaItem) => Boolean(mediaItem?.url)),
     [venue]
   );
 
@@ -96,8 +97,9 @@ export function VenuePage() {
       const created = await createBooking(payload);
       setCreatedBookingId(created.id);
       setModalView('confirmed');
-    } catch (error) {
-      const message = (error as Error)?.message ?? 'Failed to create booking';
+    } catch (unknownError: unknown) {
+      const message =
+        (unknownError as Error)?.message ?? 'Failed to create booking';
       setSubmitError(message);
     } finally {
       setSubmitting(false);

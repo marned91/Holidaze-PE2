@@ -27,11 +27,17 @@ export function VenueInformation({
   description,
   facilities,
 }: VenueInformationProps) {
-  const hasAnyFacility =
-    !!facilities?.wifi ||
-    !!facilities?.parking ||
-    !!facilities?.breakfast ||
-    !!facilities?.pets;
+  const hasAnyFacility = !!(
+    facilities?.wifi ||
+    facilities?.parking ||
+    facilities?.breakfast ||
+    facilities?.pets
+  );
+
+  const ratingText =
+    typeof rating === 'number' && Number.isFinite(rating)
+      ? rating.toFixed(1)
+      : null;
 
   return (
     <section>
@@ -39,21 +45,21 @@ export function VenueInformation({
 
       <div className="mt-4 flex flex-wrap items-center gap-4 text-gray-700">
         <span className="flex items-center font-text">
-          <FaMapMarkerAlt className="mr-2 text-main-light" />
+          <FaMapMarkerAlt aria-hidden className="mr-2 text-main-light" />
           {locationText || 'Location'}
         </span>
 
-        {typeof maxGuests === 'number' && (
+        {typeof maxGuests === 'number' && Number.isFinite(maxGuests) && (
           <span className="flex items-center font-text">
-            <FaUser className="mr-2 text-main-light" />
+            <FaUser aria-hidden className="mr-2 text-main-light" />
             {getGuestsText(maxGuests)}
           </span>
         )}
 
-        {typeof rating === 'number' && (
+        {ratingText && (
           <span className="flex items-center font-text">
-            <FaStar className="mr-2 text-main-light" />
-            {rating.toFixed(1)}
+            <FaStar aria-hidden className="mr-2 text-main-light" />
+            {ratingText}
           </span>
         )}
       </div>
@@ -76,35 +82,36 @@ export function VenueInformation({
         <h3 className="text-2xl font-medium font-small-nav-footer">
           Facilities
         </h3>
+
         {hasAnyFacility ? (
           <ul className="mt-5 grid grid-cols-2 gap-2 text-gray-800 sm:grid-cols-3 my-5">
             {facilities?.wifi && (
               <li className="inline-flex items-center gap-2 font-text">
-                <FaWifi className="text-main-light" />
+                <FaWifi aria-hidden className="text-main-light" />
                 Wi-Fi
               </li>
             )}
             {facilities?.parking && (
               <li className="inline-flex items-center gap-2 font-text">
-                <FaParking className="text-main-light" />
+                <FaParking aria-hidden className="text-main-light" />
                 Parking
               </li>
             )}
             {facilities?.breakfast && (
               <li className="inline-flex items-center gap-2 font-text">
-                <FaCoffee className="text-main-light" />
+                <FaCoffee aria-hidden className="text-main-light" />
                 Breakfast
               </li>
             )}
             {facilities?.pets && (
               <li className="inline-flex items-center gap-2 font-text">
-                <FaDog className="text-main-light" />
+                <FaDog aria-hidden className="text-main-light" />
                 Pets
               </li>
             )}
           </ul>
         ) : (
-          <p className="mt-2 text-gray-600 font-text italic my-5">
+          <p className="mt-2 my-5 text-gray-600 font-text italic">
             No facilities listed
           </p>
         )}

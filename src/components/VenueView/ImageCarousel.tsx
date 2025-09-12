@@ -10,34 +10,45 @@ type ImageCarouselProps = {
 };
 
 export function ImageCarousel({ images = [] }: ImageCarouselProps) {
-  const slides = Array.isArray(images) ? images.filter((i) => !!i?.url) : [];
-  const count = slides.length;
-  const [index, setIndex] = useState(0);
+  const slides = Array.isArray(images)
+    ? images.filter((item) => Boolean(item?.url))
+    : [];
 
-  useEffect(() => setIndex(0), [count]);
+  const slideCount = slides.length;
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const hasMany = count > 1;
-  const next = () => hasMany && setIndex((i) => (i + 1) % count);
-  const prev = () => hasMany && setIndex((i) => (i - 1 + count) % count);
+  useEffect(() => setActiveIndex(0), [slideCount]);
+
+  const hasMultiple = slideCount > 1;
+
+  function goToNext() {
+    if (!hasMultiple) return;
+    setActiveIndex((current) => (current + 1) % slideCount);
+  }
+
+  function goToPrevious() {
+    if (!hasMultiple) return;
+    setActiveIndex((current) => (current - 1 + slideCount) % slideCount);
+  }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (!hasMany) return;
+    if (!hasMultiple) return;
     if (event.key === 'ArrowLeft') {
       event.preventDefault();
-      prev();
+      goToPrevious();
     } else if (event.key === 'ArrowRight') {
       event.preventDefault();
-      next();
+      goToNext();
     }
   }
 
-  if (count === 0) {
+  if (slideCount === 0) {
     return (
       <div className="relative overflow-hidden rounded-2xl">
         <div className="aspect-[21/9] w-full">
           <img
             src={PlaceholderImage}
-            alt="No images available"
+            alt="No images available (placeholder)"
             className="h-full w-full object-cover"
           />
         </div>
@@ -53,15 +64,14 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
       aria-roledescription="carousel"
       aria-label="Venue images"
     >
-      {/* Slides with fade transition */}
       <div className="relative aspect-[21/9] w-full bg-gray-100">
-        {slides.map((img, i) => (
+        {slides.map((imageItem, indexNumber) => (
           <img
-            key={`${img.url}-${i}`}
-            src={img.url}
-            alt={img.alt ?? 'Venue image'}
+            key={`${imageItem.url}-${indexNumber}`}
+            src={imageItem.url as string}
+            alt={imageItem.alt ?? 'Venue image'}
             className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-out ${
-              i === index ? 'opacity-100' : 'opacity-0'
+              indexNumber === activeIndex ? 'opacity-100' : 'opacity-0'
             }`}
             draggable={false}
             loading="lazy"
@@ -71,11 +81,11 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/35 to-transparent" />
       </div>
 
-      {hasMany && (
+      {hasMultiple && (
         <>
           <button
             type="button"
-            onClick={prev}
+            onClick={goToPrevious}
             className="absolute left-3 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full
                        bg-white/80 backdrop-blur-sm shadow-md ring-1 ring-black/5 transition
                        hover:bg-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-highlight
@@ -86,7 +96,7 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
           </button>
           <button
             type="button"
-            onClick={next}
+            onClick={goToNext}
             className="absolute right-3 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full
                        bg-white/80 backdrop-blur-sm shadow-md ring-1 ring-black/5 transition
                        hover:bg-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-highlight
@@ -96,16 +106,15 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
             <FaChevronRight className="text-gray-800" />
           </button>
 
-          {/* Dots */}
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/35 px-2 py-1">
-            {slides.map((_, i) => (
+            {slides.map((_, indexNumber) => (
               <button
-                key={i}
+                key={indexNumber}
                 type="button"
-                onClick={() => setIndex(i)}
-                aria-label={`Go to image ${i + 1}`}
+                onClick={() => setActiveIndex(indexNumber)}
+                aria-label={`Go to image ${indexNumber + 1}`}
                 className={`h-1.5 rounded-full transition-all ${
-                  i === index
+                  indexNumber === activeIndex
                     ? 'w-6 bg-white'
                     : 'w-2.5 bg-white/60 hover:bg-white/80'
                 }`}

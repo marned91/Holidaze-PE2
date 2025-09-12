@@ -1,9 +1,8 @@
 import { useId } from 'react';
 import type { TDateRange } from '../../types/date';
-import { todayYmd } from '../../utils/dateRange';
-import { parseDotToISO, formatDotFromISO } from '../../utils/date';
+import { todayYmd, parseDotToISO, formatDotFromISO } from '../../utils/date';
 
-type props = {
+type DateRangeFieldsProps = {
   value: TDateRange;
   onChange: (next: TDateRange) => void;
   className?: string;
@@ -19,72 +18,100 @@ export function DateRangeFields({
   variant = 'native',
   labelFrom = 'From',
   labelTo = 'To',
-}: props) {
-  const startId = useId();
-  const endId = useId();
+}: DateRangeFieldsProps) {
+  const startInputId = useId();
+  const endInputId = useId();
 
   const today = todayYmd();
   const startMin = today;
-  const endMin = value.startDate || today;
+  const endMin = value.startDate ?? today;
+  const startMax = value.endDate ?? undefined;
 
   return (
     <div className={className ?? ''}>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
-          <label htmlFor={startId} className="mb-1 block text-sm text-gray-700">
+          <label
+            htmlFor={startInputId}
+            className="mb-1 block text-sm text-gray-700"
+          >
             {labelFrom}
           </label>
+
           {variant === 'native' ? (
             <input
-              id={startId}
+              id={startInputId}
+              name="startDate"
               type="date"
               value={value.startDate ?? ''}
               min={startMin}
-              onChange={(e) =>
-                onChange({ ...value, startDate: e.target.value || undefined })
+              max={startMax}
+              onChange={(event) =>
+                onChange({
+                  ...value,
+                  startDate: event.target.value || undefined,
+                })
               }
               className="w-full rounded-md border bg-gray-100 border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight"
             />
           ) : (
             <input
-              id={startId}
+              id={startInputId}
+              name="startDate"
               type="text"
               inputMode="numeric"
               placeholder="dd.mm.yyyy"
               value={formatDotFromISO(value.startDate)}
-              onChange={(e) =>
-                onChange({ ...value, startDate: parseDotToISO(e.target.value) })
+              onChange={(event) =>
+                onChange({
+                  ...value,
+                  startDate: parseDotToISO(event.target.value),
+                })
               }
+              // Optional: let the browser show a hint for the expected format
+              pattern="^\d{1,2}\.\d{1,2}\.\d{4}$"
+              title="Use format dd.mm.yyyy"
               className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight"
             />
           )}
         </div>
 
         <div>
-          <label htmlFor={endId} className="mb-1 block text-sm text-gray-700">
+          <label
+            htmlFor={endInputId}
+            className="mb-1 block text-sm text-gray-700"
+          >
             {labelTo}
           </label>
+
           {variant === 'native' ? (
             <input
-              id={endId}
+              id={endInputId}
+              name="endDate"
               type="date"
               value={value.endDate ?? ''}
               min={endMin}
-              onChange={(e) =>
-                onChange({ ...value, endDate: e.target.value || undefined })
+              onChange={(event) =>
+                onChange({ ...value, endDate: event.target.value || undefined })
               }
               className="w-full rounded-md border bg-gray-100 border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight"
             />
           ) : (
             <input
-              id={endId}
+              id={endInputId}
+              name="endDate"
               type="text"
               inputMode="numeric"
               placeholder="dd.mm.yyyy"
               value={formatDotFromISO(value.endDate)}
-              onChange={(e) =>
-                onChange({ ...value, endDate: parseDotToISO(e.target.value) })
+              onChange={(event) =>
+                onChange({
+                  ...value,
+                  endDate: parseDotToISO(event.target.value),
+                })
               }
+              pattern="^\d{1,2}\.\d{1,2}\.\d{4}$"
+              title="Use format dd.mm.yyyy"
               className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight"
             />
           )}

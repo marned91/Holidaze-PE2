@@ -32,13 +32,22 @@ export function SignUpPage() {
     setAvatarUrlError(null);
     setLoading(true);
 
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedAvatarUrl = avatarUrl.trim();
+
     const payload: TRegisterData = {
-      name: name.trim(),
-      email: email.trim(),
+      name: trimmedName,
+      email: trimmedEmail,
       password,
       venueManager: accountType === 'venueManager',
-      ...(avatarUrl.trim()
-        ? { avatar: { url: avatarUrl.trim(), alt: `${name || 'User'} avatar` } }
+      ...(trimmedAvatarUrl
+        ? {
+            avatar: {
+              url: trimmedAvatarUrl,
+              alt: `${trimmedName || 'User'} avatar`,
+            },
+          }
         : {}),
     };
 
@@ -46,12 +55,15 @@ export function SignUpPage() {
       await register(payload);
       alert('Account created - welcome!');
       navigate('/login');
-    } catch (error: any) {
-      console.error('Registration failed:', error);
+    } catch (unknownError: unknown) {
+      console.error('Registration failed:', unknownError);
 
-      const fieldErrors = error?.fieldErrors as
-        | TRegisterFieldErrors
-        | undefined;
+      const message = (unknownError as Error)?.message || 'Registration failed';
+      const fieldErrors = (
+        unknownError as Error & {
+          fieldErrors?: TRegisterFieldErrors;
+        }
+      )?.fieldErrors;
 
       if (fieldErrors) {
         if (fieldErrors.name) setNameError(fieldErrors.name);
@@ -59,7 +71,7 @@ export function SignUpPage() {
         if (fieldErrors.password) setPasswordError(fieldErrors.password);
         if (fieldErrors.avatarUrl) setAvatarUrlError(fieldErrors.avatarUrl);
       } else {
-        alert(error?.message || 'Registration failed. Please try again.');
+        alert(message);
       }
     } finally {
       setLoading(false);
@@ -208,7 +220,7 @@ export function SignUpPage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-mdtext-gray-700 mb-1 font-text"
+              className="block text-md text-gray-700 mb-1 font-text"
             >
               Password
             </label>

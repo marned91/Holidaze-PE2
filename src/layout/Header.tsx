@@ -5,7 +5,7 @@ import { FaBars, FaUser } from 'react-icons/fa';
 import { logout } from '../api/authApi';
 import { useAuthStatus } from '../hooks/useAuthStatus';
 
-function getProfileHref(): string {
+function getProfileUrl(): string {
   const stored = localStorage.getItem('username');
   return stored ? `/profile/${encodeURIComponent(stored)}` : '/login';
 }
@@ -13,7 +13,6 @@ function getProfileHref(): string {
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-
   const { isLoggedIn } = useAuthStatus();
 
   function handleLogout() {
@@ -22,6 +21,8 @@ export function Header() {
     setMenuOpen(false);
     navigate('/');
   }
+
+  const menuId = 'primary-mobile-menu';
 
   return (
     <header className="w-full bg-main-light">
@@ -41,7 +42,7 @@ export function Header() {
                       <NavLink
                         to="/signup"
                         className={({ isActive }) =>
-                          `uppercase text-white hover:border px-3 py-2 rounded-lg bg-white/20 font-medium ${
+                          `uppercase text-white px-3 py-2 rounded-lg bg-white/20 font-medium hover:ring-1 hover:ring-white/60 ${
                             isActive ? 'ring-2 ring-white/60' : ''
                           }`
                         }
@@ -53,7 +54,7 @@ export function Header() {
                       <NavLink
                         to="/login"
                         className={({ isActive }) =>
-                          `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:border text-white ${
+                          `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 ${
                             isActive ? 'ring-2 ring-white/60' : ''
                           }`
                         }
@@ -70,14 +71,14 @@ export function Header() {
                       <button
                         type="button"
                         onClick={handleLogout}
-                        className="uppercase text-white hover:ring-1 px-3 py-2 rounded-lg bg-white/20 font-medium"
+                        className="uppercase text-white px-3 py-2 rounded-lg bg-white/20 font-medium hover:ring-1 hover:ring-white/60"
                       >
                         Log out
                       </button>
                     </li>
                     <li>
                       <NavLink
-                        to={getProfileHref()}
+                        to={getProfileUrl()}
                         className={({ isActive }) =>
                           `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 ${
                             isActive ? 'ring-2 ring-white/60' : ''
@@ -118,6 +119,8 @@ export function Header() {
           <button
             onClick={() => setMenuOpen((previous) => !previous)}
             aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+            aria-controls={menuId}
             className="text-white"
           >
             <FaBars className="text-lg" />
@@ -143,7 +146,7 @@ export function Header() {
             </NavLink>
           ) : (
             <NavLink
-              to={getProfileHref()}
+              to={getProfileUrl()}
               className={({ isActive }) =>
                 `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 ${
                   isActive ? 'ring-2 ring-white/60' : ''
@@ -159,7 +162,7 @@ export function Header() {
         </div>
 
         {menuOpen && (
-          <div className="mt-4 space-y-3">
+          <div id={menuId} className="mt-4 space-y-3">
             {!isLoggedIn ? (
               <>
                 <NavLink
