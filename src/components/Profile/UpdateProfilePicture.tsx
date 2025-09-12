@@ -87,27 +87,29 @@ export function UpdateProfilePicture({
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-medium">Image URL</label>
+          <label className="mb-1 block text-sm font-medium font-text">
+            Image URL
+          </label>
           <input
             type="url"
             inputMode="url"
             placeholder="https://..."
             value={url}
             onChange={handleUrlChange}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-main-dark"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight font-text"
             aria-invalid={!!error && !url.trim()}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium">
+          <label className="mb-1 block text-sm font-medium font-text">
             Alt text (optional)
           </label>
           <input
             type="text"
             value={alt}
             onChange={handleAltChange}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-main-dark"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight font-text"
           />
         </div>
 
@@ -117,14 +119,14 @@ export function UpdateProfilePicture({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full border border-gray-300 px-4 py-2"
+            className="rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer font-medium-buttons"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-full bg-main-dark px-5 py-2 text-white disabled:opacity-60"
+            className="rounded-lg bg-main-dark px-5 py-2 text-white disabled:opacity-60 hover:bg-dark-highlight cursor-pointer font-medium-buttons"
           >
             {isSubmitting ? 'Saving…' : 'Save'}
           </button>

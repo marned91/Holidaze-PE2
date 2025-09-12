@@ -52,7 +52,7 @@ export function Modal({
           )}
           <button
             onClick={onClose}
-            className="rounded-lg px-3 py-2 text-2xl leading-none hover:bg-gray-100"
+            className="rounded-lg px-3 py-2 text-2xl leading-none hover:bg-gray-100 cursor-pointer"
             aria-label="Close"
           >
             ×
