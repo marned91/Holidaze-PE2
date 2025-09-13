@@ -25,7 +25,7 @@ export async function login(email: string, password: string) {
   return data;
 }
 
-export async function register(userData: TRegisterData) {
+export async function registerAccount(userData: TRegisterData) {
   const body = JSON.stringify(userData);
 
   try {
