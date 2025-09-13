@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { DateRangeFields } from '../Common/DateRangeFields';
 import { FaTimes } from 'react-icons/fa';
-import { formatYmdAsDot } from '../../utils/date';
+import { formatDotFromISO } from '../../utils/date';
 
 export type DateRange = {
   startDate?: string;
@@ -44,7 +44,6 @@ export function VenuesFilters({
 
   const cityList = useMemo(() => cities.filter(Boolean), [cities]);
 
-  // ---- Helpers ----
   function openOnly(which: 'city' | 'guests' | 'dates') {
     setIsCityOpen(which === 'city');
     setIsGuestsOpen(which === 'guests');
@@ -94,17 +93,15 @@ export function VenuesFilters({
     closeAll();
   }
 
-  // ---- Labels inside buttons ----
   const cityLabel = selectedCity ? `Where: ${selectedCity}` : 'Where to?';
   const guestsLabel = minGuests != null ? `Guests: ${minGuests}` : 'How many?';
   const datesLabel =
     dateRange.startDate || dateRange.endDate
-      ? `Dates: ${formatYmdAsDot(dateRange.startDate) || '…'} → ${
-          formatYmdAsDot(dateRange.endDate) || '…'
+      ? `Dates: ${formatDotFromISO(dateRange.startDate) || '…'} → ${
+          formatDotFromISO(dateRange.endDate) || '…'
         }`
       : 'Dates';
 
-  // ---- Styles ----
   const baseButton =
     'relative inline-flex items-center gap-3 rounded-full border px-4 py-2 shadow-sm transition-colors';
   const inactiveButton = `${baseButton} border-gray-300 bg-white hover:bg-gray-50`;
@@ -113,7 +110,6 @@ export function VenuesFilters({
   return (
     <div className="mx-auto mb-4 max-w-6xl px-4">
       <div className="relative flex flex-wrap gap-3">
-        {/* City */}
         <div className="relative inline-block">
           <button
             type="button"
@@ -191,7 +187,6 @@ export function VenuesFilters({
           )}
         </div>
 
-        {/* Guests */}
         <div className="relative inline-block">
           <button
             type="button"
@@ -261,7 +256,6 @@ export function VenuesFilters({
           )}
         </div>
 
-        {/* Dates */}
         <div className="relative inline-block">
           <button
             type="button"
