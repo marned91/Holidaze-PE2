@@ -23,6 +23,7 @@ const signUpSchema: yup.ObjectSchema<SignUpFormValues> = yup
     name: yup
       .string()
       .required('Name is required')
+      .max(20, 'Name cannot be greater than 20 characters')
       .matches(
         /^[A-Za-z0-9_ ]+$/,
         'Only letters, numbers, spaces, and underscore are allowed'
@@ -96,13 +97,26 @@ export function SignUpPage() {
         | undefined;
 
       if (fieldErrorsLoose) {
-        const fe = fieldErrorsLoose as Record<string, string>;
-        if (fe.name) setError('name', { type: 'server', message: fe.name });
-        if (fe.email) setError('email', { type: 'server', message: fe.email });
-        if (fe.password)
-          setError('password', { type: 'server', message: fe.password });
-        if (fe.avatarUrl)
-          setError('avatarUrl', { type: 'server', message: fe.avatarUrl });
+        const fieldErrors = fieldErrorsLoose as Record<string, string>;
+
+        if (fieldErrors.name) {
+          setError('name', { type: 'server', message: fieldErrors.name });
+        }
+        if (fieldErrors.email) {
+          setError('email', { type: 'server', message: fieldErrors.email });
+        }
+        if (fieldErrors.password) {
+          setError('password', {
+            type: 'server',
+            message: fieldErrors.password,
+          });
+        }
+        if (fieldErrors.avatarUrl) {
+          setError('avatarUrl', {
+            type: 'server',
+            message: fieldErrors.avatarUrl,
+          });
+        }
       } else {
         alert((unknownError as Error)?.message || 'Registration failed.');
       }
@@ -221,6 +235,7 @@ export function SignUpPage() {
             <input
               id="name"
               type="text"
+              maxLength={20}
               disabled={isSubmitting}
               aria-invalid={!!errors.name}
               {...registerField('name')}
