@@ -105,8 +105,8 @@ export function Header() {
               </label>
               <input
                 id="site-search-desktop"
-                placeholder="Search"
-                className="w-full rounded-xl bg-white px-4 py-1.5 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
+                placeholder="Search venues..."
+                className="w-full rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
               />
             </form>
           </div>

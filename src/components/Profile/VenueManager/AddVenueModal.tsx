@@ -279,8 +279,7 @@ export function AddVenueModal({
           )}
         </div>
 
-        {/* Price + Guests (dropdown) */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 pt-4">
           {/* Price per night */}
           <div>
             <label className="mb-1 block text-sm font-medium font-text">
@@ -340,7 +339,7 @@ export function AddVenueModal({
           </div>
         </div>
 
-        <div>
+        <div className="pb-4">
           <label className="mb-1 block text-sm font-medium font-text">
             City (Norway)
           </label>
@@ -364,7 +363,7 @@ export function AddVenueModal({
           </p>
         </div>
 
-        <fieldset className="mt-2">
+        <fieldset className="mt-2 pb-4">
           <legend className="mb-2 text-sm font-medium font-text">
             Facilities (optional)
           </legend>
@@ -415,7 +414,7 @@ export function AddVenueModal({
           <button
             type="submit"
             disabled={isSubmitting || !isValid}
-            className="rounded-lg bg-main-dark px-5 py-2 text-white disabled:opacity-60 hover:bg-dark-highlight cursor-pointer font-medium-buttons"
+            className="rounded-lg bg-main-dark px-5 py-2 text-white disabled:opacity-80 hover:bg-dark-highlight cursor-pointer font-medium-buttons"
           >
             {isSubmitting ? 'Adding…' : 'Add venue'}
           </button>

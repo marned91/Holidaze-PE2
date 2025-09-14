@@ -136,7 +136,7 @@ export function ProfilePage() {
                     <button
                       type="button"
                       onClick={() => setAvatarOpen(true)}
-                      className="rounded-lg bg-main-dark px-4 py-2 text-white cursor-pointer hover:bg-dark-highlight font-medium-buttons"
+                      className="rounded-lg bg-highlight px-4 py-2 text-white cursor-pointer hover:bg-main-dark font-medium-buttons"
                     >
                       Update profile picture
                     </button>

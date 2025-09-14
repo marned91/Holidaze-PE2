@@ -6,11 +6,11 @@ type AddVenueCardProps = {
 
 export function AddVenueCard({ onClick }: AddVenueCardProps) {
   return (
-    <article className="overflow-hidden rounded-xl border border-gray-300 bg-white">
+    <article className="overflow-hidden rounded-xl bg-white">
       <button
         type="button"
         onClick={onClick}
-        className="group grid w-full place-items-center p-6 transition hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight"
+        className="group grid w-full place-items-center p-6 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight"
         aria-label="Add venue"
         title="Add venue"
       >
