@@ -33,3 +33,18 @@ export type TVenue = {
   };
   bookings?: TVenueBooking[];
 };
+
+export type CreateVenueInput = {
+  name: string;
+  description: string;
+  media: { url: string; alt?: string }[];
+  maxGuests: number;
+  price: number;
+  location: { city?: string; country: string };
+  meta?: {
+    wifi?: boolean;
+    parking?: boolean;
+    breakfast?: boolean;
+    pets?: boolean;
+  };
+};

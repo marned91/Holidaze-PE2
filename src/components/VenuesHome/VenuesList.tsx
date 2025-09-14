@@ -15,7 +15,7 @@ import {
 type VenuesListProps = { pageSize?: number };
 
 export function VenuesList({ pageSize = 12 }: VenuesListProps) {
-  const { venues: allVenues, loading, error: loadError } = useVenues(50);
+  const { venues: allVenues, loading, error: loadError } = useVenues(100);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
@@ -56,16 +56,16 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   }, [sortedVenues, currentPage, pageSize]);
 
   useEffect(() => {
-    setCurrentPage((previousPage) => Math.min(previousPage, totalPages));
+    setCurrentPage((prev) => Math.min(prev, totalPages));
   }, [totalPages]);
 
   function handlePreviousPage() {
-    setCurrentPage((previousPage) => Math.max(1, previousPage - 1));
+    setCurrentPage((prev) => Math.max(1, prev - 1));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handleNextPage() {
-    setCurrentPage((previousPage) => Math.min(totalPages, previousPage + 1));
+    setCurrentPage((prev) => Math.min(totalPages, prev + 1));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 

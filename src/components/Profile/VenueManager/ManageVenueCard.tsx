@@ -1,4 +1,3 @@
-// src/components/Profile/ManageVenues/ManageVenueCard.tsx
 import type { TVenue } from '../../../types/venues';
 import { formatCurrencyNOK } from '../../../utils/currency';
 import { getLocationText, getVenueImage } from '../../../utils/venue';

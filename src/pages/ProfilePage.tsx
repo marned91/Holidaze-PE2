@@ -4,6 +4,11 @@ import type { TProfile } from '../types/profiles';
 import { getProfile } from '../api/profiles';
 import { UpdateProfilePicture } from '../components/Profile/UpdateProfilePicture';
 import { ProfileTabs } from '../components/Profile/ProfileTabs';
+import type { TVenue } from '../types/venues';
+import { getVenuesByOwner } from '../api/venues';
+import { VenueManagerSection } from '../components/Profile/VenueManager/VenueManagerSection';
+import { ManagerUpcomingBookingsSection } from '../components/Profile/VenueManager/ManageUpcomingBookingsSection';
+import { AddVenueModal } from '../components/Profile/VenueManager/AddVenueModal';
 
 type ProfileTab = 'manage' | 'myBookings';
 
@@ -64,16 +69,51 @@ export function ProfilePage() {
     setProfile((prev) => (prev ? { ...prev, avatar: { url, alt } } : prev));
   }
 
+  const [addVenueOpen, setAddVenueOpen] = useState(false);
+
+  function handleVenueCreated(newVenue: TVenue) {
+    setVenues((prev) => [newVenue, ...prev]);
+    setAddVenueOpen(false);
+    // valgfritt: sørg for at vi er på "manage"-fanen
+    // setActiveTab('manage');
+  }
+
+  const [venues, setVenues] = useState<TVenue[]>([]);
+  const [venuesLoading, setVenuesLoading] = useState(false);
+  const [venuesError, setVenuesError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+    async function run() {
+      if (!profile?.venueManager || !profile?.name) return;
+      try {
+        setVenuesLoading(true);
+        setVenuesError(null);
+        const list = await getVenuesByOwner(username, { withBookings: true });
+        if (isActive) setVenues(list);
+      } catch (error) {
+        if (isActive)
+          setVenuesError((error as Error)?.message || 'Failed to load venues');
+      } finally {
+        if (isActive) setVenuesLoading(false);
+      }
+    }
+    run();
+    return () => {
+      isActive = false;
+    };
+  }, [profile]);
+
   return (
     <div className="bg-light min-h-[calc(100vh-120px)]">
-      <div className="mx-auto max-w-7xl px-4 py-8">
-        <div className="rounded-2xl bg-white p-6 shadow-xl">
+      <div className="mx-auto max-w-[85%] px-4 py-10">
+        <div className="rounded-2xl bg-white p-10 shadow-xl">
           {loading && <p>Loading profile…</p>}
           {loadError && <p className="text-red-600">{loadError}</p>}
 
           {profile && (
             <>
-              <div className="flex items-center gap-6 py-6">
+              <div className="flex items-center gap-6 p-6">
                 <div className="h-50 w-50 shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100">
                   {profile.avatar?.url ? (
                     <img
@@ -103,45 +143,30 @@ export function ProfilePage() {
                   </div>
                 </div>
               </div>
-
+              <ProfileTabs active={activeTab} onChange={setActiveTab} />
               <hr className="my-6 border-gray-200" />
-              {profile.venueManager ? (
+              {activeTab === 'manage' ? (
                 <>
-                  <ProfileTabs active={activeTab} onChange={setActiveTab} />
-                  <div className="mt-6">
-                    {activeTab === 'manage' ? (
-                      <section>
-                        <div className="mb-4 flex items-center justify-between">
-                          <h1 className="text-3xl font-medium font-large">
-                            Your Venues
-                          </h1>
-                          <button
-                            type="button"
-                            className="rounded-xl border px-4 py-2 hover:bg-gray-50 font-medium-buttons"
-                          >
-                            + Create venue
-                          </button>
-                        </div>
-                        <p className="text-sm text-gray-600">
-                          TODO: list your venues here (image, title, price per
-                          night, max guests, location).
-                        </p>
-                        <p className="mt-2 text-sm text-gray-400">
-                          Empty state: “You have no venues yet — Create venue”.
-                        </p>
-                      </section>
-                    ) : (
-                      <section>
-                        <h2 className="mb-4 text-lg font-medium">
-                          Upcoming bookings for your venues
-                        </h2>
-                        <p className="text-sm text-gray-600">
-                          TODO: show booking cards (image, title, total price,
-                          nights, customer name).
-                        </p>
-                      </section>
-                    )}
-                  </div>
+                  <VenueManagerSection
+                    venues={venues}
+                    isLoading={venuesLoading}
+                    errorMessage={venuesError}
+                    onCreateVenue={() => setAddVenueOpen(true)}
+                    onEditVenue={(venue) => {
+                      /* TODO */
+                    }}
+                    onDeleteVenue={(venue) => {
+                      /* TODO */
+                    }}
+                  />
+
+                  <hr className="my-8 border-gray-200" />
+
+                  <ManagerUpcomingBookingsSection
+                    venues={venues}
+                    isLoading={venuesLoading}
+                    errorMessage={venuesError}
+                  />
                 </>
               ) : (
                 <div className="mt-2">
@@ -159,6 +184,11 @@ export function ProfilePage() {
           onUpdated={handleAvatarUpdated}
           initialUrl={profile?.avatar?.url}
           initialAlt={profile?.avatar?.alt}
+        />
+        <AddVenueModal
+          open={addVenueOpen}
+          onClose={() => setAddVenueOpen(false)}
+          onCreated={handleVenueCreated}
         />
       </div>
     </div>

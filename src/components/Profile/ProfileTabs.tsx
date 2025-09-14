@@ -7,7 +7,7 @@ type ProfileTabsProps = {
 
 export function ProfileTabs({ active, onChange }: ProfileTabsProps) {
   return (
-    <div className="flex gap-6 border-b border-gray-200">
+    <div className="flex gap-6 pt-10">
       <button
         type="button"
         onClick={() => onChange('manage')}

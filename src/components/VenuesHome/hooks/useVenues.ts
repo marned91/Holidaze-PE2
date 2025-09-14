@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { listVenues } from '../../../api/venues';
 import { type TVenue } from '../../../types/venues';
+import { listVenuesAll } from '../../../api/venues';
 
 export type UseVenuesResult = {
   venues: TVenue[];
@@ -9,7 +9,12 @@ export type UseVenuesResult = {
   reload: () => void;
 };
 
-export function useVenues(limit = 50): UseVenuesResult {
+function isNorwegianVenue(venue: TVenue): boolean {
+  const country = (venue.location?.country || '').trim().toLowerCase();
+  return country === 'norway' || country === 'norge';
+}
+
+export function useVenues(limit = 100): UseVenuesResult {
   const [venues, setVenues] = useState<TVenue[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,14 +29,27 @@ export function useVenues(limit = 50): UseVenuesResult {
         setError(null);
 
         try {
-          const fetched = await listVenues(limit);
+          const apiVenues = await listVenuesAll({
+            limitPerPage: 100,
+            maxPages: 10,
+            withBookings: true,
+            sort: 'created',
+            sortOrder: 'desc',
+          });
           if (!isComponentActive) return;
 
-          // sorter uten å mutere originalen
-          const venuesSortedByNewest = [...fetched].sort(
-            (venueA, venueB) =>
-              new Date(venueB.created).getTime() -
-              new Date(venueA.created).getTime()
+          const norwegianOnly = (apiVenues ?? []).filter(isNorwegianVenue);
+
+          const venuesSortedByNewest = [...norwegianOnly].sort(
+            (venueA, venueB) => {
+              const aTime = new Date(
+                venueA.created || venueA.updated || 0
+              ).getTime();
+              const bTime = new Date(
+                venueB.created || venueB.updated || 0
+              ).getTime();
+              return bTime - aTime;
+            }
           );
 
           setVenues(venuesSortedByNewest);

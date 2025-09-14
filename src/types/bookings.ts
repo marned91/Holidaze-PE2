@@ -1,6 +1,6 @@
 export type TBooking = {
   id: string;
-  dateFrom: string; // ISO date string
+  dateFrom: string;
   dateTo: string;
   guests: number;
   created: string;
