@@ -105,7 +105,6 @@ export async function listVenuesPaged(options?: {
   }
 }
 
-// Hent flere sider til vi er tomme (med server-sortering)
 export async function listVenuesAll(options?: {
   limitPerPage?: number;
   maxPages?: number;
