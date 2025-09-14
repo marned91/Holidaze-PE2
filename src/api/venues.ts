@@ -73,7 +73,6 @@ export async function createVenue(input: CreateVenueInput): Promise<TVenue> {
   }
 }
 
-// Hent én side med server-sortering
 export async function listVenuesPaged(options?: {
   page?: number;
   limit?: number;
@@ -126,7 +125,7 @@ export async function listVenuesAll(options?: {
     });
     if (!batch.length) break;
     all.push(...batch);
-    if (batch.length < limitPerPage) break; // siste side
+    if (batch.length < limitPerPage) break;
   }
   return all;
 }
