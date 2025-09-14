@@ -11,7 +11,6 @@ type SignUpFormValues = {
   password: string;
   isVenueManager: boolean;
   avatarUrl: string;
-  avatarAlt: string;
 };
 
 function isNoroffStudentEmail(email?: string): boolean {
@@ -46,10 +45,6 @@ const signUpSchema: yup.ObjectSchema<SignUpFormValues> = yup
       .string()
       .required('Image URL is required')
       .url('Enter a valid URL'),
-    avatarAlt: yup
-      .string()
-      .required('Alt text is required')
-      .max(120, 'Max 120 characters'),
   })
   .required();
 
@@ -61,6 +56,7 @@ export function SignUpPage() {
     handleSubmit,
     setError,
     watch,
+    setValue,
     formState: { errors, isSubmitting, isValid },
   } = useForm<SignUpFormValues>({
     resolver: yupResolver(signUpSchema),
@@ -72,7 +68,6 @@ export function SignUpPage() {
       password: '',
       isVenueManager: false,
       avatarUrl: '',
-      avatarAlt: '',
     },
   });
 
@@ -86,7 +81,7 @@ export function SignUpPage() {
       venueManager: values.isVenueManager,
       avatar: {
         url: values.avatarUrl.trim(),
-        alt: values.avatarAlt.trim(),
+        alt: 'Holidaze profile image',
       },
     };
 
@@ -108,10 +103,6 @@ export function SignUpPage() {
           setError('password', { type: 'server', message: fe.password });
         if (fe.avatarUrl)
           setError('avatarUrl', { type: 'server', message: fe.avatarUrl });
-        if (fe.avatarAlt)
-          setError('avatarAlt', { type: 'server', message: fe.avatarAlt });
-        if (fe['avatar.alt'])
-          setError('avatarAlt', { type: 'server', message: fe['avatar.alt'] });
       } else {
         alert((unknownError as Error)?.message || 'Registration failed.');
       }
@@ -120,7 +111,7 @@ export function SignUpPage() {
 
   return (
     <main className="min-h-[calc(100vh-120px)] flex items-center justify-center bg-light px-4">
-      <section className="w-full max-w-lg bg-white rounded-lg shadow-xl p-10 my-10">
+      <section className="w-full max-w-lg bg-white rounded-lg shadow-xl p-5 md:p-10 my-10">
         <h1 className="text-3xl font-semibold text-dark mb-6 font-large">
           Create account
         </h1>
@@ -129,27 +120,71 @@ export function SignUpPage() {
           <p className="mb-2 text-sm text-gray-700 font-text">
             Select account type:
           </p>
-
-          <div className="flex items-center gap-3">
-            <label className="inline-flex items-center cursor-pointer select-none">
-              <input
-                type="checkbox"
-                role="switch"
-                aria-checked={isVenueManager}
-                aria-label="Toggle venue manager account"
-                className="sr-only peer"
-                {...registerField('isVenueManager')}
-              />
-              <span
-                className="peer-focus:ring-2 peer-focus:ring-highlight inline-flex h-7 w-12 items-center rounded-full bg-gray-300 transition
-                           after:h-6 after:w-6 after:rounded-full after:bg-white after:shadow after:transition
-                           after:translate-x-1 peer-checked:after:translate-x-5 peer-checked:bg-main-dark"
-                aria-hidden="true"
-              />
-            </label>
+          <input
+            type="checkbox"
+            className="sr-only"
+            aria-hidden="true"
+            tabIndex={-1}
+            {...registerField('isVenueManager')}
+          />
+          <div
+            role="tablist"
+            aria-label="Account type"
+            className="relative rounded-2xl border border-gray-300 bg-white shadow-sm overflow-hidden"
+          >
+            <span
+              aria-hidden="true"
+              className={`pointer-events-none absolute inset-y-0 left-0 w-1/2 rounded-2xl border-2 border-highlight transition-transform duration-200 ease-out z-0 ${
+                isVenueManager ? 'translate-x-full' : 'translate-x-0'
+              }`}
+            />
+            <div className="grid grid-cols-2">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={!isVenueManager}
+                className={`relative z-10 px-5 py-3 text-center font-medium-buttons transition
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight
+                    ${
+                      !isVenueManager
+                        ? 'text-dark font-semibold'
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                onClick={() =>
+                  setValue('isVenueManager', false, {
+                    shouldDirty: true,
+                    shouldTouch: true,
+                    shouldValidate: true,
+                  })
+                }
+              >
+                Customer
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={isVenueManager}
+                className={`relative z-10 px-5 py-3 text-center font-medium-buttons transition
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight
+                    ${
+                      isVenueManager
+                        ? 'text-dark font-semibold'
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                onClick={() =>
+                  setValue('isVenueManager', true, {
+                    shouldDirty: true,
+                    shouldTouch: true,
+                    shouldValidate: true,
+                  })
+                }
+              >
+                Venue manager
+              </button>
+            </div>
           </div>
           <div
-            className="mt-4"
+            className="mt-6"
             id="account-type-description"
             role="region"
             aria-live="polite"
@@ -201,13 +236,12 @@ export function SignUpPage() {
               </p>
             )}
           </div>
-
           <div>
             <label
               htmlFor="email"
               className="block text-md text-gray-700 mb-1 font-text"
             >
-              Email (stud.noroff.no)
+              Email
             </label>
             <input
               id="email"
@@ -228,7 +262,6 @@ export function SignUpPage() {
               </p>
             )}
           </div>
-
           <div>
             <label
               htmlFor="password"
@@ -255,7 +288,6 @@ export function SignUpPage() {
               </p>
             )}
           </div>
-
           <div>
             <label
               htmlFor="avatarUrl"
@@ -280,33 +312,6 @@ export function SignUpPage() {
             {errors.avatarUrl && (
               <p className="mt-1 text-sm text-red-600 font-text italic">
                 {errors.avatarUrl.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="avatarAlt"
-              className="block text-md text-gray-700 mb-1 font-text"
-            >
-              Image alt text
-            </label>
-            <input
-              id="avatarAlt"
-              type="text"
-              maxLength={120}
-              disabled={isSubmitting}
-              aria-invalid={!!errors.avatarAlt}
-              {...registerField('avatarAlt')}
-              className={`w-full font-text border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 disabled:bg-gray-100 ${
-                errors.avatarAlt
-                  ? 'border-red-400 focus:ring-red-300'
-                  : 'border-gray-300 focus:ring-1 focus:ring-gray-300'
-              }`}
-            />
-            {errors.avatarAlt && (
-              <p className="mt-1 text-sm text-red-600 font-text italic">
-                {errors.avatarAlt.message}
               </p>
             )}
           </div>

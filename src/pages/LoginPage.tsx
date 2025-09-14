@@ -68,7 +68,9 @@ export function LoginPage() {
   return (
     <main className="min-h-[calc(100vh-120px)] flex items-center justify-center bg-light px-4">
       <section className="w-full max-w-md bg-white rounded-lg shadow-xl py-10 px-8">
-        <h1 className="text-3xl font-semibold text-dark mb-6">Sign in</h1>
+        <h1 className="text-3xl font-semibold text-dark mb-6 font-large">
+          Sign in
+        </h1>
 
         {errors.root?.message && (
           <div
