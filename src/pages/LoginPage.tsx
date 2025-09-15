@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { login } from '../api/authApi';
-import { authChanged } from '../hooks/useAuthStatus';
 
 type LoginFormValues = {
   email: string;
@@ -34,16 +33,7 @@ export function LoginPage() {
   async function onLoginSubmit(values: LoginFormValues) {
     try {
       const account = await login(values.email.trim(), values.password);
-
-      const username =
-        account?.name ??
-        (JSON.parse(localStorage.getItem('user') || 'null')?.name as
-          | string
-          | undefined) ??
-        '';
-
-      if (username) localStorage.setItem('username', username);
-      authChanged();
+      const username = account?.name || '';
       alert('Login success!');
       navigate(username ? `/profile/${encodeURIComponent(username)}` : '/');
     } catch (unknownError: unknown) {

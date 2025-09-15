@@ -1,41 +1,49 @@
 import { API_KEY } from './endpoints';
+import { getAccessToken } from '../utils/authStorage';
 
-type doFetchOptions = RequestInit & {
+type DoFetchOptions = RequestInit & {
   auth?: boolean;
 };
 
 export async function doFetch<T>(
   url: string,
-  options: doFetchOptions = {}
+  options: DoFetchOptions = {}
 ): Promise<T | null> {
   try {
-    const token = localStorage.getItem('token');
+    const tokenFromAuth = getAccessToken();
+    const tokenFromLegacyKey = localStorage.getItem('token');
+    const accessToken = tokenFromAuth || tokenFromLegacyKey || '';
 
-    const headers = {
+    const shouldAttachAuthHeader =
+      options.auth !== false && accessToken.length > 0;
+
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       'X-Noroff-API-Key': API_KEY,
-      ...(options.auth !== false && token
-        ? { Authorization: `Bearer ${token}` }
+      ...(shouldAttachAuthHeader
+        ? { Authorization: `Bearer ${accessToken}` }
         : {}),
-      ...(options.headers || {}),
+      ...(options.headers as Record<string, string> | undefined),
     };
 
     const response = await fetch(url, { ...options, headers });
 
     if (response.status === 204) return null;
 
-    let json: any = null;
+    let parsedBody: any = null;
     try {
-      json = await response.clone().json();
-    } catch {}
+      parsedBody = await response.clone().json();
+    } catch {
+      parsedBody = null;
+    }
 
     if (response.ok) {
-      return (json?.data as T) ?? null;
+      return (parsedBody?.data as T) ?? null;
     }
 
     const message =
-      json?.errors?.[0]?.message ||
-      json?.message ||
+      parsedBody?.errors?.[0]?.message ||
+      parsedBody?.message ||
       `${response.status} ${response.statusText}`;
 
     const error = new Error(message) as Error & {
@@ -43,7 +51,7 @@ export async function doFetch<T>(
       details?: any;
     };
     error.status = response.status;
-    error.details = json;
+    error.details = parsedBody;
     throw error;
   } catch (error) {
     console.error('Error fetching data:', error);

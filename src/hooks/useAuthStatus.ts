@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
+import { getAccessToken, migrateOldStorageOnce } from '../utils/authStorage';
 
-export const AUTH_TOKEN_KEYS = ['accessToken', 'token', 'authToken'];
+migrateOldStorageOnce();
+
 export const AUTH_CHANGED_EVENT = 'auth:changed';
 
 function hasToken(): boolean {
   try {
-    return AUTH_TOKEN_KEYS.some((key) => {
-      const value = localStorage.getItem(key as string);
-      return typeof value === 'string' && value.length > 0;
-    });
+    const token = getAccessToken();
+    return typeof token === 'string' && token.length > 0;
   } catch {
     return false;
   }

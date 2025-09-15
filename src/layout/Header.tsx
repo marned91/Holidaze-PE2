@@ -4,9 +4,10 @@ import { useState } from 'react';
 import { FaBars, FaUser } from 'react-icons/fa';
 import { logout } from '../api/authApi';
 import { useAuthStatus } from '../hooks/useAuthStatus';
+import { getUsername } from '../utils/authStorage';
 
 function getProfileUrl(): string {
-  const stored = localStorage.getItem('username');
+  const stored = getUsername();
   return stored ? `/profile/${encodeURIComponent(stored)}` : '/login';
 }
 

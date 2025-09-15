@@ -6,11 +6,11 @@ import {
   type TRegisterData,
   type TRegisterFieldErrors,
 } from '../types/auth.ts';
-import { AUTH_CHANGED_EVENT } from '../hooks/authEvents';
+import { AUTH_CHANGED_EVENT } from '../hooks/useAuthStatus';
+import { setAuthSession, clearAuthSession } from '../utils/authStorage';
 
 export async function login(email: string, password: string) {
   const body = JSON.stringify({ email, password });
-
   const data = await doFetch<TLoginResponse>(API_AUTH_LOGIN, {
     method: 'POST',
     body,
@@ -18,8 +18,8 @@ export async function login(email: string, password: string) {
   });
 
   if (data) {
-    localStorage.setItem('token', data.accessToken);
-    localStorage.setItem('user', JSON.stringify(data));
+    setAuthSession(data.accessToken, data.name);
+    window.dispatchEvent(new Event(AUTH_CHANGED_EVENT));
   }
 
   return data;
@@ -90,7 +90,7 @@ export async function registerAccount(userData: TRegisterData) {
 }
 
 export function logout() {
-  ['token', 'user', 'username'].forEach((key) => localStorage.removeItem(key));
+  clearAuthSession();
   if (
     typeof window !== 'undefined' &&
     typeof window.dispatchEvent === 'function'

@@ -74,8 +74,6 @@ export function ProfilePage() {
   function handleVenueCreated(newVenue: TVenue) {
     setVenues((prev) => [newVenue, ...prev]);
     setAddVenueOpen(false);
-    // valgfritt: sørg for at vi er på "manage"-fanen
-    // setActiveTab('manage');
   }
 
   const [venues, setVenues] = useState<TVenue[]>([]);
