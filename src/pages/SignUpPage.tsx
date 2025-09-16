@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { registerAccount } from '../api/authApi';
-import type { TRegisterData, TRegisterFieldErrors } from '../types/auth';
+import type { TRegisterData, TRegisterFieldErrors } from '../types/authTypes';
 import type { SignUpFormValues } from '../types/formTypes';
 import { signUpSchema } from '../components/Auth/signUpSchema';
 import { TextInput } from '../components/Common/forms/TextInput';

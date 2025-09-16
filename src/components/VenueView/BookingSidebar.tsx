@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import type { TVenue } from '../../types/venues';
-import type { TDateRange } from '../../types/date';
+import type { TVenue } from '../../types/venueTypes';
+import type { TDateRange } from '../../types/dateType';
 import { DateRangeFields } from '../Common/DateRangeFields';
 import {
   normalizeDateRange,

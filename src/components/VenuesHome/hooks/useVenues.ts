@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { type TVenue } from '../../../types/venues';
+import { type TVenue } from '../../../types/venueTypes';
 import { listVenuesAll } from '../../../api/venuesApi';
 
 export type UseVenuesResult = {

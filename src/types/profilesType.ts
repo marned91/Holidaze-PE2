@@ -1,5 +1,5 @@
-import type { TVenue } from './venues';
-import type { TBooking } from './bookings';
+import type { TVenue } from './venueTypes';
+import type { TBooking } from './bookingType';
 
 export type TProfile = {
   name: string;

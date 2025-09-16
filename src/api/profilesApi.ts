@@ -1,6 +1,6 @@
 import { API_PROFILES } from './endpoints';
 import { doFetch } from './doFetch';
-import type { TProfile } from '../types/profiles';
+import type { TProfile } from '../types/profilesType';
 
 export async function getProfile(
   username: string,

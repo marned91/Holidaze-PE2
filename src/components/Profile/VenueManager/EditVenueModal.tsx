@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Modal } from '../../Common/Modal';
 import { updateVenue } from '../../../api/venuesApi';
-import type { TVenue } from '../../../types/venues';
+import type { TVenue } from '../../../types/venueTypes';
 import type { VenueFormValues } from '../../../types/formTypes';
 import {
   venueSchema,

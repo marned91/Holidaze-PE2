@@ -1,6 +1,6 @@
 import { useEffect, useState, type KeyboardEvent } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import type { TVenue } from '../../types/venues';
+import type { TVenue } from '../../types/venueTypes';
 import PlaceholderImage from '../../assets/placeholder.png';
 
 type VenueMediaItem = NonNullable<TVenue['media']>[number];

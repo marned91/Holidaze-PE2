@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import type { TProfile } from '../types/profiles';
+import type { TProfile } from '../types/profilesType';
 import { getProfile } from '../api/profilesApi';
 import { UpdateProfilePicture } from '../components/Profile/UpdateProfilePictureModal';
 import { ProfileHeader } from '../components/Profile/ProfileHeader';
 import AvatarPlaceholder from '../assets/avatar-placeholder.png';
 
-import type { TVenue } from '../types/venues';
+import type { TVenue } from '../types/venueTypes';
 import { getVenuesByOwner, deleteVenue } from '../api/venuesApi';
 
 // Tabs type comes from ProfileTabs to keep it in sync with the VenueManager container

@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Modal } from '../../Common/Modal';
 import { createVenue } from '../../../api/venuesApi';
-import type { CreateVenueInput, TVenue } from '../../../types/venues';
+import type { CreateVenueInput, TVenue } from '../../../types/venueTypes';
 import type { VenueFormValues } from '../../../types/formTypes';
 import {
   venueSchema,

@@ -1,4 +1,4 @@
-import type { TVenue } from '../../../types/venues';
+import type { TVenue } from '../../../types/venueTypes';
 import { formatCurrencyNOK } from '../../../utils/currency';
 import { getLocationText, getVenueImage } from '../../../utils/venue';
 
@@ -31,7 +31,6 @@ export function ManageVenueCard({
           </div>
         )}
       </div>
-
       <div className="p-4">
         <h3 className="font-medium font-small-nav-footer">{venue.name}</h3>
 
@@ -48,7 +47,6 @@ export function ManageVenueCard({
             {getLocationText(venue)}
           </li>
         </ul>
-
         <div className="mt-4 flex gap-3">
           <button
             type="button"

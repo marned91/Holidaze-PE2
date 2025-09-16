@@ -48,3 +48,10 @@ export type CreateVenueInput = {
     pets?: boolean;
   };
 };
+
+export type TVenueBookingExtended = TVenueBooking & {
+  id: string;
+  guests?: number;
+  customer?: { name?: string; username?: string };
+  totalPrice?: number;
+};

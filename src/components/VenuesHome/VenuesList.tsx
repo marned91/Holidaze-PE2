@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { type TVenue } from '../../types/venues';
+import { type TVenue } from '../../types/venueTypes';
 import { VenueSort } from './VenueSort';
 import { VenueCard } from './VenueCard';
 import { VenuesFilters, type DateRange } from './VenuesFilters';

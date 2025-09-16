@@ -5,7 +5,7 @@ import {
   type TRegisterResponse,
   type TRegisterData,
   type TRegisterFieldErrors,
-} from '../types/auth.ts';
+} from '../types/authTypes.ts';
 import { AUTH_CHANGED_EVENT } from '../hooks/useAuthStatus';
 import { setAuthSession, clearAuthSession } from '../utils/authStorage';
 

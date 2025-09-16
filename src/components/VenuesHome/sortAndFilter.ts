@@ -1,5 +1,5 @@
-import type { TVenue } from '../../types/venues';
-import type { TDateRange } from '../../types/date';
+import type { TVenue } from '../../types/venueTypes';
+import type { TDateRange } from '../../types/dateType';
 import {
   normalizeDateRange,
   isVenueAvailableForRange,

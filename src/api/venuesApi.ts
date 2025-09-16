@@ -1,6 +1,6 @@
 import { API_VENUES, API_PROFILES } from './endpoints';
 import { doFetch } from './doFetch';
-import type { TVenue, CreateVenueInput } from '../types/venues';
+import type { TVenue, CreateVenueInput } from '../types/venueTypes';
 
 export async function getVenue(venueId: string): Promise<TVenue> {
   const url = `${API_VENUES}/${encodeURIComponent(

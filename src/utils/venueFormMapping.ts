@@ -1,4 +1,4 @@
-import type { TVenue } from '../types/venues';
+import type { TVenue } from '../types/venueTypes';
 import type { VenueFormValues } from '../types/formTypes';
 
 export function venueToFormValues(venue: TVenue): VenueFormValues {

@@ -1,5 +1,5 @@
-import type { TDateRange } from '../types/date';
-import type { TVenue } from '../types/venues';
+import type { TDateRange } from '../types/dateType';
+import type { TVenue } from '../types/venueTypes';
 
 export function todayYmd(): string {
   const n = new Date();

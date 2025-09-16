@@ -1,7 +1,7 @@
 import { ProfileTabs, type ProfileTab } from '../ProfileTabs';
-import { AddVenues } from './AddVenues';
-import { VenueManagerUpcomingVenueBookings } from './VenueManagerVenueBookings';
-import type { TVenue } from '../../../types/venues';
+import { AddVenues } from './AddVenuesSection';
+import { VenueManagerUpcomingVenueBookings } from './VenueManagerVenueBookingsSection';
+import type { TVenue } from '../../../types/venueTypes';
 
 type VenueManagerProps = {
   activeTab: ProfileTab;

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaMapMarkerAlt } from 'react-icons/fa';
-import type { TVenue } from '../../types/venues';
+import type { TVenue } from '../../types/venueTypes';
 import {
   getLocationText,
   getVenueImage,

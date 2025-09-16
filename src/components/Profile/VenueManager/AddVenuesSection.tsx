@@ -1,4 +1,4 @@
-import type { TVenue } from '../../../types/venues';
+import type { TVenue } from '../../../types/venueTypes';
 import { ManageVenueCard } from './ManageVenueCard';
 import { AddVenueCard } from './AddVenueCard';
 
@@ -38,7 +38,6 @@ export function AddVenues({
           </div>
         </div>
       )}
-
       {!errorMessage && !isLoading && venues.length > 0 && (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <AddVenueCard onClick={onCreateVenue} />

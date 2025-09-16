@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import type { TDateRange } from '../../types/date';
+import type { TDateRange } from '../../types/dateType';
 import { todayYmd, parseDotToISO, formatDotFromISO } from '../../utils/date';
 
 type DateRangeFieldsProps = {

@@ -1,4 +1,4 @@
-import { type TVenue } from '../../types/venues';
+import { type TVenue } from '../../types/venueTypes';
 import { getGuestsText } from '../../utils/venue';
 import {
   FaMapMarkerAlt,
