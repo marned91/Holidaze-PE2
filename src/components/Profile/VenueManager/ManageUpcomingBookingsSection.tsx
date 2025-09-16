@@ -36,7 +36,6 @@ export function ManagerUpcomingBookingsSection({
 }: ManagerUpcomingBookingsSectionProps) {
   const today = new Date().toISOString().slice(0, 10);
 
-  // Flat liste med (venue, booking) for kommende bookinger
   const upcoming = venues.flatMap((venue) => {
     const bookings: BookingLike[] = (venue as any)?.bookings ?? [];
     return bookings
@@ -46,7 +45,7 @@ export function ManagerUpcomingBookingsSection({
 
   return (
     <section>
-      <h2 className="mb-4 text-lg font-medium">
+      <h2 className="mb-4 text-3xl font-medium font-medium-buttons">
         Upcoming bookings for your venues
       </h2>
 

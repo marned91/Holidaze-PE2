@@ -22,7 +22,7 @@ export function VenueManagerSection({
   return (
     <section>
       <div className="mb-4">
-        <h1 className="text-3xl font-medium font-large">Your Venues</h1>
+        <h1 className="text-3xl font font-large">Your Venues</h1>
       </div>
 
       {isLoading && <p>Loading venues…</p>}
