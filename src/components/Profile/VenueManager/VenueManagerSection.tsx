@@ -1,46 +1,62 @@
+import { ProfileTabs, type ProfileTab } from '../ProfileTabs';
+import { AddVenues } from './AddVenues';
+import { VenueManagerUpcomingVenueBookings } from './VenueManagerVenueBookings';
 import type { TVenue } from '../../../types/venues';
-import { ManageVenueCard } from './ManageVenueCard';
-import { AddVenueCard } from './AddVenueCard';
 
-type VenueManagerSectionProps = {
+type VenueManagerProps = {
+  activeTab: ProfileTab;
+  onChangeTab: (next: ProfileTab) => void;
+
   venues: TVenue[];
-  isLoading: boolean;
-  errorMessage: string | null;
-  onCreateVenue?: () => void;
-  onEditVenue?: (venue: TVenue) => void;
-  onDeleteVenue?: (venue: TVenue) => void;
+  isLoadingVenues: boolean;
+  venuesError: string | null;
+
+  onCreateVenue: () => void;
+  onEditVenue: (venue: TVenue) => void;
+  onDeleteVenue: (venue: TVenue) => void;
 };
 
-export function VenueManagerSection({
+export function VenueManager({
+  activeTab,
+  onChangeTab,
   venues,
-  isLoading,
-  errorMessage,
+  isLoadingVenues,
+  venuesError,
   onCreateVenue,
   onEditVenue,
   onDeleteVenue,
-}: VenueManagerSectionProps) {
+}: VenueManagerProps) {
   return (
-    <section>
-      <div className="mb-4">
-        <h1 className="text-3xl font font-large">Your Venues</h1>
-      </div>
+    <>
+      <ProfileTabs active={activeTab} onChange={onChangeTab} isManager />
+      <hr className="my-6 border-gray-400" />
 
-      {isLoading && <p>Loading venues…</p>}
-      {errorMessage && <p className="text-red-600">{errorMessage}</p>}
-
-      {!errorMessage && !isLoading && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <AddVenueCard onClick={onCreateVenue} />
-          {venues.map((venue) => (
-            <ManageVenueCard
-              key={venue.id}
-              venue={venue}
-              onEdit={onEditVenue}
-              onDelete={onDeleteVenue}
-            />
-          ))}
-        </div>
+      {activeTab === 'addVenue' && (
+        <AddVenues
+          venues={venues}
+          isLoading={isLoadingVenues}
+          errorMessage={venuesError}
+          onCreateVenue={onCreateVenue}
+          onEditVenue={onEditVenue}
+          onDeleteVenue={onDeleteVenue}
+        />
       )}
-    </section>
+
+      {activeTab === 'managerBookings' && (
+        <section id="tab-managerBookings" className="mt-2">
+          <VenueManagerUpcomingVenueBookings
+            venues={venues}
+            isLoading={isLoadingVenues}
+            errorMessage={venuesError}
+          />
+        </section>
+      )}
+
+      {activeTab === 'myBookings' && (
+        <section id="tab-myBookings" className="mt-2">
+          {/* Her rendrer du samme MyBookingsSection som for customers */}
+        </section>
+      )}
+    </>
   );
 }

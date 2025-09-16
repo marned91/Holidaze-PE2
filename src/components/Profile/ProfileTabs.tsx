@@ -1,35 +1,52 @@
-type ProfileTab = 'manage' | 'myBookings';
+export type ProfileTab = 'addVenue' | 'managerBookings' | 'myBookings';
 
 type ProfileTabsProps = {
   active: ProfileTab;
   onChange: (next: ProfileTab) => void;
+  isManager: boolean;
 };
 
-export function ProfileTabs({ active, onChange }: ProfileTabsProps) {
+export function ProfileTabs({ active, onChange, isManager }: ProfileTabsProps) {
+  if (!isManager) return null;
+
+  const base =
+    'pb-2 text-md font-medium font-small-nav-footer transition-colors';
+  const activeCls = 'text-gray-900 border-b-2 border-gray-900';
+  const idleCls = 'text-gray-600 hover:text-gray-800';
+
   return (
-    <div className="flex gap-6 pt-10">
+    <div className="flex gap-6 pt-10" role="tablist" aria-label="Profile tabs">
       <button
         type="button"
-        onClick={() => onChange('manage')}
-        className={`pb-2 text-md font-medium font-small-nav-footer ${
-          active === 'manage'
-            ? 'text-gray-900 border-b-2 border-gray-900'
-            : 'text-gray-600 hover:text-gray-800'
-        }`}
-        aria-current={active === 'manage' ? 'page' : undefined}
+        role="tab"
+        aria-selected={active === 'addVenue'}
+        aria-controls="tab-addVenue"
+        onClick={() => onChange('addVenue')}
+        className={`${base} ${active === 'addVenue' ? activeCls : idleCls}`}
       >
-        Manage Venues
+        Add Venues
       </button>
 
       <button
         type="button"
-        onClick={() => onChange('myBookings')}
-        className={`pb-2 text-md font-medium font-small-nav-footer ${
-          active === 'myBookings'
-            ? 'text-gray-900 border-b-2 border-gray-900'
-            : 'text-gray-600 hover:text-gray-800'
+        role="tab"
+        aria-selected={active === 'managerBookings'}
+        aria-controls="tab-managerBookings"
+        onClick={() => onChange('managerBookings')}
+        className={`${base} ${
+          active === 'managerBookings' ? activeCls : idleCls
         }`}
-        aria-current={active === 'myBookings' ? 'page' : undefined}
+      >
+        Bookings for your venues
+      </button>
+
+      <button
+        type="button"
+        role="tab"
+        aria-selected={active === 'myBookings'}
+        aria-controls="tab-myBookings"
+        onClick={() => onChange('myBookings')}
+        className={`${base} ${active === 'myBookings' ? activeCls : idleCls}`}
       >
         My Bookings
       </button>

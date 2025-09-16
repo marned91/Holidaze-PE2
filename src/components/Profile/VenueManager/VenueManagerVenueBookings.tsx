@@ -2,7 +2,7 @@ import type { TVenue } from '../../../types/venues';
 import { getVenueImage } from '../../../utils/venue';
 import { formatCurrencyNOK } from '../../../utils/currency';
 
-type ManagerUpcomingBookingsSectionProps = {
+type VenueManagerUpcomingVenueBookingsProps = {
   venues: TVenue[];
   isLoading: boolean;
   errorMessage: string | null;
@@ -29,25 +29,31 @@ function daysBetween(from?: string, to?: string): number {
   return Math.max(0, Math.round(ms / (1000 * 60 * 60 * 24)));
 }
 
-export function ManagerUpcomingBookingsSection({
+export function VenueManagerUpcomingVenueBookings({
   venues,
   isLoading,
   errorMessage,
-}: ManagerUpcomingBookingsSectionProps) {
+}: VenueManagerUpcomingVenueBookingsProps) {
   const today = new Date().toISOString().slice(0, 10);
 
-  const upcoming = venues.flatMap((venue) => {
-    const bookings: BookingLike[] = (venue as any)?.bookings ?? [];
-    return bookings
-      .filter((b) => toIsoDateOnly(b.dateFrom) >= today)
-      .map((b) => ({ venue, booking: b }));
-  });
+  const upcoming = venues
+    .flatMap((venue) => {
+      const bookings: BookingLike[] = (venue as any)?.bookings ?? [];
+      return bookings
+        .filter((b) => toIsoDateOnly(b.dateFrom) >= today)
+        .map((b) => ({ venue, booking: b }));
+    })
+    .sort((a, b) =>
+      toIsoDateOnly(a.booking.dateFrom).localeCompare(
+        toIsoDateOnly(b.booking.dateFrom)
+      )
+    );
 
   return (
     <section>
-      <h2 className="mb-4 text-3xl font-medium font-medium-buttons">
+      <h1 className="mb-4 text-3xl font-large">
         Upcoming bookings for your venues
-      </h2>
+      </h1>
 
       {isLoading && <p>Loading bookings…</p>}
       {errorMessage && <p className="text-red-600">{errorMessage}</p>}
@@ -73,7 +79,7 @@ export function ManagerUpcomingBookingsSection({
             return (
               <article
                 key={`${venue.id}-${booking.id}`}
-                className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm p-4"
+                className="overflow-hidden rounded-xl border border-gray-300 bg-white shadow-lg p-4"
               >
                 <div className="aspect-[16/10] w-full overflow-hidden rounded-md bg-gray-100">
                   {url ? (

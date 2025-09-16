@@ -16,7 +16,7 @@ export function ManageVenueCard({
   const { url: imageUrl, alt: imageAlt } = getVenueImage(venue);
 
   return (
-    <article className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <article className="overflow-hidden rounded-xl border border-gray-300 bg-white shadow-lg p-4">
       <div className="aspect-[16/10] w-full overflow-hidden bg-gray-100">
         {imageUrl ? (
           <img
@@ -53,14 +53,14 @@ export function ManageVenueCard({
           <button
             type="button"
             onClick={() => onEdit?.(venue)}
-            className="rounded-full border px-4 py-1.5 text-sm hover:bg-gray-50"
+            className="rounded-full border px-4 py-1.5 text-sm transition duration-300 ease-out hover:scale-105 cursor-pointer"
           >
             Edit
           </button>
           <button
             type="button"
             onClick={() => onDelete?.(venue)}
-            className="rounded-full border px-4 py-1.5 text-sm hover:bg-gray-50"
+            className="rounded-full border px-4 py-1.5 text-sm transition duration-300 ease-out hover:scale-105 cursor-pointer"
           >
             Delete
           </button>
