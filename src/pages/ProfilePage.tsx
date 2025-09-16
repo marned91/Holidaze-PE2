@@ -10,14 +10,10 @@ import { VenueManagerSection } from '../components/Profile/VenueManager/VenueMan
 import { ManagerUpcomingBookingsSection } from '../components/Profile/VenueManager/ManageUpcomingBookingsSection';
 import { AddVenueModal } from '../components/Profile/VenueManager/AddVenueModal';
 import { EditVenueModal } from '../components/Profile/VenueManager/EditVenueModal';
+import AvatarPlaceholder from '../assets/avatar-placeholder.png';
+import { ProfileHeader } from '../components/Profile/ProfileHeader';
 
 type ProfileTab = 'manage' | 'myBookings';
-
-function getInitials(name?: string) {
-  if (!name) return 'U';
-  const parts = name.trim().split(/\s+/).slice(0, 2);
-  return parts.map((part) => part[0]?.toUpperCase() ?? '').join('') || 'U';
-}
 
 export function ProfilePage() {
   const { username = '' } = useParams<{ username: string }>();
@@ -134,38 +130,15 @@ export function ProfilePage() {
 
           {profile && (
             <>
-              <div className="flex items-center gap-6 p-6">
-                <div className="h-50 w-50 shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100">
-                  {profile.avatar?.url ? (
-                    <img
-                      src={profile.avatar.url}
-                      alt={profile.avatar?.alt || profile.name}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-xl font-semibold text-gray-500">
-                      {getInitials(profile.name)}
-                    </div>
-                  )}
-                </div>
+              <ProfileHeader
+                profile={profile}
+                onEditAvatar={() => setAvatarOpen(true)}
+                placeholderSrc={AvatarPlaceholder}
+              />
 
-                <div className="flex-1 font-text">
-                  <p className="text-lg font-bold">{profile.name}</p>
-                  <p className="text-gray-600">{profile.email}</p>
-
-                  <div className="mt-3">
-                    <button
-                      type="button"
-                      onClick={() => setAvatarOpen(true)}
-                      className="rounded-lg bg-highlight px-4 py-2 text-white cursor-pointer hover:bg-main-dark font-medium-buttons"
-                    >
-                      Update profile picture
-                    </button>
-                  </div>
-                </div>
-              </div>
               <ProfileTabs active={activeTab} onChange={setActiveTab} />
               <hr className="my-6 border-gray-200" />
+
               {activeTab === 'manage' ? (
                 <>
                   <VenueManagerSection
@@ -202,7 +175,6 @@ export function ProfilePage() {
           initialUrl={profile?.avatar?.url}
           initialAlt={profile?.avatar?.alt}
         />
-
         <AddVenueModal
           open={addVenueOpen}
           onClose={() => setAddVenueOpen(false)}
