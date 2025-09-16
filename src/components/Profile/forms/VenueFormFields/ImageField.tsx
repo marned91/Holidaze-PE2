@@ -1,0 +1,57 @@
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import type { VenueFormValues } from '../../../../types/formTypes';
+import { ImageUrlRow } from '../ImageUrlRow';
+
+export function ImagesField() {
+  const {
+    control,
+    register,
+    watch,
+    formState: { errors },
+  } = useFormContext<VenueFormValues>();
+  const { fields, append, remove } = useFieldArray({ control, name: 'images' });
+  const imagesWatch = watch('images') || [];
+
+  return (
+    <div>
+      <label className="mb-1 block text-sm font-medium font-text">
+        Venue images <span className="text-gray-500">(min 2)</span>
+      </label>
+
+      <div className="space-y-3">
+        {fields.map((field, index) => (
+          <ImageUrlRow
+            key={field.id}
+            inputProps={register(`images.${index}.url` as const)}
+            value={imagesWatch?.[index]?.url || ''}
+            errorMessage={
+              (
+                errors.images?.[index] as
+                  | { url?: { message?: string } }
+                  | undefined
+              )?.url?.message
+            }
+            canRemove={fields.length > 2}
+            onRemove={() => remove(index)}
+          />
+        ))}
+      </div>
+
+      <div className="mt-3">
+        <button
+          type="button"
+          onClick={() => append({ url: '' })}
+          className="rounded-md border px-3 py-2 text-sm hover:bg-gray-50 font-medium-buttons"
+        >
+          + Add image
+        </button>
+      </div>
+
+      {typeof (errors.images as any)?.message === 'string' && (
+        <p className="mt-1 text-sm text-red-600 font-text">
+          {(errors.images as any).message}
+        </p>
+      )}
+    </div>
+  );
+}
