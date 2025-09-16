@@ -1,7 +1,6 @@
 import { API_VENUES, API_PROFILES } from './endpoints';
 import { doFetch } from './doFetch';
-import type { TVenue } from '../types/venues';
-import type { CreateVenueInput } from '../types/venues';
+import type { TVenue, CreateVenueInput } from '../types/venues';
 
 export async function getVenue(venueId: string): Promise<TVenue> {
   const url = `${API_VENUES}/${encodeURIComponent(
@@ -128,4 +127,37 @@ export async function listVenuesAll(options?: {
     if (batch.length < limitPerPage) break;
   }
   return all;
+}
+
+export async function updateVenue(
+  venueId: string,
+  input: CreateVenueInput
+): Promise<TVenue> {
+  const url = `${API_VENUES}/${encodeURIComponent(venueId)}`;
+  const body = JSON.stringify(input);
+
+  try {
+    const data = await doFetch<TVenue>(url, {
+      method: 'PUT',
+      auth: true,
+      body,
+    });
+    if (!data) throw new Error('No venue returned after update');
+    return data;
+  } catch (unknownError: unknown) {
+    const message =
+      (unknownError as Error)?.message || 'Could not update venue';
+    throw new Error(message);
+  }
+}
+
+export async function deleteVenue(venueId: string): Promise<void> {
+  const url = `${API_VENUES}/${encodeURIComponent(venueId)}`;
+  try {
+    await doFetch<void>(url, { method: 'DELETE', auth: true });
+  } catch (unknownError: unknown) {
+    const message =
+      (unknownError as Error)?.message || 'Could not delete venue';
+    throw new Error(message);
+  }
 }

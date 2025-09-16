@@ -5,10 +5,11 @@ import { getProfile } from '../api/profilesApi';
 import { UpdateProfilePicture } from '../components/Profile/UpdateProfilePictureModal';
 import { ProfileTabs } from '../components/Profile/ProfileTabs';
 import type { TVenue } from '../types/venues';
-import { getVenuesByOwner } from '../api/venuesApi';
+import { getVenuesByOwner, deleteVenue } from '../api/venuesApi';
 import { VenueManagerSection } from '../components/Profile/VenueManager/VenueManagerSection';
 import { ManagerUpcomingBookingsSection } from '../components/Profile/VenueManager/ManageUpcomingBookingsSection';
 import { AddVenueModal } from '../components/Profile/VenueManager/AddVenueModal';
+import { EditVenueModal } from '../components/Profile/VenueManager/EditVenueModal';
 
 type ProfileTab = 'manage' | 'myBookings';
 
@@ -25,6 +26,11 @@ export function ProfilePage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<ProfileTab>('manage');
+
+  const [editVenueOpen, setEditVenueOpen] = useState(false);
+  const [selectedVenue, setSelectedVenue] = useState<TVenue | null>(null);
+
+  const [deletingVenueId, setDeletingVenueId] = useState<string | null>(null);
 
   useEffect(
     function loadProfile() {
@@ -100,7 +106,24 @@ export function ProfilePage() {
     return () => {
       isActive = false;
     };
-  }, [profile]);
+  }, [profile, username]);
+
+  async function handleDeleteVenue(venue: TVenue) {
+    if (deletingVenueId) return;
+    const ok = window.confirm(`Delete “${venue.name}”? This cannot be undone.`);
+    if (!ok) return;
+
+    try {
+      setDeletingVenueId(venue.id);
+      await deleteVenue(venue.id);
+      setVenues((prev) => prev.filter((v) => v.id !== venue.id));
+      alert('Venue deleted');
+    } catch (unknownError) {
+      alert((unknownError as Error)?.message || 'Could not delete venue');
+    } finally {
+      setDeletingVenueId(null);
+    }
+  }
 
   return (
     <div className="bg-light min-h-[calc(100vh-120px)]">
@@ -151,15 +174,12 @@ export function ProfilePage() {
                     errorMessage={venuesError}
                     onCreateVenue={() => setAddVenueOpen(true)}
                     onEditVenue={(venue) => {
-                      /* TODO */
+                      setSelectedVenue(venue);
+                      setEditVenueOpen(true);
                     }}
-                    onDeleteVenue={(venue) => {
-                      /* TODO */
-                    }}
+                    onDeleteVenue={handleDeleteVenue}
                   />
-
                   <hr className="my-8 border-gray-200" />
-
                   <ManagerUpcomingBookingsSection
                     venues={venues}
                     isLoading={venuesLoading}
@@ -174,7 +194,6 @@ export function ProfilePage() {
             </>
           )}
         </div>
-
         <UpdateProfilePicture
           username={username}
           open={avatarOpen}
@@ -183,11 +202,30 @@ export function ProfilePage() {
           initialUrl={profile?.avatar?.url}
           initialAlt={profile?.avatar?.alt}
         />
+
         <AddVenueModal
           open={addVenueOpen}
           onClose={() => setAddVenueOpen(false)}
           onCreated={handleVenueCreated}
         />
+        {selectedVenue && (
+          <EditVenueModal
+            open={editVenueOpen}
+            onClose={() => {
+              setEditVenueOpen(false);
+              setSelectedVenue(null);
+            }}
+            venue={selectedVenue}
+            profileName={profile?.name || username}
+            onUpdated={(updated) => {
+              setVenues((prev) =>
+                prev.map((v) => (v.id === updated.id ? updated : v))
+              );
+              setEditVenueOpen(false);
+              setSelectedVenue(null);
+            }}
+          />
+        )}
       </div>
     </div>
   );
