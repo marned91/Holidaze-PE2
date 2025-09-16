@@ -3,7 +3,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Modal } from '../../Common/Modal';
-import { createVenue } from '../../../api/venues';
+import { createVenue } from '../../../api/venuesApi';
 import type { CreateVenueInput, TVenue } from '../../../types/venues';
 import type { VenueFormValues } from '../../../types/formTypes';
 import {

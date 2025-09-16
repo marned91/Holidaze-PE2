@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { TProfile } from '../types/profiles';
-import { getProfile } from '../api/profiles';
-import { UpdateProfilePicture } from '../components/Profile/UpdateProfilePicture';
+import { getProfile } from '../api/profilesApi';
+import { UpdateProfilePicture } from '../components/Profile/UpdateProfilePictureModal';
 import { ProfileTabs } from '../components/Profile/ProfileTabs';
 import type { TVenue } from '../types/venues';
-import { getVenuesByOwner } from '../api/venues';
+import { getVenuesByOwner } from '../api/venuesApi';
 import { VenueManagerSection } from '../components/Profile/VenueManager/VenueManagerSection';
 import { ManagerUpcomingBookingsSection } from '../components/Profile/VenueManager/ManageUpcomingBookingsSection';
 import { AddVenueModal } from '../components/Profile/VenueManager/AddVenueModal';

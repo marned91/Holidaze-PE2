@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getVenue } from '../api/venues';
-import { createBooking, type CreateBookingPayload } from '../api/bookings';
+import { getVenue } from '../api/venuesApi';
+import { createBooking, type CreateBookingPayload } from '../api/bookingsApi';
 import { ImageCarousel } from '../components/VenueView/ImageCarousel';
 import { VenueInformation } from '../components/VenueView/VenueInformation';
 import { VenueDates } from '../components/VenueView/VenueDates';

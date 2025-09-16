@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Modal } from '../Common/Modal';
-import { setProfilePicture } from '../../api/profiles';
+import { setProfilePicture } from '../../api/profilesApi';
 import type { UpdateProfilePictureFormValues } from '../../types/formTypes';
 import { profilePictureSchema } from './forms/profilePictureSchema';
 import { setValueAsTrim } from '../../utils/formValueTransforms';

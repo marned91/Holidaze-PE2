@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { type TVenue } from '../../../types/venues';
-import { listVenuesAll } from '../../../api/venues';
+import { listVenuesAll } from '../../../api/venuesApi';
 
 export type UseVenuesResult = {
   venues: TVenue[];
