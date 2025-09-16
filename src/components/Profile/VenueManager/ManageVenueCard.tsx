@@ -16,7 +16,7 @@ export function ManageVenueCard({
   const { url: imageUrl, alt: imageAlt } = getVenueImage(venue);
 
   return (
-    <article className="overflow-hidden rounded-xl border border-gray-300 bg-white shadow-lg p-4">
+    <article className="overflow-hidden rounded-xl border border-gray-300 bg-white shadow-lg p-2 md:p-4">
       <div className="aspect-[16/10] w-full overflow-hidden bg-gray-100">
         {imageUrl ? (
           <img

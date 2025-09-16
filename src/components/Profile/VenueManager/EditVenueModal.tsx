@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
-
 import { Modal } from '../../Common/Modal';
 import { updateVenue } from '../../../api/venuesApi';
 import type { TVenue } from '../../../types/venueTypes';
@@ -15,13 +14,14 @@ import {
   venueToFormValues,
   formValuesToCreatePayload,
 } from '../../../utils/venueFormMapping';
+import { ImageUrlRow } from '../forms/ImageUrlRow';
 
 type EditVenueModalProps = {
   open: boolean;
   onClose: () => void;
   venue: TVenue;
   profileName: string;
-  onUpdated?: (venue: TVenue) => void; // hvis du vil oppdatere liste lokalt
+  onUpdated?: (venue: TVenue) => void;
 };
 
 export function EditVenueModal({
@@ -51,6 +51,7 @@ export function EditVenueModal({
   const { fields, append, remove } = useFieldArray({ control, name: 'images' });
   const nameValue = watch('name') || '';
   const descValue = watch('description') || '';
+  const imagesWatch = watch('images') || [];
 
   useEffect(() => {
     if (open) {
@@ -136,60 +137,43 @@ export function EditVenueModal({
           <label className="mb-1 block text-sm font-medium font-text">
             Venue images <span className="text-gray-500">(min 2)</span>
           </label>
-          <div className="space-y-2">
-            {fields.map((field, index) => {
-              const fieldError = (
-                errors.images?.[index] as
-                  | { url?: { message?: string } }
-                  | undefined
-              )?.url;
-              return (
-                <div key={field.id} className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="url"
-                      placeholder="https://…"
-                      inputMode="url"
-                      {...register(`images.${index}.url` as const)}
-                      className="flex-1 rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight font-text"
-                      aria-invalid={!!fieldError}
-                    />
-                    {fields.length > 2 && (
-                      <button
-                        type="button"
-                        onClick={() => remove(index)}
-                        className="rounded-md border px-3 py-2 text-sm hover:bg-gray-50 font-text"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
-                  {fieldError?.message && (
-                    <p className="text-sm text-red-600 font-text">
-                      {fieldError.message}
-                    </p>
-                  )}
-                </div>
-              );
-            })}
+
+          <div className="space-y-3">
+            {fields.map((field, index) => (
+              <ImageUrlRow
+                key={field.id}
+                inputProps={register(`images.${index}.url` as const)}
+                value={imagesWatch?.[index]?.url || ''}
+                errorMessage={
+                  (
+                    errors.images?.[index] as
+                      | { url?: { message?: string } }
+                      | undefined
+                  )?.url?.message
+                }
+                canRemove={fields.length > 2}
+                onRemove={() => remove(index)}
+              />
+            ))}
           </div>
-          <div className="mt-2">
+
+          <div className="mt-3">
             <button
               type="button"
               onClick={() => append({ url: '' })}
-              className="rounded-md border px-3 py-2 text-sm hover:bg-gray-50 font-text"
+              className="rounded-md border px-3 py-2 text-sm hover:bg-gray-50 font-medium-buttons"
             >
               + Add image
             </button>
           </div>
+
           {typeof (errors.images as any)?.message === 'string' && (
             <p className="mt-1 text-sm text-red-600 font-text">
               {(errors.images as any).message}
             </p>
           )}
         </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 pt-4">
+        <div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-2">
           <div>
             <label className="mb-1 block text-sm font-medium font-text">
               Price per night (NOK)
@@ -221,7 +205,7 @@ export function EditVenueModal({
               {...register('maxGuests', {
                 setValueAs: (value) => Number(value),
               })}
-              className={`w-full rounded-lg border px-3 py-2 outline-none font-text text-xs bg-white ${
+              className={`w-full rounded-lg border px-3 py-2 bg-white text-xs outline-none font-text ${
                 errors.maxGuests
                   ? 'border-red-400 focus:ring-2 focus:ring-red-300'
                   : 'border-gray-300 focus:ring-2 focus:ring-highlight'
@@ -272,8 +256,8 @@ export function EditVenueModal({
           <legend className="mb-2 text-sm font-medium font-text">
             Facilities (optional)
           </legend>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <label className="inline-flex items-center gap-2 text-sm font-text">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 font-text text-sm">
+            <label className="inline-flex items-center gap-2">
               <input
                 type="checkbox"
                 {...register('meta.wifi')}
@@ -281,7 +265,7 @@ export function EditVenueModal({
               />
               Wi-Fi
             </label>
-            <label className="inline-flex items-center gap-2 text-sm font-text">
+            <label className="inline-flex items-center gap-2">
               <input
                 type="checkbox"
                 {...register('meta.parking')}
@@ -289,7 +273,7 @@ export function EditVenueModal({
               />
               Parking
             </label>
-            <label className="inline-flex items-center gap-2 text-sm font-text">
+            <label className="inline-flex items-center gap-2">
               <input
                 type="checkbox"
                 {...register('meta.breakfast')}
@@ -297,7 +281,7 @@ export function EditVenueModal({
               />
               Breakfast
             </label>
-            <label className="inline-flex items-center gap-2 text-sm font-text">
+            <label className="inline-flex items-center gap-2">
               <input
                 type="checkbox"
                 {...register('meta.pets')}
@@ -311,14 +295,14 @@ export function EditVenueModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-100 cursor-pointer font-medium-buttons font-text"
+            className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-100 font-medium-buttons"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-lg bg-main-dark px-5 py-2 text-white disabled:opacity-80 hover:bg-dark-highlight cursor-pointer font-medium-buttons font-text"
+            className="cursor-pointer rounded-lg bg-main-dark px-5 py-2 text-white hover:bg-dark-highlight disabled:opacity-80 font-medium-buttons"
           >
             {isSubmitting ? 'Saving…' : 'Save changes'}
           </button>

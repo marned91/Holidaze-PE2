@@ -17,8 +17,12 @@ export function ProfileHeader({
   const avatarAlt = profile.avatar?.alt || profile.name || 'User avatar';
 
   return (
-    <div className={`flex items-center gap-6 p-6 ${className || ''}`}>
-      <div className="h-50 w-50 shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100">
+    <div
+      className={`flex flex-col md:flex-row md:items-center gap-6 p-6 ${
+        className || ''
+      }`}
+    >
+      <div className="h-60 w-full md:w-60 shrink-0 overflow-hidden rounded-lg md:rounded-full border border-gray-200 bg-gray-100">
         <img
           src={avatarUrl}
           alt={avatarAlt}

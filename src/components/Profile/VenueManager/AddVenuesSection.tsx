@@ -1,6 +1,6 @@
 import type { TVenue } from '../../../types/venueTypes';
 import { ManageVenueCard } from './ManageVenueCard';
-import { AddVenueCard } from './AddVenueCard';
+import { AddVenueCard } from './AddVenueButton';
 
 type AddVenuesProps = {
   venues: TVenue[];

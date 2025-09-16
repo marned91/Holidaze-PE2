@@ -125,7 +125,7 @@ export function VenueManagerUpcomingVenueBookings({
                 return (
                   <li
                     key={`${venue.id}-${booking.id}`}
-                    className="flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:gap-5"
+                    className="flex flex-col gap-4 p-5 md:flex-row sm:items-start sm:gap-5"
                     aria-label={`Booking for ${venue.name} from ${from} to ${to}`}
                   >
                     <div className="shrink-0">
@@ -143,7 +143,7 @@ export function VenueManagerUpcomingVenueBookings({
                         {venue.name}
                       </h4>
 
-                      <div className="mt-1 grid grid-cols-1 gap-1 text-sm text-gray-700 sm:grid-cols-2">
+                      <div className="mt-1 grid grid-cols-1 gap-1 text-sm text-gray-700 sm:grid-cols-2 font-text">
                         <div>
                           <span className="text-gray-500">Dates: </span>
                           <span className="font-medium">
@@ -161,7 +161,7 @@ export function VenueManagerUpcomingVenueBookings({
                       </div>
                     </div>
                     <div className="sm:ml-auto sm:mt-0">
-                      <div className="inline-flex items-center rounded-lg bg-dark px-3 py-1 text-sm font-semibold text-white">
+                      <div className="inline-flex items-center rounded-lg bg-dark px-3 py-1 text-sm font-semibold text-white font-text">
                         {formatCurrencyNOK(Number(total))}
                       </div>
                     </div>

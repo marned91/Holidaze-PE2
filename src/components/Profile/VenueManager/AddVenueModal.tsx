@@ -10,6 +10,7 @@ import {
   venueSchema,
   MAX_GUESTS,
 } from '../forms/validateCreateAndEditVenueSchema';
+import { ImageUrlRow } from '../forms/ImageUrlRow';
 
 type AddVenueModalProps = {
   open: boolean;
@@ -48,6 +49,7 @@ export function AddVenueModal({
   const { fields, append, remove } = useFieldArray({ control, name: 'images' });
   const nameValue = watch('name') || '';
   const descValue = watch('description') || '';
+  const imagesWatch = watch('images') || [];
 
   useEffect(() => {
     if (open) {
@@ -107,6 +109,8 @@ export function AddVenueModal({
         <p className="text-sm text-gray-600 font-text">
           Fill in the details to publish your venue.
         </p>
+
+        {/* Name */}
         <div>
           <label className="mb-1 block text-sm font-medium font-text">
             Venue name
@@ -132,6 +136,8 @@ export function AddVenueModal({
             </span>
           </div>
         </div>
+
+        {/* Description */}
         <div>
           <label className="mb-1 block text-sm font-medium font-text">
             Description
@@ -157,48 +163,33 @@ export function AddVenueModal({
             </span>
           </div>
         </div>
+
+        {/* Images with inline thumbnails */}
         <div>
           <label className="mb-1 block text-sm font-medium font-text">
             Venue images <span className="text-gray-500">(min 2)</span>
           </label>
-          <div className="space-y-2">
-            {fields.map((field, index) => {
-              const fieldError = (
-                errors.images?.[index] as
-                  | { url?: { message?: string } }
-                  | undefined
-              )?.url;
-              return (
-                <div key={field.id} className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="url"
-                      placeholder="https://…"
-                      inputMode="url"
-                      {...register(`images.${index}.url` as const)}
-                      className="flex-1 rounded-lg border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight font-text"
-                      aria-invalid={!!fieldError}
-                    />
-                    {fields.length > 2 && (
-                      <button
-                        type="button"
-                        onClick={() => remove(index)}
-                        className="rounded-md border px-3 py-2 text-sm hover:bg-gray-50 font-text"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
-                  {fieldError?.message && (
-                    <p className="text-sm text-red-600 font-text">
-                      {fieldError.message}
-                    </p>
-                  )}
-                </div>
-              );
-            })}
+
+          <div className="space-y-3">
+            {fields.map((field, index) => (
+              <ImageUrlRow
+                key={field.id}
+                inputProps={register(`images.${index}.url` as const)}
+                value={imagesWatch?.[index]?.url || ''}
+                errorMessage={
+                  (
+                    errors.images?.[index] as
+                      | { url?: { message?: string } }
+                      | undefined
+                  )?.url?.message
+                }
+                canRemove={fields.length > 2}
+                onRemove={() => remove(index)}
+              />
+            ))}
           </div>
-          <div className="mt-2">
+
+          <div className="mt-3">
             <button
               type="button"
               onClick={() => append({ url: '' })}
@@ -207,14 +198,16 @@ export function AddVenueModal({
               + Add image
             </button>
           </div>
+
           {typeof (errors.images as any)?.message === 'string' && (
             <p className="mt-1 text-sm text-red-600 font-text">
               {(errors.images as any).message}
             </p>
           )}
         </div>
+
+        {/* Price / Max guests */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 pt-4">
-          {/* Price per night */}
           <div>
             <label className="mb-1 block text-sm font-medium font-text">
               Price per night (NOK)
@@ -238,6 +231,7 @@ export function AddVenueModal({
               </p>
             )}
           </div>
+
           <div>
             <label className="mb-1 block text-sm font-medium font-text">
               How many people?
@@ -270,6 +264,8 @@ export function AddVenueModal({
             </p>
           </div>
         </div>
+
+        {/* City */}
         <div className="pb-4">
           <label className="mb-1 block text-sm font-medium font-text">
             City (Norway)
@@ -294,6 +290,8 @@ export function AddVenueModal({
             Country is set to Norway.
           </p>
         </div>
+
+        {/* Facilities */}
         <fieldset className="mt-2 pb-4">
           <legend className="mb-2 text-sm font-medium font-text">
             Facilities (optional)
@@ -333,6 +331,8 @@ export function AddVenueModal({
             </label>
           </div>
         </fieldset>
+
+        {/* Actions */}
         <div className="mt-6 flex items-center justify-end gap-3">
           <button
             type="button"

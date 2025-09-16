@@ -111,7 +111,7 @@ export function Modal({
       <div
         ref={dialogRef}
         role="document"
-        className="relative w-[50%] max-w-[980px] rounded-2xl bg-white shadow-2xl max-h-[100%] overflow-y-auto"
+        className="relative w-[90%] md:w-[70%] lg:w-[60%] rounded-2xl bg-white shadow-2xl max-h-[100%] overflow-y-auto"
       >
         <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-gray-200 bg-white/95 px-6 py-4">
           {title ? (
