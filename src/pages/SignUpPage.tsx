@@ -1,59 +1,20 @@
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import type { TRegisterData, TRegisterFieldErrors } from '../types/auth';
 import { registerAccount } from '../api/authApi';
-
-type SignUpFormValues = {
-  name: string;
-  email: string;
-  password: string;
-  isVenueManager: boolean;
-  avatarUrl: string;
-};
-
-function isNoroffStudentEmail(email?: string): boolean {
-  if (!email) return false;
-  return /^[^@]+@stud\.noroff\.no$/i.test(email.trim());
-}
-
-const signUpSchema: yup.ObjectSchema<SignUpFormValues> = yup
-  .object({
-    name: yup
-      .string()
-      .required('Name is required')
-      .max(20, 'Name cannot be greater than 20 characters')
-      .matches(
-        /^[A-Za-z0-9_ ]+$/,
-        'Only letters, numbers, spaces, and underscore are allowed'
-      ),
-    email: yup
-      .string()
-      .required('Email is required')
-      .email('Enter a valid email')
-      .test(
-        'noroff',
-        'Email must be a @stud.noroff.no address',
-        isNoroffStudentEmail
-      ),
-    password: yup
-      .string()
-      .required('Password is required')
-      .min(8, 'At least 8 characters'),
-    isVenueManager: yup.boolean().default(false),
-    avatarUrl: yup
-      .string()
-      .required('Image URL is required')
-      .url('Enter a valid URL'),
-  })
-  .required();
+import type { TRegisterData, TRegisterFieldErrors } from '../types/auth';
+import type { SignUpFormValues } from '../types/formTypes';
+import { signUpSchema } from '../components/Auth/signUpSchema';
+import { TextInput } from '../components/Common/forms/TextInput';
+import { PasswordInput } from '../components/Common/forms/PasswordInput';
+import { UrlInput } from '../components/Common/forms/UrlInput';
+import { setValueAsTrim } from '../utils/formValueTransforms';
 
 export function SignUpPage() {
   const navigate = useNavigate();
 
   const {
-    register: registerField,
+    register,
     handleSubmit,
     setError,
     watch,
@@ -62,7 +23,6 @@ export function SignUpPage() {
   } = useForm<SignUpFormValues>({
     resolver: yupResolver(signUpSchema),
     mode: 'onChange',
-    reValidateMode: 'onChange',
     defaultValues: {
       name: '',
       email: '',
@@ -98,25 +58,20 @@ export function SignUpPage() {
 
       if (fieldErrorsLoose) {
         const fieldErrors = fieldErrorsLoose as Record<string, string>;
-
-        if (fieldErrors.name) {
+        if (fieldErrors.name)
           setError('name', { type: 'server', message: fieldErrors.name });
-        }
-        if (fieldErrors.email) {
+        if (fieldErrors.email)
           setError('email', { type: 'server', message: fieldErrors.email });
-        }
-        if (fieldErrors.password) {
+        if (fieldErrors.password)
           setError('password', {
             type: 'server',
             message: fieldErrors.password,
           });
-        }
-        if (fieldErrors.avatarUrl) {
+        if (fieldErrors.avatarUrl)
           setError('avatarUrl', {
             type: 'server',
             message: fieldErrors.avatarUrl,
           });
-        }
       } else {
         alert((unknownError as Error)?.message || 'Registration failed.');
       }
@@ -129,7 +84,6 @@ export function SignUpPage() {
         <h1 className="text-3xl font-semibold text-dark mb-6 font-large">
           Create account
         </h1>
-
         <div className="mb-8">
           <p className="mb-2 text-sm text-gray-700 font-text">
             Select account type:
@@ -139,7 +93,7 @@ export function SignUpPage() {
             className="sr-only"
             aria-hidden="true"
             tabIndex={-1}
-            {...registerField('isVenueManager')}
+            {...register('isVenueManager')}
           />
           <div
             role="tablist"
@@ -219,118 +173,55 @@ export function SignUpPage() {
             )}
           </div>
         </div>
-
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-6"
           noValidate
         >
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-md text-gray-700 mb-1 font-text"
-            >
-              Name
-            </label>
-            <input
-              id="name"
-              type="text"
-              maxLength={20}
-              disabled={isSubmitting}
-              aria-invalid={!!errors.name}
-              {...registerField('name')}
-              className={`w-full font-text border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 disabled:bg-gray-100 ${
-                errors.name
-                  ? 'border-red-400 focus:ring-red-300'
-                  : 'border-gray-300 focus:ring-1 focus:ring-gray-300'
-              }`}
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-600 font-text italic">
-                {errors.name.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-md text-gray-700 mb-1 font-text"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              disabled={isSubmitting}
-              aria-invalid={!!errors.email}
-              {...registerField('email')}
-              className={`w-full font-text border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 disabled:bg-gray-100 ${
-                errors.email
-                  ? 'border-red-400 focus:ring-red-300'
-                  : 'border-gray-300 focus:ring-1 focus:ring-gray-300'
-              }`}
-            />
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-600 font-text italic">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-md text-gray-700 mb-1 font-text"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="new-password"
-              disabled={isSubmitting}
-              aria-invalid={!!errors.password}
-              {...registerField('password')}
-              className={`w-full font-text border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 disabled:bg-gray-100 ${
-                errors.password
-                  ? 'border-red-400 focus:ring-red-300'
-                  : 'border-gray-300 focus:ring-1 focus:ring-gray-300'
-              }`}
-            />
-            {errors.password && (
-              <p className="mt-1 text-sm text-red-600 font-text italic">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <label
-              htmlFor="avatarUrl"
-              className="block text-md text-gray-700 mb-1 font-text"
-            >
-              Profile image URL
-            </label>
-            <input
-              id="avatarUrl"
-              type="url"
-              placeholder="https://…"
-              inputMode="url"
-              disabled={isSubmitting}
-              aria-invalid={!!errors.avatarUrl}
-              {...registerField('avatarUrl')}
-              className={`w-full font-text border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 disabled:bg-gray-100 ${
-                errors.avatarUrl
-                  ? 'border-red-400 focus:ring-red-300'
-                  : 'border-gray-300 focus:ring-1 focus:ring-gray-300'
-              }`}
-            />
-            {errors.avatarUrl && (
-              <p className="mt-1 text-sm text-red-600 font-text italic">
-                {errors.avatarUrl.message}
-              </p>
-            )}
-          </div>
-
+          <TextInput
+            id="name"
+            label="Name"
+            ariaInvalid={!!errors.name}
+            disabled={isSubmitting}
+            errorMessage={errors.name?.message}
+            inputProps={{
+              maxLength: 20,
+              ...register('name'),
+            }}
+          />
+          <TextInput
+            id="email"
+            label="Email"
+            ariaInvalid={!!errors.email}
+            disabled={isSubmitting}
+            errorMessage={errors.email?.message}
+            inputProps={{
+              type: 'email',
+              autoComplete: 'email',
+              ...register('email', { setValueAs: setValueAsTrim }),
+            }}
+          />
+          <PasswordInput
+            id="password"
+            label="Password"
+            ariaInvalid={!!errors.password}
+            disabled={isSubmitting}
+            errorMessage={errors.password?.message}
+            inputProps={{
+              autoComplete: 'new-password',
+              ...register('password'),
+            }}
+          />
+          <UrlInput
+            id="avatarUrl"
+            label="Profile image URL"
+            ariaInvalid={!!errors.avatarUrl}
+            disabled={isSubmitting}
+            errorMessage={errors.avatarUrl?.message}
+            inputProps={{
+              ...register('avatarUrl', { setValueAs: setValueAsTrim }),
+            }}
+          />
           <button
             type="submit"
             disabled={isSubmitting || !isValid}

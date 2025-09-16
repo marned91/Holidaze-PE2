@@ -46,7 +46,7 @@ export function VenuePage() {
       setLoading(true);
       setLoadError(null);
       try {
-        const data = await getVenue(venueId); // ✅ ikke send options her
+        const data = await getVenue(venueId);
         if (isActive) setVenue(data ?? null);
       } catch (unknownError: unknown) {
         const message =
@@ -71,7 +71,7 @@ export function VenuePage() {
   if (loading) return <div className="mx-auto max-w-7xl p-6">Loading…</div>;
   if (loadError)
     return (
-      <div className="mx-auto max-w-7xl p-6 text-red-600">{loadError}</div>
+      <div className="mx-auto max-w-2xl p-6 text-red-600">{loadError}</div>
     );
   if (!venue)
     return <div className="mx-auto max-w-7xl p-6">Venue not found.</div>;
