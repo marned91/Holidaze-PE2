@@ -9,7 +9,8 @@ type ProfileTabsProps = {
 export function ProfileTabs({ active, onChange, isManager }: ProfileTabsProps) {
   if (!isManager) return null;
 
-  const base = 'font-medium transition-colors';
+  const base =
+    'font-medium-buttons font-medium cursor-pointer hover:text-black';
   const activeCls = 'text-gray-900 border-b-2 border-gray-900';
   const idleCls = 'text-gray-600 hover:text-gray-800';
 

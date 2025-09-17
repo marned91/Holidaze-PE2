@@ -1,4 +1,4 @@
-import { ProfileTabs, type ProfileTab } from '../ProfileTabs';
+import { ProfileTabs, type ProfileTab } from './VenueManagerProfileTabs';
 import { AddVenues } from './AddVenuesSection';
 import { UpcomingVenueBookings } from './UpcomingVenueBookingsSection';
 import type { TVenue } from '../../../types/venueTypes';

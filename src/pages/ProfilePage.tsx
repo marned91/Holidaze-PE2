@@ -7,7 +7,7 @@ import { ProfileHeader } from '../components/Profile/ProfileHeader';
 import AvatarPlaceholder from '../assets/avatar-placeholder.png';
 import type { TVenue } from '../types/venueTypes';
 import { getVenuesByOwner, deleteVenue } from '../api/venuesApi';
-import type { ProfileTab } from '../components/Profile/ProfileTabs';
+import type { ProfileTab } from '../components/Profile/VenueManager/VenueManagerProfileTabs';
 import { VenueManager } from '../components/Profile/VenueManager/VenueManagerSection';
 import { MyBookingsSection } from '../components/Profile/MyBookingsSection';
 import { getBookingsByProfile, cancelBooking } from '../api/bookingsApi';
