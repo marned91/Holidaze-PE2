@@ -260,3 +260,8 @@
   text-decoration: line-through;
   cursor: not-allowed;
 }
+
+/* Popover-breddesikring på små skjermer */
+.rc-popover {
+  max-width: min(92vw, 360px);
+}

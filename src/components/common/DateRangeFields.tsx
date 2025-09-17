@@ -1,7 +1,14 @@
 // components/Common/DateRangeFields.tsx
 import Calendar from 'react-calendar';
 import type { Value } from 'react-calendar/dist/shared/types.js';
-import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
+import React, {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  useLayoutEffect,
+} from 'react';
 import { createPortal } from 'react-dom';
 import type { TDateRange } from '../../types/dateType';
 import {
@@ -30,7 +37,7 @@ type DateRangeFieldsProps = {
   months?: 1 | 2; // 1 som standard for kompakt popover
 };
 
-/** Liten portal som posisjonerer popover under angitt anchor-element */
+/** Popover i portal: flipper opp/ned etter plass, klemmer høyde til viewport */
 function PopoverPortal({
   anchor,
   align = 'left',
@@ -40,37 +47,81 @@ function PopoverPortal({
   align?: 'left' | 'right';
   children: React.ReactNode;
 }) {
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
   const [style, setStyle] = useState<React.CSSProperties>({
     position: 'fixed',
     opacity: 0,
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     function updatePosition() {
       if (!anchor) return;
-      const rect = anchor.getBoundingClientRect();
-      const top = rect.bottom + 8; // 8px offset
-      const left = align === 'left' ? rect.left : rect.right;
+
+      const anchorRect = anchor.getBoundingClientRect();
+      const viewportHeight =
+        window.visualViewport?.height ?? window.innerHeight;
+      const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+
+      const margin = 8; // luft mellom felt og popover
+      const wantedMinHeight = 320; // “ønsket” min høyde for kalender
+      const spaceBelow = viewportHeight - (anchorRect.bottom + margin);
+      const spaceAbove = anchorRect.top - margin;
+
+      // Plasser over hvis for lite plass under og bedre plass over
+      const placeAbove =
+        spaceBelow < wantedMinHeight && spaceAbove > spaceBelow;
+
+      // Maks høyde vi faktisk kan bruke (med litt buffer)
+      const availableHeight = Math.max(
+        160,
+        (placeAbove ? spaceAbove : spaceBelow) - 8
+      );
+
+      // Horisontal plassering – ikke gå utenfor skjermen
+      const leftPos =
+        align === 'left'
+          ? Math.max(8, Math.min(anchorRect.left, viewportWidth - 16))
+          : undefined;
+      const rightPos =
+        align === 'right'
+          ? Math.max(8, viewportWidth - anchorRect.right)
+          : undefined;
+
       setStyle({
         position: 'fixed',
-        top,
-        left: align === 'left' ? left : undefined,
-        right: align === 'right' ? window.innerWidth - left : undefined,
+        top: placeAbove ? undefined : anchorRect.bottom + margin,
+        bottom: placeAbove
+          ? viewportHeight - anchorRect.top + margin
+          : undefined,
+        left: leftPos,
+        right: rightPos,
         zIndex: 9999,
+        maxHeight: availableHeight, // klem høyde
+        overflowY: 'auto', // scroll inni popover
+        overscrollBehavior: 'contain',
+        WebkitOverflowScrolling: 'touch',
+        paddingBottom: 'env(safe-area-inset-bottom)', // iOS-safe area
         opacity: 1,
       });
     }
+
     updatePosition();
     window.addEventListener('resize', updatePosition);
     window.addEventListener('scroll', updatePosition, true);
+    window.visualViewport?.addEventListener('resize', updatePosition);
+    window.visualViewport?.addEventListener('scroll', updatePosition);
+
     return () => {
       window.removeEventListener('resize', updatePosition);
       window.removeEventListener('scroll', updatePosition, true);
+      window.visualViewport?.removeEventListener('resize', updatePosition);
+      window.visualViewport?.removeEventListener('scroll', updatePosition);
     };
   }, [anchor, align]);
 
   return createPortal(
-    <div style={style} className="rc-popover">
+    <div ref={wrapperRef} style={style} className="rc-popover">
       {children}
     </div>,
     document.body

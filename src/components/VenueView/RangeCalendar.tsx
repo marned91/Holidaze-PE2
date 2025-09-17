@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Calendar from 'react-calendar';
 import type { TVenueBooking } from '../../types/venueTypes';
 import type { TDateRange } from '../../types/dateType';
@@ -13,7 +13,7 @@ type RangeCalendarProps = {
   value: TDateRange;
   onChange: (next: TDateRange) => void;
   bookings?: TVenueBooking[];
-  months?: number;
+  months?: number; // hvor mange måneder du vil ha i “double view” på store skjermer
 };
 
 export function RangeCalendar({
@@ -26,6 +26,61 @@ export function RangeCalendar({
   const endDate = parseISOYmd(value.endDate);
   const today = startOfToday();
 
+  // --- Gjør doubleView responsivt: slå helt av på små skjermer ---
+  // Breakpoint matcher Tailwind “sm”: 640px
+  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(() => {
+    if (
+      typeof window === 'undefined' ||
+      typeof window.matchMedia !== 'function'
+    )
+      return false;
+    return window.matchMedia('(max-width: 640px)').matches;
+  });
+
+  useEffect(() => {
+    if (
+      typeof window === 'undefined' ||
+      typeof window.matchMedia !== 'function'
+    )
+      return;
+
+    const mediaQueryList: MediaQueryList =
+      window.matchMedia('(max-width: 640px)');
+
+    const handleMediaQueryChange = (
+      event: MediaQueryListEvent | MediaQueryList
+    ) => {
+      const matches =
+        'matches' in event ? event.matches : (event as MediaQueryList).matches;
+      setIsSmallScreen(matches);
+    };
+
+    // Initielt kall, i tilfelle noe endret seg før effect
+    handleMediaQueryChange(mediaQueryList);
+
+    // Moderne nettlesere
+    if ('addEventListener' in mediaQueryList) {
+      mediaQueryList.addEventListener(
+        'change',
+        handleMediaQueryChange as unknown as EventListener
+      );
+      return () =>
+        mediaQueryList.removeEventListener(
+          'change',
+          handleMediaQueryChange as unknown as EventListener
+        );
+    }
+
+    // Safari < 14 fallback
+    // @ts-expect-error: eldre Safari API
+    mediaQueryList.addListener(handleMediaQueryChange);
+    return () => {
+      // @ts-expect-error: eldre Safari API
+      mediaQueryList.removeListener(handleMediaQueryChange);
+    };
+  }, []);
+
+  // Blokkerte intervaller (utilgjengelige datoer)
   const blockedRanges = useMemo(() => {
     const ranges =
       (bookings
@@ -38,6 +93,7 @@ export function RangeCalendar({
     return ranges;
   }, [bookings]);
 
+  // Verdi til react-calendar
   const selectedValue =
     startDate && endDate
       ? ([startDate, endDate] as [Date, Date])
@@ -49,7 +105,8 @@ export function RangeCalendar({
         locale="en-GB"
         calendarType="iso8601"
         selectRange
-        showDoubleView={months >= 2}
+        // Av double view på små skjermer:
+        showDoubleView={months >= 2 && !isSmallScreen}
         minDate={today}
         prev2Label={null}
         next2Label={null}
