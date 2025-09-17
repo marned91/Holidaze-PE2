@@ -4,6 +4,8 @@ import {
   type TBookingWithVenue,
   type TCreateBookingPayload,
   type TCreateBookingResponse,
+  type TUpdateBookingPayload,
+  type TBooking,
 } from '../types/bookingType';
 
 export async function createBooking(
@@ -42,4 +44,20 @@ export async function cancelBooking(bookingId: string): Promise<void> {
     method: 'DELETE',
     auth: true,
   });
+}
+
+export async function updateBooking(
+  bookingId: string,
+  payload: TUpdateBookingPayload
+): Promise<TBooking> {
+  const data = await doFetch<TBooking>(
+    `${API_BOOKINGS}/${encodeURIComponent(bookingId)}`,
+    {
+      method: 'PUT',
+      auth: true,
+      body: JSON.stringify(payload),
+    }
+  );
+  if (!data) throw new Error('Failed to update booking');
+  return data;
 }

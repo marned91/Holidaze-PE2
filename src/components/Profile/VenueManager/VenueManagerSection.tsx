@@ -21,7 +21,6 @@ type VenueManagerProps = {
   onEditVenue: (venue: TVenue) => void;
   onDeleteVenue: (venue: TVenue) => void;
 
-  onEditMyBooking?: (booking: TBooking, venue: TVenue) => void;
   onCancelMyBooking?: (booking: TBooking, venue: TVenue) => void;
 };
 
@@ -37,7 +36,6 @@ export function VenueManager({
   onCreateVenue,
   onEditVenue,
   onDeleteVenue,
-  onEditMyBooking,
   onCancelMyBooking,
 }: VenueManagerProps) {
   return (
@@ -72,7 +70,6 @@ export function VenueManager({
             bookings={myBookings ?? []}
             isLoading={!!isLoadingMyBookings}
             errorMessage={myBookingsError ?? null}
-            onEditBooking={onEditMyBooking}
             onCancelBooking={onCancelMyBooking}
           />
         </section>

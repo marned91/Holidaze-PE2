@@ -88,8 +88,8 @@ export function MyBookingCard({
           <button
             type="button"
             onClick={() => onEdit?.(booking, venue)}
-            disabled={!onEdit || disableActions}
-            className="rounded-lg border px-3 py-1.5 text-sm transition duration-300 ease-out hover:scale-105 font-medium-buttons hover:bg-gray-50 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={!onEdit || disableActions || isCancelling}
+            className="rounded-lg border px-3 py-1.5 text-sm transition duration-300 ease-out hover:scale-105 font-medium-buttons hover:bg-gray-50 cursor-pointer"
           >
             Edit
           </button>
@@ -98,7 +98,7 @@ export function MyBookingCard({
             onClick={() => onCancel?.(booking, venue)}
             disabled={!onCancel || disableActions || isCancelling}
             aria-busy={isCancelling || undefined}
-            className={`rounded-lg border border-red-300 px-3 py-1.5 text-sm text-red-700 hover:bg-red-50 disabled:cursor-not-allowed transition duration-300 ease-out hover:scale-105 font-medium-buttons hover:bg-gray-50 cursor-pointer ${
+            className={`rounded-lg border border-red-300 px-3 py-1.5 text-sm text-red-700 hover:bg-red-50 transition duration-300 ease-out hover:scale-105 font-medium-buttons hover:bg-gray-50 cursor-pointer ${
               isCancelling ? 'opacity-70 cursor-wait' : ''
             }`}
           >

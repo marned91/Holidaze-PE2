@@ -22,3 +22,9 @@ export type TCreateBookingPayload = {
 };
 
 export type TCreateBookingResponse = { id: string };
+
+export type TUpdateBookingPayload = {
+  dateFrom: string;
+  dateTo: string;
+  guests: number;
+};

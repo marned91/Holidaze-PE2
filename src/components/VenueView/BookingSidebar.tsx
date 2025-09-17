@@ -85,17 +85,17 @@ export function BookingSidebar({
         <FaUser className="text-gray-600" />
         <span>{getGuestsText(guests)}</span>
       </div>
-
       <div className="mt-4 font-text">
         <DateRangeFields
           value={value}
           onChange={onChange}
-          variant="native"
+          variant="calendar"
           labelFrom="Start"
           labelTo="End"
+          bookings={venue.bookings as any}
+          months={1}
         />
       </div>
-
       <div className="mt-4">
         <label className="mb-1 block text-sm text-gray-700 font-text">
           Guests

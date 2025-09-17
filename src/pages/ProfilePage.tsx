@@ -184,7 +184,6 @@ export function ProfilePage() {
                   myBookings={myBookings}
                   isLoadingMyBookings={myBookingsLoading}
                   myBookingsError={myBookingsError}
-                  onEditMyBooking={handleEditMyBooking}
                   onCancelMyBooking={handleCancelMyBooking}
                 />
               ) : (
@@ -193,7 +192,6 @@ export function ProfilePage() {
                     bookings={myBookings}
                     isLoading={myBookingsLoading}
                     errorMessage={myBookingsError}
-                    onEditBooking={handleEditMyBooking}
                     onCancelBooking={handleCancelMyBooking}
                   />
                 </section>
