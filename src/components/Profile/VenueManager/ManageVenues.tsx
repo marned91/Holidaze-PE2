@@ -2,21 +2,17 @@ import type { TVenue } from '../../../types/venueTypes';
 import { formatCurrencyNOK } from '../../../utils/currency';
 import { getLocationText, getVenueImage } from '../../../utils/venue';
 
-type ManageVenueCardProps = {
+type ManageVenuesProps = {
   venue: TVenue;
   onEdit?: (venue: TVenue) => void;
   onDelete?: (venue: TVenue) => void;
 };
 
-export function ManageVenueCard({
-  venue,
-  onEdit,
-  onDelete,
-}: ManageVenueCardProps) {
+export function ManageVenues({ venue, onEdit, onDelete }: ManageVenuesProps) {
   const { url: imageUrl, alt: imageAlt } = getVenueImage(venue);
 
   return (
-    <article className="overflow-hidden rounded-xl border border-gray-300 bg-white shadow-lg p-2 md:p-4">
+    <article className="overflow-hidden rounded-xl border border-gray-300 bg-white shadow-xl p-2 md:p-4">
       <div className="aspect-[16/10] w-full overflow-hidden bg-gray-100">
         {imageUrl ? (
           <img
@@ -51,14 +47,14 @@ export function ManageVenueCard({
           <button
             type="button"
             onClick={() => onEdit?.(venue)}
-            className="rounded-full border px-4 py-1.5 text-sm transition duration-300 ease-out hover:scale-105 cursor-pointer"
+            className="rounded-xl border px-3 py-1.5 text-sm transition duration-300 ease-out hover:scale-105 font-medium-buttons hover:bg-gray-50 cursor-pointer"
           >
             Edit
           </button>
           <button
             type="button"
             onClick={() => onDelete?.(venue)}
-            className="rounded-full border px-4 py-1.5 text-sm transition duration-300 ease-out hover:scale-105 cursor-pointer"
+            className="rounded-xl border px-3 py-1.5 text-sm transition duration-300 ease-out hover:scale-105 font-medium-buttons text-red-700 hover:bg-red-50 cursor-pointer"
           >
             Delete
           </button>

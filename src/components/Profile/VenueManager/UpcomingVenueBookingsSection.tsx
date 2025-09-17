@@ -2,7 +2,7 @@ import type { TVenue, TVenueBookingExtended } from '../../../types/venueTypes';
 import { getVenueImage } from '../../../utils/venue';
 import { formatCurrencyNOK } from '../../../utils/currency';
 
-type VenueManagerUpcomingVenueBookingsProps = {
+type UpcomingVenueBookingsProps = {
   venues: TVenue[];
   isLoading: boolean;
   errorMessage: string | null;
@@ -33,11 +33,11 @@ function monthHeading(key: string) {
   });
 }
 
-export function VenueManagerUpcomingVenueBookings({
+export function UpcomingVenueBookings({
   venues,
   isLoading,
   errorMessage,
-}: VenueManagerUpcomingVenueBookingsProps) {
+}: UpcomingVenueBookingsProps) {
   const today = new Date().toISOString().slice(0, 10);
 
   const upcoming = venues

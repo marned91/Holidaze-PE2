@@ -85,7 +85,7 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
         </div>
       )}
       {!isLoading && !errorMessage && sorted.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {sorted.map(({ booking, venue, totalPriceOverride }) => (
             <MyBookingCard
               key={booking.id}

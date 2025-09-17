@@ -22,6 +22,7 @@ type MyBookingCardProps = {
   onCancel?: (booking: TBooking, venue: TVenue) => void;
   disableActions?: boolean;
   totalPriceOverride?: number;
+  isCancelling?: boolean;
 };
 
 export function MyBookingCard({
@@ -31,6 +32,7 @@ export function MyBookingCard({
   onCancel,
   disableActions,
   totalPriceOverride,
+  isCancelling,
 }: MyBookingCardProps) {
   const from = toIsoDateOnly(booking.dateFrom);
   const to = toIsoDateOnly(booking.dateTo);
@@ -44,7 +46,7 @@ export function MyBookingCard({
 
   return (
     <article
-      className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl p-4"
+      className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl p-2 md:p-4"
       aria-label={`Booking at ${venue.name} from ${from} to ${to}`}
     >
       <div className="aspect-[16/10] w-full overflow-hidden bg-gray-100">
@@ -82,22 +84,25 @@ export function MyBookingCard({
           </li>
         </ul>
 
-        <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="mt-4 flex gap-3">
           <button
             type="button"
             onClick={() => onEdit?.(booking, venue)}
             disabled={!onEdit || disableActions}
-            className="rounded-lg border px-3 py-2 text-sm font-medium-buttons hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg border px-3 py-1.5 text-sm transition duration-300 ease-out hover:scale-105 font-medium-buttons hover:bg-gray-50 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Edit booking
+            Edit
           </button>
           <button
             type="button"
             onClick={() => onCancel?.(booking, venue)}
-            disabled={!onCancel || disableActions}
-            className="rounded-lg border border-red-300 px-3 py-2 text-sm font-medium-buttons text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={!onCancel || disableActions || isCancelling}
+            aria-busy={isCancelling || undefined}
+            className={`rounded-lg border border-red-300 px-3 py-1.5 text-sm text-red-700 hover:bg-red-50 disabled:cursor-not-allowed transition duration-300 ease-out hover:scale-105 font-medium-buttons hover:bg-gray-50 cursor-pointer ${
+              isCancelling ? 'opacity-70 cursor-wait' : ''
+            }`}
           >
-            Cancel booking
+            {isCancelling ? 'Cancelling…' : 'Cancel'}
           </button>
         </div>
       </div>

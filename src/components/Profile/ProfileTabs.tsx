@@ -9,13 +9,16 @@ type ProfileTabsProps = {
 export function ProfileTabs({ active, onChange, isManager }: ProfileTabsProps) {
   if (!isManager) return null;
 
-  const base =
-    'pb-2 text-md font-medium font-small-nav-footer transition-colors';
+  const base = 'font-medium transition-colors';
   const activeCls = 'text-gray-900 border-b-2 border-gray-900';
   const idleCls = 'text-gray-600 hover:text-gray-800';
 
   return (
-    <div className="flex gap-6 pt-10" role="tablist" aria-label="Profile tabs">
+    <div
+      className="flex gap-6 py-1 font-medium-buttons"
+      role="tablist"
+      aria-label="Profile tabs"
+    >
       <button
         type="button"
         role="tab"
@@ -24,7 +27,7 @@ export function ProfileTabs({ active, onChange, isManager }: ProfileTabsProps) {
         onClick={() => onChange('addVenue')}
         className={`${base} ${active === 'addVenue' ? activeCls : idleCls}`}
       >
-        Add Venues
+        My Venues
       </button>
 
       <button

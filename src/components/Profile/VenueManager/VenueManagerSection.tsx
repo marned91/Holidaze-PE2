@@ -1,6 +1,6 @@
 import { ProfileTabs, type ProfileTab } from '../ProfileTabs';
 import { AddVenues } from './AddVenuesSection';
-import { VenueManagerUpcomingVenueBookings } from './VenueManagerVenueBookingsSection';
+import { UpcomingVenueBookings } from './UpcomingVenueBookingsSection';
 import type { TVenue } from '../../../types/venueTypes';
 import type { TBooking } from '../../../types/bookingType';
 import type { TBookingWithVenue } from '../../../types/bookingType';
@@ -58,7 +58,7 @@ export function VenueManager({
 
       {activeTab === 'managerBookings' && (
         <section id="tab-managerBookings" className="mt-2">
-          <VenueManagerUpcomingVenueBookings
+          <UpcomingVenueBookings
             venues={venues}
             isLoading={isLoadingVenues}
             errorMessage={venuesError}

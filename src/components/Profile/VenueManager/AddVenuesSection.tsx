@@ -1,5 +1,5 @@
 import type { TVenue } from '../../../types/venueTypes';
-import { ManageVenueCard } from './ManageVenueCard';
+import { ManageVenues } from './ManageVenues';
 import { AddVenueCard } from './AddVenueButton';
 
 type AddVenuesProps = {
@@ -22,7 +22,7 @@ export function AddVenues({
   return (
     <section id="tab-addVenue">
       <div className="mb-4">
-        <h1 className="text-3xl font-large">Your Venues</h1>
+        <h1 className="text-3xl font-large">My Venues</h1>
       </div>
 
       {isLoading && <p>Loading venues…</p>}
@@ -39,10 +39,10 @@ export function AddVenues({
         </div>
       )}
       {!errorMessage && !isLoading && venues.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <AddVenueCard onClick={onCreateVenue} />
           {venues.map((venue) => (
-            <ManageVenueCard
+            <ManageVenues
               key={venue.id}
               venue={venue}
               onEdit={onEditVenue}

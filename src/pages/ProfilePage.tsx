@@ -167,6 +167,7 @@ export function ProfilePage() {
                 onEditAvatar={() => setAvatarOpen(true)}
                 placeholderSrc={AvatarPlaceholder}
               />
+              <hr className="my-6 border-gray-400" />
               {profile.venueManager ? (
                 <VenueManager
                   activeTab={activeTab}
