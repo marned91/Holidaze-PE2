@@ -1,7 +1,8 @@
 import { useMemo, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getVenue } from '../api/venuesApi';
-import { createBooking, type CreateBookingPayload } from '../api/bookingsApi';
+import { createBooking } from '../api/bookingsApi';
+import type { TCreateBookingPayload } from '../types/bookingType';
 import { ImageCarousel } from '../components/VenueView/ImageCarousel';
 import { VenueInformation } from '../components/VenueView/VenueInformation';
 import { VenueDates } from '../components/VenueView/VenueDates';
@@ -90,7 +91,7 @@ export function VenuePage() {
   const totalText = formatCurrencyNOK(total);
   const locationText = getLocationText(venue);
 
-  async function confirmBooking(payload: CreateBookingPayload) {
+  async function confirmBooking(payload: TCreateBookingPayload) {
     setSubmitting(true);
     setSubmitError(null);
     try {
@@ -109,7 +110,6 @@ export function VenuePage() {
   return (
     <div className="mx-auto max-w-7xl p-6 h-screen overflow-y-scroll">
       <ImageCarousel images={carouselImages} />
-
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-8 lg:gap-12 xl:gap-16 items-start">
         <div className="space-y-8 lg:max-w-[760px] xl:max-w-[820px] 2xl:max-w-[880px]">
           <VenueInformation
@@ -120,7 +120,6 @@ export function VenuePage() {
             description={venue.description ?? undefined}
             facilities={venue.meta}
           />
-
           <section>
             <VenueDates
               value={selectedDates}
@@ -129,7 +128,6 @@ export function VenuePage() {
             />
           </section>
         </div>
-
         <div className="sticky top-15 z-55 shadow-xl">
           <BookingSidebar
             venue={venue}
@@ -151,14 +149,12 @@ export function VenuePage() {
           />
         </div>
       </div>
-
       <LoginRequiredModal
         open={modalView === 'login'}
         onClose={() => setModalView('none')}
         onGotoLogin={() => navigate('/login')}
         onGotoRegister={() => navigate('/signup')}
       />
-
       <BookingReviewModal
         open={modalView === 'review'}
         onClose={() => setModalView('none')}

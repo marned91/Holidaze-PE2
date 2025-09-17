@@ -31,7 +31,7 @@ export function AddVenues({
       {!isLoading && !errorMessage && venues.length === 0 && (
         <div className="rounded-xl border border-dashed border-gray-300 p-8 text-center">
           <p className="mb-4 text-gray-700 font-text">
-            You do not have any venues yet.
+            You do not have any venues yet!
           </p>
           <div className="mx-auto max-w-sm">
             <AddVenueCard onClick={onCreateVenue} />

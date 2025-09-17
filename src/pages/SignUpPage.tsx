@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { registerAccount } from '../api/authApi';
 import type { TRegisterData, TRegisterFieldErrors } from '../types/authTypes';
-import type { SignUpFormValues } from '../types/formTypes';
+import type { TSignUpFormValues } from '../types/formTypes';
 import { signUpSchema } from '../components/Auth/signUpSchema';
 import { TextInput } from '../components/Common/forms/TextInput';
 import { PasswordInput } from '../components/Common/forms/PasswordInput';
@@ -20,7 +20,7 @@ export function SignUpPage() {
     watch,
     setValue,
     formState: { errors, isSubmitting, isValid },
-  } = useForm<SignUpFormValues>({
+  } = useForm<TSignUpFormValues>({
     resolver: yupResolver(signUpSchema),
     mode: 'onChange',
     defaultValues: {
@@ -34,7 +34,7 @@ export function SignUpPage() {
 
   const isVenueManager = watch('isVenueManager');
 
-  async function onSubmit(values: SignUpFormValues) {
+  async function onSubmit(values: TSignUpFormValues) {
     const payload: TRegisterData = {
       name: values.name.trim(),
       email: values.email.trim(),

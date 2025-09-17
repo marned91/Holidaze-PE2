@@ -1,13 +1,10 @@
 import { API_KEY } from './endpoints';
 import { getAccessToken } from '../utils/authStorage';
-
-type DoFetchOptions = RequestInit & {
-  auth?: boolean;
-};
+import type { TDoFetchOptions } from '../types/apiTypes';
 
 export async function doFetch<T>(
   url: string,
-  options: DoFetchOptions = {}
+  options: TDoFetchOptions = {}
 ): Promise<T | null> {
   try {
     const tokenFromAuth = getAccessToken();

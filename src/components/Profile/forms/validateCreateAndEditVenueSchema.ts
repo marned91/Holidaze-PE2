@@ -1,11 +1,11 @@
 import * as yup from 'yup';
-import type { VenueFormValues } from '../../../types/formTypes';
+import type { TVenueFormValues } from '../../../types/formTypes';
 
 export const MIN_GUESTS = 1;
 export const MAX_GUESTS = 25;
 export const CITY_NAME_REGEX = /^[A-ZÆØÅ][\p{L} .'\-]*$/u;
 
-export const venueSchema: yup.ObjectSchema<VenueFormValues> = yup
+export const venueSchema: yup.ObjectSchema<TVenueFormValues> = yup
   .object({
     name: yup
       .string()

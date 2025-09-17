@@ -89,10 +89,10 @@ export function VenueManagerUpcomingVenueBookings({
       {errorMessage && <p className="text-red-600">{errorMessage}</p>}
 
       {!isLoading && !errorMessage && upcoming.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center">
-          <p className="text-gray-700">No upcoming bookings.</p>
+        <div className="rounded-xl border border-dashed border-gray-300 px-8 py-15 text-center text-font">
+          <p className="text-gray-700 mb-2">No upcoming bookings.</p>
           <p className="text-sm text-gray-500">
-            New bookings will show up here.
+            New bookings for your venues will show up here.
           </p>
         </div>
       )}

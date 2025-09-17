@@ -1,7 +1,7 @@
 import * as yup from 'yup';
-import type { LoginFormValues } from '../../types/formTypes';
+import type { TLoginFormValues } from '../../types/formTypes';
 
-export const loginSchema: yup.ObjectSchema<LoginFormValues> = yup.object({
+export const loginSchema: yup.ObjectSchema<TLoginFormValues> = yup.object({
   email: yup
     .string()
     .email('Enter a valid email')

@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form';
-import type { VenueFormValues } from '../../../../types/formTypes';
+import type { TVenueFormValues } from '../../../../types/formTypes';
 import { MAX_GUESTS } from '../validateCreateAndEditVenueSchema';
 
 export function PriceGuestsRow({
@@ -10,7 +10,7 @@ export function PriceGuestsRow({
   const {
     register,
     formState: { errors },
-  } = useFormContext<VenueFormValues>();
+  } = useFormContext<TVenueFormValues>();
 
   return (
     <div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-2">

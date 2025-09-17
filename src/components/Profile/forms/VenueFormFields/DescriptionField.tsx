@@ -1,12 +1,12 @@
 import { useFormContext } from 'react-hook-form';
-import type { VenueFormValues } from '../../../../types/formTypes';
+import type { TVenueFormValues } from '../../../../types/formTypes';
 
 export function DescriptionField({ max = 1000 }: { max?: number }) {
   const {
     register,
     watch,
     formState: { errors },
-  } = useFormContext<VenueFormValues>();
+  } = useFormContext<TVenueFormValues>();
   const value = watch('description') || '';
   return (
     <div>

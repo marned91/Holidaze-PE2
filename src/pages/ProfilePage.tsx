@@ -5,41 +5,34 @@ import { getProfile } from '../api/profilesApi';
 import { UpdateProfilePicture } from '../components/Profile/UpdateProfilePictureModal';
 import { ProfileHeader } from '../components/Profile/ProfileHeader';
 import AvatarPlaceholder from '../assets/avatar-placeholder.png';
-
 import type { TVenue } from '../types/venueTypes';
 import { getVenuesByOwner, deleteVenue } from '../api/venuesApi';
-
-// Tabs type comes from ProfileTabs to keep it in sync with the VenueManager container
 import type { ProfileTab } from '../components/Profile/ProfileTabs';
-
-// Your container that now owns the tabs + page switching
 import { VenueManager } from '../components/Profile/VenueManager/VenueManagerSection';
-
-// Pages used by the manager container (modals still live here)
+import { MyBookingsSection } from '../components/Profile/MyBookingsSection';
+import { getBookingsByProfile, cancelBooking } from '../api/bookingsApi';
+import type { TBooking } from '../types/bookingType';
+import type { TBookingWithVenue } from '../types/bookingType';
 import { AddVenueModal } from '../components/Profile/VenueManager/AddVenueModal';
 import { EditVenueModal } from '../components/Profile/VenueManager/EditVenueModal';
 
 export function ProfilePage() {
   const { username = '' } = useParams<{ username: string }>();
-
   const [profile, setProfile] = useState<TProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-
   const [avatarOpen, setAvatarOpen] = useState(false);
-
-  // Tabs are driven here so ProfilePage can control deep-linking later if you want
   const [activeTab, setActiveTab] = useState<ProfileTab>('myBookings');
-
   const [venues, setVenues] = useState<TVenue[]>([]);
   const [venuesLoading, setVenuesLoading] = useState(false);
   const [venuesError, setVenuesError] = useState<string | null>(null);
-
+  const [myBookings, setMyBookings] = useState<TBookingWithVenue[]>([]);
+  const [myBookingsLoading, setMyBookingsLoading] = useState(false);
+  const [myBookingsError, setMyBookingsError] = useState<string | null>(null);
   const [addVenueOpen, setAddVenueOpen] = useState(false);
   const [editVenueOpen, setEditVenueOpen] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<TVenue | null>(null);
 
-  // Load profile
   useEffect(() => {
     let isActive = true;
     async function run(name: string) {
@@ -70,7 +63,6 @@ export function ProfilePage() {
     };
   }, [username]);
 
-  // Default tab per role
   useEffect(() => {
     if (!profile) return;
     setActiveTab(profile.venueManager ? 'addVenue' : 'myBookings');
@@ -85,7 +77,6 @@ export function ProfilePage() {
     setAddVenueOpen(false);
   }
 
-  // Load venues (manager only, with bookings)
   useEffect(() => {
     let isActive = true;
     async function run() {
@@ -108,6 +99,31 @@ export function ProfilePage() {
     };
   }, [profile, username]);
 
+  useEffect(() => {
+    let isActive = true;
+    async function run() {
+      if (!profile?.name) return;
+      try {
+        setMyBookingsLoading(true);
+        setMyBookingsError(null);
+        const rows = await getBookingsByProfile(profile.name, {
+          withVenue: true,
+        });
+        if (!isActive) return;
+        setMyBookings(rows);
+      } catch (e) {
+        if (isActive)
+          setMyBookingsError((e as Error).message || 'Failed to load bookings');
+      } finally {
+        if (isActive) setMyBookingsLoading(false);
+      }
+    }
+    run();
+    return () => {
+      isActive = false;
+    };
+  }, [profile?.name]);
+
   async function handleDeleteVenue(venue: TVenue) {
     const ok = window.confirm(`Delete “${venue.name}”? This cannot be undone.`);
     if (!ok) return;
@@ -121,13 +137,29 @@ export function ProfilePage() {
     }
   }
 
+  // (Valgfritt) koble actions for my bookings – her gjør vi bare simple alerts/oppdatering
+  function handleEditMyBooking(booking: TBooking, venue: TVenue) {
+    alert(`Edit booking ${booking.id} at ${venue.name}`);
+  }
+
+  async function handleCancelMyBooking(booking: TBooking, venue: TVenue) {
+    const ok = window.confirm(`Cancel booking at “${venue.name}”?`);
+    if (!ok) return;
+    try {
+      await cancelBooking(booking.id);
+      setMyBookings((prev) => prev.filter((b) => b.id !== booking.id));
+      alert('Booking cancelled');
+    } catch (e) {
+      alert((e as Error).message || 'Could not cancel booking');
+    }
+  }
+
   return (
     <div className="bg-light min-h-[calc(100vh-120px)]">
       <div className="mx-auto max-w-[85%] px-4 py-10">
         <div className="rounded-2xl bg-white p-10 shadow-xl">
           {loading && <p>Loading profile…</p>}
           {loadError && <p className="text-red-600">{loadError}</p>}
-
           {profile && (
             <>
               <ProfileHeader
@@ -135,7 +167,6 @@ export function ProfilePage() {
                 onEditAvatar={() => setAvatarOpen(true)}
                 placeholderSrc={AvatarPlaceholder}
               />
-
               {profile.venueManager ? (
                 <VenueManager
                   activeTab={activeTab}
@@ -149,19 +180,26 @@ export function ProfilePage() {
                     setEditVenueOpen(true);
                   }}
                   onDeleteVenue={handleDeleteVenue}
+                  myBookings={myBookings}
+                  isLoadingMyBookings={myBookingsLoading}
+                  myBookingsError={myBookingsError}
+                  onEditMyBooking={handleEditMyBooking}
+                  onCancelMyBooking={handleCancelMyBooking}
                 />
               ) : (
-                // Customer view: no tabs, just "My Bookings" page (placeholder until implemented)
                 <section className="mt-6" id="tab-myBookings">
-                  <h2 className="mb-4 text-lg font-medium">Your Bookings</h2>
-                  {/* TODO: replace with <MyBookingsSection /> */}
+                  <MyBookingsSection
+                    bookings={myBookings}
+                    isLoading={myBookingsLoading}
+                    errorMessage={myBookingsError}
+                    onEditBooking={handleEditMyBooking}
+                    onCancelBooking={handleCancelMyBooking}
+                  />
                 </section>
               )}
             </>
           )}
         </div>
-
-        {/* Modals live here */}
         <UpdateProfilePicture
           username={username}
           open={avatarOpen}
@@ -170,13 +208,11 @@ export function ProfilePage() {
           initialUrl={profile?.avatar?.url}
           initialAlt={profile?.avatar?.alt}
         />
-
         <AddVenueModal
           open={addVenueOpen}
           onClose={() => setAddVenueOpen(false)}
           onCreated={handleVenueCreated}
         />
-
         {selectedVenue && (
           <EditVenueModal
             open={editVenueOpen}

@@ -1,8 +1,8 @@
 import { useFormContext } from 'react-hook-form';
-import type { VenueFormValues } from '../../../../types/formTypes';
+import type { TVenueFormValues } from '../../../../types/formTypes';
 
 export function FacilitiesField() {
-  const { register } = useFormContext<VenueFormValues>();
+  const { register } = useFormContext<TVenueFormValues>();
   return (
     <fieldset className="mt-2 pb-4">
       <legend className="mb-2 text-sm font-medium font-text">

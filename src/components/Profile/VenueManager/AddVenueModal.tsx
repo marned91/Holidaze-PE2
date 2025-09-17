@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Modal } from '../../Common/Modal';
 import { createVenue } from '../../../api/venuesApi';
 import type { CreateVenueInput, TVenue } from '../../../types/venueTypes';
-import type { VenueFormValues } from '../../../types/formTypes';
+import type { TVenueFormValues } from '../../../types/formTypes';
 import { venueSchema } from '../forms/validateCreateAndEditVenueSchema';
 
 import { TitleField } from '../forms/VenueFormFields/TitleField';
@@ -27,7 +27,7 @@ export function AddVenueModal({
   onClose,
   onCreated,
 }: AddVenueModalProps) {
-  const methods = useForm<VenueFormValues>({
+  const methods = useForm<TVenueFormValues>({
     resolver: yupResolver(venueSchema),
     mode: 'onChange',
     reValidateMode: 'onChange',
@@ -63,7 +63,7 @@ export function AddVenueModal({
     }
   }, [open, reset]);
 
-  async function onSubmit(values: VenueFormValues) {
+  async function onSubmit(values: TVenueFormValues) {
     const media = values.images
       .map((item, index) => ({
         url: item.url.trim(),

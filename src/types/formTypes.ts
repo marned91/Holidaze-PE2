@@ -1,9 +1,9 @@
-export type LoginFormValues = {
+export type TLoginFormValues = {
   email: string;
   password: string;
 };
 
-export type SignUpFormValues = {
+export type TSignUpFormValues = {
   name: string;
   email: string;
   password: string;
@@ -11,17 +11,17 @@ export type SignUpFormValues = {
   avatarUrl: string;
 };
 
-export type UpdateProfilePictureFormValues = {
+export type TUpdateProfilePictureFormValues = {
   avatarUrl: string;
   avatarAlt?: string;
 };
 
-export type FormImage = { url: string };
+export type TFormImage = { url: string };
 
-export type VenueFormValues = {
+export type TVenueFormValues = {
   name: string;
   description: string;
-  images: FormImage[];
+  images: TFormImage[];
   maxGuests: number;
   price: number;
   city: string;

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Modal } from '../Common/Modal';
 import { setProfilePicture } from '../../api/profilesApi';
-import type { UpdateProfilePictureFormValues } from '../../types/formTypes';
+import type { TUpdateProfilePictureFormValues } from '../../types/formTypes';
 import { profilePictureSchema } from './forms/profilePictureSchema';
 import { setValueAsTrim } from '../../utils/formValueTransforms';
 
@@ -29,7 +29,7 @@ export function UpdateProfilePicture({
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<UpdateProfilePictureFormValues>({
+  } = useForm<TUpdateProfilePictureFormValues>({
     resolver: yupResolver(profilePictureSchema),
     mode: 'onChange',
     reValidateMode: 'onChange',
@@ -49,7 +49,7 @@ export function UpdateProfilePicture({
     }
   }, [open, initialUrl, initialAlt, reset]);
 
-  async function onSubmit(values: UpdateProfilePictureFormValues) {
+  async function onSubmit(values: TUpdateProfilePictureFormValues) {
     try {
       const data = await setProfilePicture(
         username,

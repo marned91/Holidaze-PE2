@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from '../../Common/Modal';
 import { updateVenue } from '../../../api/venuesApi';
 import type { TVenue } from '../../../types/venueTypes';
-import type { VenueFormValues } from '../../../types/formTypes';
+import type { TVenueFormValues } from '../../../types/formTypes';
 import { venueSchema } from '../forms/validateCreateAndEditVenueSchema';
 import {
   venueToFormValues,
@@ -38,7 +38,7 @@ export function EditVenueModal({
 }: EditVenueModalProps) {
   const navigate = useNavigate();
 
-  const methods = useForm<VenueFormValues>({
+  const methods = useForm<TVenueFormValues>({
     resolver: yupResolver(venueSchema),
     mode: 'onChange',
     reValidateMode: 'onChange',
@@ -56,7 +56,7 @@ export function EditVenueModal({
     if (open) reset(venueToFormValues(venue));
   }, [open, venue, reset]);
 
-  async function onSubmit(values: VenueFormValues) {
+  async function onSubmit(values: TVenueFormValues) {
     const payload = formValuesToCreatePayload(values);
     try {
       const updated = await updateVenue(venue.id, payload);

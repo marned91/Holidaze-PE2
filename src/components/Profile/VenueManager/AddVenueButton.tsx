@@ -10,7 +10,7 @@ export function AddVenueCard({ onClick }: AddVenueCardProps) {
       <button
         type="button"
         onClick={onClick}
-        className="group grid w-full place-items-center p-6 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight rounded-xl border border-gray-300 aspect-[16/10] transition duration-300 ease-out hover:scale-105 cursor-pointer"
+        className="group grid w-full font-medium-buttons font-medium place-items-center p-6 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight rounded-xl border border-gray-300 aspect-[16/10] transition duration-300 ease-out hover:scale-105 cursor-pointer"
         aria-label="Add venue"
         title="Add venue"
       >

@@ -1,12 +1,12 @@
 import * as yup from 'yup';
-import type { SignUpFormValues } from '../../types/formTypes';
+import type { TSignUpFormValues } from '../../types/formTypes';
 
 function isNoroffStudentEmail(email?: string): boolean {
   if (!email) return false;
   return /^[^@]+@stud\.noroff\.no$/i.test(email.trim());
 }
 
-export const signUpSchema: yup.ObjectSchema<SignUpFormValues> = yup
+export const signUpSchema: yup.ObjectSchema<TSignUpFormValues> = yup
   .object({
     name: yup
       .string()

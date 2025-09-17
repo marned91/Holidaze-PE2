@@ -1,7 +1,7 @@
 import type { TVenue } from '../types/venueTypes';
-import type { VenueFormValues } from '../types/formTypes';
+import type { TVenueFormValues } from '../types/formTypes';
 
-export function venueToFormValues(venue: TVenue): VenueFormValues {
+export function venueToFormValues(venue: TVenue): TVenueFormValues {
   return {
     name: venue.name ?? '',
     description: venue.description ?? '',
@@ -21,7 +21,7 @@ export function venueToFormValues(venue: TVenue): VenueFormValues {
   };
 }
 
-export function formValuesToCreatePayload(values: VenueFormValues) {
+export function formValuesToCreatePayload(values: TVenueFormValues) {
   const media = values.images
     .map((item, index) => ({
       url: item.url.trim(),

@@ -1,11 +1,11 @@
 import { useFormContext } from 'react-hook-form';
-import type { VenueFormValues } from '../../../../types/formTypes';
+import type { TVenueFormValues } from '../../../../types/formTypes';
 
 export function CityField() {
   const {
     register,
     formState: { errors },
-  } = useFormContext<VenueFormValues>();
+  } = useFormContext<TVenueFormValues>();
   return (
     <div className="pb-4">
       <label className="mb-1 block text-sm font-medium font-text">

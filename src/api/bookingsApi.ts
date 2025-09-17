@@ -1,19 +1,15 @@
-import { API_BOOKINGS } from './endpoints';
+import { API_BOOKINGS, API_PROFILES } from './endpoints';
 import { doFetch } from './doFetch';
-
-export type CreateBookingPayload = {
-  dateFrom: string;
-  dateTo: string;
-  guests: number;
-  venueId: string;
-};
-
-export type CreateBookingResponse = { id: string };
+import {
+  type TBookingWithVenue,
+  type TCreateBookingPayload,
+  type TCreateBookingResponse,
+} from '../types/bookingType';
 
 export async function createBooking(
-  payload: CreateBookingPayload
-): Promise<CreateBookingResponse> {
-  const data = await doFetch<CreateBookingResponse>(API_BOOKINGS, {
+  payload: TCreateBookingPayload
+): Promise<TCreateBookingResponse> {
+  const data = await doFetch<TCreateBookingResponse>(API_BOOKINGS, {
     method: 'POST',
     auth: true,
     body: JSON.stringify(payload),
@@ -23,4 +19,27 @@ export async function createBooking(
     throw new Error('Failed to create booking');
   }
   return data;
+}
+
+export async function getBookingsByProfile(
+  username: string,
+  opts?: { withVenue?: boolean }
+): Promise<TBookingWithVenue[]> {
+  const params = new URLSearchParams();
+  if (opts?.withVenue) params.set('_venue', 'true');
+
+  const query = params.toString();
+  const url = `${API_PROFILES}/${encodeURIComponent(username)}/bookings${
+    query ? `?${query}` : ''
+  }`;
+
+  const data = await doFetch<TBookingWithVenue[]>(url, { auth: true });
+  return data ?? [];
+}
+
+export async function cancelBooking(bookingId: string): Promise<void> {
+  await doFetch<void>(`${API_BOOKINGS}/${encodeURIComponent(bookingId)}`, {
+    method: 'DELETE',
+    auth: true,
+  });
 }

@@ -1,7 +1,7 @@
 import * as yup from 'yup';
-import type { UpdateProfilePictureFormValues } from '../../../types/formTypes';
+import type { TUpdateProfilePictureFormValues } from '../../../types/formTypes';
 
-export const profilePictureSchema: yup.ObjectSchema<UpdateProfilePictureFormValues> =
+export const profilePictureSchema: yup.ObjectSchema<TUpdateProfilePictureFormValues> =
   yup
     .object({
       avatarUrl: yup

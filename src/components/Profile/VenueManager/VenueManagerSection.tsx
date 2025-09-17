@@ -2,18 +2,27 @@ import { ProfileTabs, type ProfileTab } from '../ProfileTabs';
 import { AddVenues } from './AddVenuesSection';
 import { VenueManagerUpcomingVenueBookings } from './VenueManagerVenueBookingsSection';
 import type { TVenue } from '../../../types/venueTypes';
+import type { TBooking } from '../../../types/bookingType';
+import type { TBookingWithVenue } from '../../../types/bookingType';
+import { MyBookingsSection } from '../MyBookingsSection';
 
 type VenueManagerProps = {
   activeTab: ProfileTab;
   onChangeTab: (next: ProfileTab) => void;
-
   venues: TVenue[];
   isLoadingVenues: boolean;
   venuesError: string | null;
 
+  myBookings?: TBookingWithVenue[];
+  isLoadingMyBookings?: boolean;
+  myBookingsError?: string | null;
+
   onCreateVenue: () => void;
   onEditVenue: (venue: TVenue) => void;
   onDeleteVenue: (venue: TVenue) => void;
+
+  onEditMyBooking?: (booking: TBooking, venue: TVenue) => void;
+  onCancelMyBooking?: (booking: TBooking, venue: TVenue) => void;
 };
 
 export function VenueManager({
@@ -22,9 +31,14 @@ export function VenueManager({
   venues,
   isLoadingVenues,
   venuesError,
+  myBookings,
+  isLoadingMyBookings,
+  myBookingsError,
   onCreateVenue,
   onEditVenue,
   onDeleteVenue,
+  onEditMyBooking,
+  onCancelMyBooking,
 }: VenueManagerProps) {
   return (
     <>
@@ -54,7 +68,13 @@ export function VenueManager({
 
       {activeTab === 'myBookings' && (
         <section id="tab-myBookings" className="mt-2">
-          {/* Her rendrer du samme MyBookingsSection som for customers */}
+          <MyBookingsSection
+            bookings={myBookings ?? []}
+            isLoading={!!isLoadingMyBookings}
+            errorMessage={myBookingsError ?? null}
+            onEditBooking={onEditMyBooking}
+            onCancelBooking={onCancelMyBooking}
+          />
         </section>
       )}
     </>

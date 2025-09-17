@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { login } from '../api/authApi';
-import type { LoginFormValues } from '../types/formTypes';
+import type { TLoginFormValues } from '../types/formTypes';
 import { loginSchema } from '../components/Auth/loginSchema';
 import { TextInput } from '../components/Common/forms/TextInput';
 import { PasswordInput } from '../components/Common/forms/PasswordInput';
@@ -16,12 +16,12 @@ export function LoginPage() {
     handleSubmit,
     setError,
     formState: { errors, isSubmitting, isValid },
-  } = useForm<LoginFormValues>({
+  } = useForm<TLoginFormValues>({
     resolver: yupResolver(loginSchema),
     mode: 'onChange',
   });
 
-  async function onLoginSubmit(values: LoginFormValues) {
+  async function onLoginSubmit(values: TLoginFormValues) {
     try {
       const account = await login(values.email.trim(), values.password);
       const username = account?.name || '';

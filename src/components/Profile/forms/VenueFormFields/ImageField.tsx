@@ -1,5 +1,5 @@
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import type { VenueFormValues } from '../../../../types/formTypes';
+import type { TVenueFormValues } from '../../../../types/formTypes';
 import { ImageUrlRow } from '../ImageUrlRow';
 
 export function ImagesField() {
@@ -8,7 +8,7 @@ export function ImagesField() {
     register,
     watch,
     formState: { errors },
-  } = useFormContext<VenueFormValues>();
+  } = useFormContext<TVenueFormValues>();
   const { fields, append, remove } = useFieldArray({ control, name: 'images' });
   const imagesWatch = watch('images') || [];
 
