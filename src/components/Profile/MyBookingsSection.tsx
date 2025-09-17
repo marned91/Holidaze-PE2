@@ -29,7 +29,6 @@ type WithBookings = BaseProps & {
 };
 
 function isUpcoming(booking: TBooking, todayIso: string) {
-  // Bruk dateTo slik at pågående/framtidige bookinger regnes som "upcoming"
   return (booking.dateTo || '').slice(0, 10) >= todayIso;
 }
 
@@ -42,7 +41,6 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
     onCancelBooking,
   } = props;
 
-  // Normaliser input til Item[]
   const normalized: Item[] =
     'items' in props && props.items
       ? props.items
@@ -57,7 +55,6 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
           }))
       : [];
 
-  // Lokalt overlay av oppdaterte bookinger for å speile endringer uten å tvinge parent til refetch
   const [editedById, setEditedById] = useState<Record<string, TBooking>>({});
   const displayed: Item[] = useMemo(
     () =>
@@ -68,7 +65,6 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
     [normalized, editedById]
   );
 
-  // Modal-state for edit
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selected, setSelected] = useState<{
     booking: TBooking;
@@ -78,14 +74,12 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
   function openEdit(booking: TBooking, venue: TVenue) {
     setSelected({ booking, venue });
     setIsEditOpen(true);
-    onEditBooking?.(booking, venue); // valgfritt: bevar ekstern callback
+    onEditBooking?.(booking, venue);
   }
 
-  // Filter state: all / upcoming / past
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'past'>('all');
   const todayIso = new Date().toISOString().slice(0, 10);
 
-  // Tellemerker for knappene
   const counts = useMemo(() => {
     let upcoming = 0;
     let past = 0;
@@ -96,7 +90,6 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
     return { all: displayed.length, upcoming, past };
   }, [displayed, todayIso]);
 
-  // Filter + sortering
   const filtered = displayed.filter(({ booking }) => {
     if (filter === 'all') return true;
     const u = isUpcoming(booking, todayIso);
@@ -107,19 +100,19 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
     if (filter === 'all') {
       const aU = isUpcoming(a.booking, todayIso);
       const bU = isUpcoming(b.booking, todayIso);
-      if (aU !== bU) return aU ? -1 : 1; // kommende først
+      if (aU !== bU) return aU ? -1 : 1;
     }
-    // sekundærsortering på startdato (stigende)
     return a.booking.dateFrom.localeCompare(b.booking.dateFrom);
   });
 
   return (
     <section>
-      <div className="mb-3 flex items-center justify-between gap-3">
+      <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-3xl font-medium font-medium-buttons">{title}</h2>
-
-        {/* Filterknapper */}
-        <div className="flex gap-2 text-sm">
+        <div
+          className="flex w-full sm:w-auto flex-wrap items-center gap-2 overflow-x-auto sm:overflow-visible -mx-1 px-1"
+          aria-label="Filter bookings"
+        >
           {(['all', 'upcoming', 'past'] as const).map((key) => {
             const isActive = filter === key;
             const label =
@@ -134,16 +127,17 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
               <button
                 key={key}
                 type="button"
+                aria-pressed={isActive}
                 onClick={() => setFilter(key)}
-                className={`flex items-center gap-2 rounded-xl bg-dark text-white border px-3 py-1.5 ${
+                className={`shrink-0 snap-start flex items-center gap-2 rounded-xl border px-3 py-1.5 text-sm transition-colors ${
                   isActive
-                    ? 'border-gray-900 bg-gray-900'
-                    : 'border-gray-300 text-gray-700 hover:bg-black'
+                    ? 'border-gray-900 bg-dark text-white'
+                    : 'border-gray-300 text-gray-700 hover:bg-dark hover:text-white'
                 }`}
               >
                 <span>{label}</span>
                 <span
-                  className={`min-w-[1.5rem] rounded-full bg-white px-2 py-0.5 text-center text-xs ${
+                  className={`min-w-[1.5rem] rounded-full px-2 py-0.5 text-center text-xs ${
                     isActive
                       ? 'bg-white text-gray-900'
                       : 'bg-gray-200 text-gray-700'
@@ -201,7 +195,6 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
         </div>
       )}
 
-      {/* Edit-modal (renderes når man klikker Edit) */}
       {selected && (
         <EditBookingModal
           open={isEditOpen}
@@ -209,7 +202,6 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
           booking={selected.booking}
           venue={selected.venue}
           onUpdated={(updated) => {
-            // Speil endringen i UI lokalt
             setEditedById((prev) => ({ ...prev, [updated.id]: updated }));
             setIsEditOpen(false);
           }}
