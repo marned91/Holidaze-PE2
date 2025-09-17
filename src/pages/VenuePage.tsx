@@ -1,3 +1,4 @@
+// pages/VenuePage.tsx
 import { useMemo, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getVenue } from '../api/venuesApi';
@@ -15,7 +16,7 @@ import { BookingConfirmedModal } from '../components/Booking/BookingConfirmedMod
 import { normalizeDateRange } from '../utils/dateRange';
 import { formatCurrencyNOK } from '../utils/currency';
 import { getLocationText, getVenueImage } from '../utils/venue';
-import { dateRangeLabel, nightsBetween } from '../utils/date';
+import { dateRangeLabel, nightsBetween, formatISOYmd } from '../utils/date'; // <-- viktig
 
 type ModalView = 'none' | 'login' | 'review' | 'confirmed';
 
@@ -138,9 +139,10 @@ export function VenuePage() {
                 setModalView('login');
                 return;
               }
+              // Bruk date-only (lokal) i state videre inn i review
               setSelectedDates({
-                startDate: range.from.toISOString().slice(0, 10),
-                endDate: range.to.toISOString().slice(0, 10),
+                startDate: formatISOYmd(range.from),
+                endDate: formatISOYmd(range.to),
               });
               (window as any).__bookingGuests = guests;
               setSubmitError(null);
@@ -149,12 +151,14 @@ export function VenuePage() {
           />
         </div>
       </div>
+
       <LoginRequiredModal
         open={modalView === 'login'}
         onClose={() => setModalView('none')}
         onGotoLogin={() => navigate('/login')}
         onGotoRegister={() => navigate('/signup')}
       />
+
       <BookingReviewModal
         open={modalView === 'review'}
         onClose={() => setModalView('none')}
@@ -162,12 +166,14 @@ export function VenuePage() {
           const range = normalizeDateRange(selectedDates);
           const guests = (window as any).__bookingGuests ?? 1;
           if (!range) return;
-          confirmBooking({
-            dateFrom: range.from.toISOString(),
-            dateTo: range.to.toISOString(),
+          // Send date-only til API
+          const payload: TCreateBookingPayload = {
+            dateFrom: formatISOYmd(range.from),
+            dateTo: formatISOYmd(range.to),
             guests,
             venueId: venue.id,
-          });
+          };
+          confirmBooking(payload);
         }}
         venueTitle={venue.name}
         locationText={locationText}

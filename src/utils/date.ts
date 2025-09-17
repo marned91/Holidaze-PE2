@@ -29,7 +29,9 @@ export function isWithinInclusiveDay(d: Date, a: Date, b: Date): boolean {
 }
 
 export function nightsBetween(from: Date, to: Date): number {
-  const ms = to.getTime() - from.getTime();
+  const a = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+  const b = new Date(to.getFullYear(), to.getMonth(), to.getDate());
+  const ms = b.getTime() - a.getTime();
   return Math.max(1, Math.round(ms / 86400000));
 }
 

@@ -110,24 +110,11 @@ export function EditBookingModal({
     [dateFrom, dateTo]
   );
 
-  // Normalisering + tilgjengelighet (samme logikk som i BookingSidebar)
+  // Normalisering
   const normalizedRange = useMemo(
     () => normalizeDateRange(dateRangeValue),
     [dateRangeValue]
   );
-
-  const availability = useMemo(() => {
-    if (!normalizedRange) return null;
-    const venueSource = loadedVenue || venue;
-    return isVenueAvailableForRange(venueSource, normalizedRange);
-  }, [loadedVenue, venue, normalizedRange]);
-
-  const numberOfNights = useMemo(() => {
-    if (!normalizedRange) return 0;
-    return nightsBetween(normalizedRange.from, normalizedRange.to);
-  }, [normalizedRange]);
-
-  const maxGuests = loadedVenue?.maxGuests ?? venue.maxGuests;
 
   // Utilgjengelige perioder (ekskluder denne bookingen og identisk range)
   const unavailableRaw = (loadedVenue?.bookings ?? []) as Array<{
@@ -145,6 +132,33 @@ export function EditBookingModal({
       return !sameId && !sameRange;
     });
   }, [unavailableRaw, booking.id, booking.dateFrom, booking.dateTo]);
+
+  // Ikke vis tilgjengelighetsstatus før brukeren faktisk har endret datoene
+  const isSameAsOriginal =
+    toDateOnly(dateFrom || '') === toDateOnly(booking.dateFrom) &&
+    toDateOnly(dateTo || '') === toDateOnly(booking.dateTo);
+
+  // Tilgjengelighet mot "andre" bookinger (ikke denne)
+  const venueForAvailability: TVenue = useMemo(() => {
+    const src = (loadedVenue || venue) as TVenue;
+    return {
+      ...src,
+      bookings: unavailableFiltered as any,
+    };
+  }, [loadedVenue, venue, unavailableFiltered]);
+
+  const availability = useMemo(() => {
+    if (!normalizedRange) return null;
+    if (isSameAsOriginal) return null;
+    return isVenueAvailableForRange(venueForAvailability, normalizedRange);
+  }, [normalizedRange, isSameAsOriginal, venueForAvailability]);
+
+  const numberOfNights = useMemo(() => {
+    if (!normalizedRange) return 0;
+    return nightsBetween(normalizedRange.from, normalizedRange.to);
+  }, [normalizedRange]);
+
+  const maxGuests = loadedVenue?.maxGuests ?? venue.maxGuests;
 
   // Valideringer
   const hasDateOrderError =
@@ -245,7 +259,7 @@ export function EditBookingModal({
           )}
         </div>
 
-        {/* Dates via DateRangeFields – popover-kalender (blokkerer fortid + opptatt) */}
+        {/* Date range – to felt med små popovers (blokkerer fortid + opptatte datoer) */}
         <div className="font-text">
           <DateRangeFields
             value={dateRangeValue}
@@ -256,11 +270,11 @@ export function EditBookingModal({
             variant="calendar"
             labelFrom="Start"
             labelTo="End"
-            bookings={unavailableFiltered} // blokker utilgjengelige perioder (uten egen booking)
-            months={1} // kompakt i modal; sett 2 hvis du ønsker dobbel visning
+            bookings={unavailableFiltered}
+            months={1}
           />
 
-          {/* Live hint */}
+          {/* Live hint – vises først når brukeren har endret datoer */}
           {normalizedRange && availability === true && (
             <p className="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
               Available for the selected dates!
@@ -273,7 +287,7 @@ export function EditBookingModal({
           )}
         </div>
 
-        {/* Regelbrudd-meldinger (rekkefølge / overlap) */}
+        {/* Regelbrudd (rekkefølge / overlap) */}
         {!!dateFrom &&
           !!dateTo &&
           (hasDateOrderError || hasOverlapWithUnavailableDates) && (
@@ -284,7 +298,7 @@ export function EditBookingModal({
             </div>
           )}
 
-        {/* Total-info (valgfritt, nyttig i en redigeringsmodal) */}
+        {/* Total-info */}
         {normalizedRange && availability === true && (
           <div className="mt-2 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-800">
             <div className="flex items-center justify-between">
