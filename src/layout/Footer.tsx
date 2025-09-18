@@ -8,19 +8,13 @@ export function Footer() {
   return (
     <footer className="bg-dark text-white">
       <div className="mx-auto max-w-7xl px-4 py-8">
-        {/* Mobil: kolonne. >= md: tre kolonner (logo | copyright | sosiale medier) */}
         <div className="flex flex-col items-center gap-6 md:grid md:grid-cols-[auto_1fr_auto] md:items-center md:gap-8">
-          {/* Logo */}
           <Link to="/" className="shrink-0" aria-label="Holidaze home">
             <img src={Logo} alt="holidaZe" className="h-8 w-auto md:h-7" />
           </Link>
-
-          {/* Copyright – midtstilt på mobil og desktop */}
           <p className="order-3 text-center text-xs opacity-90 md:order-none md:text-sm md:justify-self-center">
             &copy; {year} HolidaZe. All rights reserved.
           </p>
-
-          {/* Sosiale medier */}
           <div className="order-2 flex items-center gap-3 md:order-none">
             <a
               href="https://facebook.com"
@@ -31,7 +25,6 @@ export function Footer() {
             >
               <FaFacebookF className="text-[20px]" />
             </a>
-
             <a
               href="https://instagram.com"
               target="_blank"
