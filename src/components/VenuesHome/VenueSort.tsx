@@ -14,14 +14,14 @@ export function VenueSort({
   const selectId = 'venue-sort';
 
   return (
-    <div className="inline-flex items-center gap-2 text-sm text-gray-700">
+    <div className="inline-flex items-center gap-2 text-sm text-gray-700 pt-5 md:pt-0">
       <label htmlFor={selectId}>Sort by:</label>
       <select
         id={selectId}
         value={sortOrder}
         onChange={(event) => onChange(event.target.value as SortOrder)}
         disabled={disabled}
-        className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm disabled:opacity-50"
+        className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm"
       >
         <option value="newest">Newest first</option>
         <option value="oldest">Oldest first</option>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FaMapMarkerAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaUser } from 'react-icons/fa';
 import type { TVenue } from '../../types/venueTypes';
 import {
   getLocationText,
@@ -22,34 +22,38 @@ export function VenueCard({ venue }: VenueCardProps) {
   return (
     <Link
       to={`/venue/${encodeURIComponent(venue.id)}`}
-      className="block rounded-lg focus:outline-none focus:ring-2 focus:ring-highlight"
+      className="block h-full rounded-lg focus:outline-none focus:ring-2 focus:ring-highlight"
       aria-label={`View ${venue.name || 'venue'}`}
     >
-      <article className="overflow-hidden rounded-lg bg-white shadow-xl transition duration-300 ease-out hover:scale-105">
-        <img
-          src={imageUrl}
-          alt={alt}
-          className="h-40 w-full object-cover"
-          loading="lazy"
-          decoding="async"
-        />
-
-        <div className="p-3">
-          <h3 className="font-small-nav-footer font-medium">
-            {venue.name || 'Untitled venue'}
-          </h3>
-
-          <div className="mt-1 flex items-center text-sm text-gray-600 font-text">
-            <FaMapMarkerAlt className="mr-1 text-main-light" />
-            <span>{locationText}</span>
+      <article className="h-full flex flex-col overflow-hidden rounded-lg bg-white shadow-xl transition duration-300 ease-out hover:scale-105">
+        <div className="aspect-[16/10] w-full overflow-hidden">
+          <img
+            src={imageUrl}
+            alt={alt}
+            className="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div className="flex flex-1 flex-col p-3">
+          <div className="space-y-1">
+            <h3 className="font-small-nav-footer font-medium">
+              {venue.name || 'Untitled venue'}
+            </h3>
+            <div className="flex items-center text-sm text-gray-600 font-text">
+              <FaMapMarkerAlt className="mr-1 text-main-light" />
+              <span>{locationText}</span>
+            </div>
+            <div className="flex items-center text-sm text-gray-600 font-text">
+              <FaUser className="mr-1 text-main-light" />
+              <span>{guestText}</span>
+            </div>
           </div>
-
-          <p className="mt-1 text-sm text-gray-600 font-text">
-            {guestText}
-            <br />
-            <span className="font-text font-semibold">Price</span>{' '}
-            {formatCurrencyNOK(venue.price)}
-          </p>
+          <div className="mt-auto pt-2 text-sm text-gray-800 font-text">
+            <span className="font-semibold">
+              Price {formatCurrencyNOK(venue.price)}
+            </span>
+          </div>
         </div>
       </article>
     </Link>

@@ -18,7 +18,7 @@ export function ProfileHeader({
 
   return (
     <div
-      className={`flex flex-col md:flex-row md:items-center gap-6 p-6 mb-3" ${
+      className={`flex flex-col md:flex-row md:items-center gap-6 p-2 md:p-6 mb-3" ${
         className || ''
       }`}
     >

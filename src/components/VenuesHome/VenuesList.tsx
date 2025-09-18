@@ -148,7 +148,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   }
 
   return (
-    <section className="m-auto w-full px-10 py-10" aria-busy={loading}>
+    <section className="m-auto w-full px-5 md:px-10 py-10" aria-busy={loading}>
       <div className="mb-4 flex justify-center">
         <VenuesFilters
           cities={cityOptions}
@@ -163,7 +163,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
 
       <div className="mb-6 border-b border-gray-200" />
 
-      <div className="mb-4 flex items-end justify-between gap-5">
+      <div className="mb-4 flex-wrap sm:flex items-end justify-between gap-5">
         <h2 className="text-2xl font-medium">Venues</h2>
         {!loading && !loadError && totalVenues > 0 && (
           <VenueSort

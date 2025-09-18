@@ -152,7 +152,7 @@ export function ProfilePage() {
   return (
     <div className="bg-light min-h-[calc(100vh-120px)]">
       <div className="mx-auto max-w-[85%] px-4 py-10">
-        <div className="rounded-2xl bg-white p-10 shadow-xl">
+        <div className="rounded-xl bg-white p-5 md:p-10 shadow-xl">
           {loading && <p>Loading profile…</p>}
           {loadError && <p className="text-red-600">{loadError}</p>}
           {profile && (

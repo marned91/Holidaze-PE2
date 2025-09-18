@@ -23,7 +23,6 @@ function getMaxGuests(venue: TVenue): number {
 
 export function isInNorway(venue: TVenue): boolean {
   const country = normalizeString(venue.location?.country);
-  // match “Norway”, “Norge”, and optional country code “NO”
   return (
     country === 'norway' ||
     country === 'norge' ||

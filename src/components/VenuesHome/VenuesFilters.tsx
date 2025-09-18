@@ -100,7 +100,7 @@ export function VenuesFilters({
       ? `Dates: ${formatDotFromISO(dateRange.startDate) || '…'} → ${
           formatDotFromISO(dateRange.endDate) || '…'
         }`
-      : 'Dates';
+      : 'Select dates';
 
   const baseButton =
     'relative inline-flex items-center gap-3 rounded-full border px-4 py-2 shadow-sm transition-colors';

@@ -16,7 +16,7 @@ export function ProfileTabs({ active, onChange, isManager }: ProfileTabsProps) {
 
   return (
     <div
-      className="flex flex-wrap items-end justify-center sm:justify-start gap-x-6 gap-y-2 py-1 font-medium-buttons"
+      className="flex flex-wrap items-end justify-center md:justify-start gap-x-6 gap-y-2 py-1 font-medium-buttons"
       role="tablist"
       aria-label="Profile tabs"
     >
