@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { type TVenue } from '../../types/venueTypes';
 import { VenueSort } from './VenueSort';
 import { VenueCard } from './VenueCard';
-import { VenuesFilters, type DateRange } from './VenuesFilters';
+import { VenuesFilters } from './VenuesFilters';
+import type { TDateRange } from '../../types/dateType';
 import { useVenues } from './hooks/useVenues';
 import { Pagination } from './Pagination';
 import {
@@ -28,7 +29,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [minGuests, setMinGuests] = useState<number | null>(null);
-  const [dateRange, setDateRange] = useState<DateRange>({});
+  const [dateRange, setDateRange] = useState<TDateRange>({});
 
   useEffect(() => {
     if (!loading) setCurrentPage(1);

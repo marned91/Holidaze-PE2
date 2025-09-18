@@ -2,11 +2,7 @@ import { useMemo, useState } from 'react';
 import { DateRangeFields } from '../Common/DateRangeFields';
 import { FaTimes } from 'react-icons/fa';
 import { formatDotFromISO } from '../../utils/date';
-
-export type DateRange = {
-  startDate?: string;
-  endDate?: string;
-};
+import type { TDateRange } from '../../types/dateType';
 
 type VenuesFiltersProps = {
   cities: string[];
@@ -16,8 +12,8 @@ type VenuesFiltersProps = {
   minGuests: number | null;
   onMinGuestsChange: (nextMinGuests: number | null) => void;
 
-  dateRange: DateRange;
-  onDateRangeChange: (nextDateRange: DateRange) => void;
+  dateRange: TDateRange;
+  onDateRangeChange: (nextDateRange: TDateRange) => void;
 };
 
 export function VenuesFilters({
@@ -32,6 +28,7 @@ export function VenuesFilters({
   const [isCityOpen, setIsCityOpen] = useState(false);
   const [isGuestsOpen, setIsGuestsOpen] = useState(false);
   const [isDatesOpen, setIsDatesOpen] = useState(false);
+  const isAnyOpen = isCityOpen || isGuestsOpen || isDatesOpen;
 
   const [cityDraft, setCityDraft] = useState<string | null>(selectedCity);
   const [guestsDraft, setGuestsDraft] = useState<string>(
@@ -107,24 +104,39 @@ export function VenuesFilters({
   const inactiveButton = `${baseButton} border-gray-300 bg-white hover:bg-gray-50`;
   const activeButton = `${baseButton} border-gray-400 bg-gray-50`;
 
+  const popoverPanelClass =
+    'sm:absolute sm:left-0 sm:top-full sm:mt-2 ' +
+    'fixed left-1/2 top-28 -translate-x-1/2 ' +
+    'z-[90] w-[min(92vw,22rem)] sm:w-64 max-h-[80vh] overflow-auto overscroll-contain ' +
+    'rounded-lg border border-gray-200 bg-white p-3 shadow-lg';
+
   return (
-    <div className="mx-auto mb-4 max-w-6xl px-4">
-      <div className="relative flex flex-wrap gap-3">
-        <div className="relative inline-block">
+    <div className="mx-auto mb-4 max-w-6xl px-4 relative">
+      {isAnyOpen && (
+        <button
+          type="button"
+          aria-label="Close filters"
+          onClick={closeAll}
+          className="fixed inset-0 z-[70] bg-transparent cursor-default"
+        />
+      )}
+      <div className="relative flex flex-wrap justify-center gap-3">
+        <div
+          className={`relative inline-block ${isCityOpen ? 'z-[80]' : 'z-10'}`}
+        >
           <button
             type="button"
             onClick={() => {
               const willOpen = !isCityOpen;
               if (willOpen) setCityDraft(selectedCity ?? null);
-              openOnly(willOpen ? 'city' : 'dates');
-              if (!willOpen) closeAll();
+              if (willOpen) openOnly('city');
+              else closeAll();
             }}
             className={selectedCity ? activeButton : inactiveButton}
             aria-haspopup="dialog"
             aria-expanded={isCityOpen}
           >
             <span>{cityLabel}</span>
-
             {selectedCity && (
               <button
                 type="button"
@@ -139,9 +151,8 @@ export function VenuesFilters({
               </button>
             )}
           </button>
-
           {isCityOpen && (
-            <div className="absolute z-10 mt-2 w-64 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
+            <div className={popoverPanelClass}>
               <div className="max-h-60 overflow-auto">
                 <button
                   type="button"
@@ -170,10 +181,10 @@ export function VenuesFilters({
               <div className="mt-3 flex justify-between gap-2">
                 <button
                   type="button"
-                  onClick={clearCity}
+                  onClick={closeAll}
                   className="rounded-md border px-3 py-1 text-sm"
                 >
-                  Clear
+                  Cancel
                 </button>
                 <button
                   type="button"
@@ -186,23 +197,25 @@ export function VenuesFilters({
             </div>
           )}
         </div>
-
-        <div className="relative inline-block">
+        <div
+          className={`relative inline-block ${
+            isGuestsOpen ? 'z-[80]' : 'z-10'
+          }`}
+        >
           <button
             type="button"
             onClick={() => {
               const willOpen = !isGuestsOpen;
               if (willOpen)
                 setGuestsDraft(minGuests != null ? String(minGuests) : '');
-              openOnly(willOpen ? 'guests' : 'dates');
-              if (!willOpen) closeAll();
+              if (willOpen) openOnly('guests');
+              else closeAll();
             }}
             className={minGuests != null ? activeButton : inactiveButton}
             aria-haspopup="dialog"
             aria-expanded={isGuestsOpen}
           >
             <span>{guestsLabel}</span>
-
             {minGuests != null && (
               <button
                 type="button"
@@ -217,9 +230,8 @@ export function VenuesFilters({
               </button>
             )}
           </button>
-
           {isGuestsOpen && (
-            <div className="absolute z-10 mt-2 w-56 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
+            <div className={popoverPanelClass}>
               <label
                 htmlFor="guests-input"
                 className="mb-1 block text-sm text-gray-700"
@@ -239,10 +251,10 @@ export function VenuesFilters({
               <div className="mt-3 flex justify-between gap-2">
                 <button
                   type="button"
-                  onClick={clearGuests}
+                  onClick={closeAll}
                   className="rounded-md border px-3 py-1 text-sm"
                 >
-                  Clear
+                  Cancel
                 </button>
                 <button
                   type="button"
@@ -255,8 +267,9 @@ export function VenuesFilters({
             </div>
           )}
         </div>
-
-        <div className="relative inline-block">
+        <div
+          className={`relative inline-block ${isDatesOpen ? 'z-[80]' : 'z-10'}`}
+        >
           <button
             type="button"
             onClick={() => {
@@ -265,8 +278,8 @@ export function VenuesFilters({
                 setStartDraft(dateRange.startDate ?? '');
                 setEndDraft(dateRange.endDate ?? '');
               }
-              openOnly(willOpen ? 'dates' : 'city');
-              if (!willOpen) closeAll();
+              if (willOpen) openOnly('dates');
+              else closeAll();
             }}
             className={
               dateRange.startDate || dateRange.endDate
@@ -277,7 +290,6 @@ export function VenuesFilters({
             aria-expanded={isDatesOpen}
           >
             <span>{datesLabel}</span>
-
             {(dateRange.startDate || dateRange.endDate) && (
               <button
                 type="button"
@@ -292,9 +304,8 @@ export function VenuesFilters({
               </button>
             )}
           </button>
-
           {isDatesOpen && (
-            <div className="absolute z-10 mt-2 w-72 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
+            <div className={popoverPanelClass}>
               <div className="mt-1">
                 <DateRangeFields
                   value={{
@@ -305,17 +316,17 @@ export function VenuesFilters({
                     setStartDraft(next.startDate ?? '');
                     setEndDraft(next.endDate ?? '');
                   }}
-                  variant="native"
+                  variant="calendar"
+                  months={1}
                 />
               </div>
-
               <div className="mt-3 flex justify-between gap-2">
                 <button
                   type="button"
-                  onClick={clearDates}
+                  onClick={closeAll}
                   className="rounded-md border px-3 py-1 text-sm"
                 >
-                  Clear
+                  Cancel
                 </button>
                 <button
                   type="button"
@@ -325,10 +336,6 @@ export function VenuesFilters({
                   Apply
                 </button>
               </div>
-
-              <p className="mt-2 text-xs text-gray-500">
-                (Availability wiring can be added later.)
-              </p>
             </div>
           )}
         </div>
