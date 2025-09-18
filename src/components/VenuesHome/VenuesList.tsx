@@ -162,7 +162,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
         />
       </div>
 
-      <div className="mb-6 border-b border-gray-200" />
+      <div className="mb-6 border-b border-gray-400" />
 
       <div className="mb-4 flex-wrap sm:flex items-end justify-between gap-5">
         <h2 className="text-2xl font-medium">Venues</h2>
