@@ -1,15 +1,10 @@
-// components/SearchBox.tsx
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 type SearchBoxProps = {
-  /** id for <input> for tilgjengelighet når du gjenbruker komponenten */
   inputId?: string;
-  /** Klassenavn på wrapper (form) – f.eks. bredde */
   wrapperClassName?: string;
-  /** Ekstra klasser direkte på <input> */
   inputClassName?: string;
-  /** Placeholder-tekst */
   placeholder?: string;
 };
 
@@ -22,16 +17,13 @@ export function SearchBox({
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Startverdi hentes én gang ved mount
   const initialValue = useMemo(
     () => new URLSearchParams(location.search).get('q') ?? '',
-    // bevisst tom dep-liste: initial lesing ved mount
     []
   );
 
   const [searchTerm, setSearchTerm] = useState<string>(initialValue);
 
-  // Hold feltet i synk hvis URL endres (tilbake/fram, eksterne lenker osv.)
   useEffect(() => {
     const nextFromUrl = new URLSearchParams(location.search).get('q') ?? '';
     setSearchTerm(nextFromUrl);
@@ -55,7 +47,6 @@ export function SearchBox({
 
   function handleInputChange(value: string) {
     setSearchTerm(value);
-    // Viktig: oppdater URL umiddelbart (samme oppførsel som før)
     pushSearchToHome(value);
   }
 

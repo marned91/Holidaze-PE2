@@ -27,26 +27,23 @@ export function Header() {
   const mobileMenuId = 'primary-mobile-menu';
 
   const pillButtonClassName =
-    'uppercase text-white text-sm px-3 py-1.5 rounded-lg bg-white/20 font-medium hover:ring-1 hover:ring-white/60';
+    'uppercase text-white text-sm px-3 py-1.5 rounded-lg bg-white/15 font-medium hover:ring-1 hover:ring-white/60';
 
   const roundIconButtonClassName = (isActiveRoute: boolean) =>
-    `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 ${
+    `flex h-10 w-10 items-center justify-center rounded-full bg-white/15 hover:bg-white/20 ${
       isActiveRoute ? 'ring-2 ring-white/60' : ''
     }`;
 
   return (
     <header className="w-full bg-main-light">
-      {/* Desktop */}
       <div className="hidden md:block">
         <div className="flex max-w-[100%] items-center justify-between gap-12 px-6 py-3">
           <Link to="/" className="flex items-center" aria-label="Holidaze home">
             <img src={Logo} alt="Holidaze logo" className="h-6 w-auto" />
           </Link>
-
           <div className="flex items-center gap-4">
             <nav aria-label="Primary">
               <ul className="flex list-none items-center gap-4 p-0 font-small-nav-footer">
-                {/* Home */}
                 <li>
                   <NavLink
                     to="/"
@@ -61,7 +58,6 @@ export function Header() {
                 </li>
 
                 {!isLoggedIn ? (
-                  // Ulogget: Home → Join us → Log in
                   <>
                     <li>
                       <NavLink
@@ -89,7 +85,6 @@ export function Header() {
                     </li>
                   </>
                 ) : (
-                  // Innlogget: Home → Profile → Log out
                   <>
                     <li>
                       <NavLink
@@ -116,8 +111,6 @@ export function Header() {
                 )}
               </ul>
             </nav>
-
-            {/* Desktop-søk via egen komponent */}
             <SearchBox
               inputId="site-search-desktop"
               wrapperClassName="w-[22rem] lg:w-[22rem] md:w-[18rem] sm:w-[16rem]"
@@ -126,11 +119,8 @@ export function Header() {
           </div>
         </div>
       </div>
-
-      {/* Mobile */}
       <div className="px-4 py-5 md:hidden">
         <div className="flex items-center justify-between">
-          {/* Hamburger */}
           <button
             onClick={() => setIsMobileMenuOpen((wasOpen) => !wasOpen)}
             aria-label="Toggle menu"
@@ -140,13 +130,9 @@ export function Header() {
           >
             <FaBars className="text-2xl" />
           </button>
-
-          {/* Logo */}
           <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
             <img src={Logo} alt="Holidaze logo" className="h-8" />
           </Link>
-
-          {/* Høyre: Log in (ulogget) / Profil (innlogget) */}
           {!isLoggedIn ? (
             <NavLink
               to="/login"
@@ -171,7 +157,6 @@ export function Header() {
             </NavLink>
           )}
         </div>
-
         {isMobileMenuOpen && (
           <div
             id={mobileMenuId}
@@ -179,7 +164,6 @@ export function Header() {
           >
             {!isLoggedIn ? (
               <>
-                {/* Join us */}
                 <NavLink
                   to="/signup"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -191,8 +175,6 @@ export function Header() {
                 >
                   Join us!
                 </NavLink>
-
-                {/* Home */}
                 <NavLink
                   to="/"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -201,8 +183,6 @@ export function Header() {
                   <FaHome aria-hidden className="text-base" />
                   <span>Home</span>
                 </NavLink>
-
-                {/* Søk nederst */}
                 <SearchBox
                   inputId="site-search-mobile"
                   wrapperClassName="pt-2"
@@ -211,7 +191,6 @@ export function Header() {
               </>
             ) : (
               <>
-                {/* Home */}
                 <NavLink
                   to="/"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -220,8 +199,6 @@ export function Header() {
                   <FaHome aria-hidden className="text-base" />
                   <span>Home</span>
                 </NavLink>
-
-                {/* Log out */}
                 <button
                   type="button"
                   onClick={handleLogout}
@@ -230,8 +207,6 @@ export function Header() {
                   <FaSignOutAlt aria-hidden className="text-base" />
                   <span>Log out</span>
                 </button>
-
-                {/* Søk nederst */}
                 <SearchBox
                   inputId="site-search-mobile"
                   wrapperClassName="pt-2"

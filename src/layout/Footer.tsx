@@ -12,7 +12,7 @@ export function Footer() {
           <Link to="/" className="shrink-0" aria-label="Holidaze home">
             <img src={Logo} alt="holidaZe" className="h-8 w-auto md:h-7" />
           </Link>
-          <p className="order-3 text-center text-xs opacity-90 md:order-none md:text-sm md:justify-self-center">
+          <p className="order-3 text-center text-xs opacity-90 md:order-none md:text-sm md:justify-self-center font-small-nav-footer">
             &copy; {year} HolidaZe. All rights reserved.
           </p>
           <div className="order-2 flex items-center gap-3 md:order-none">
