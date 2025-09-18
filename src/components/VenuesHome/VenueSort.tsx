@@ -21,7 +21,7 @@ export function VenueSort({
         value={sortOrder}
         onChange={(event) => onChange(event.target.value as SortOrder)}
         disabled={disabled}
-        className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm"
+        className="rounded-md border border-gray-400 bg-white px-2 py-1 text-sm"
       >
         <option value="newest">Newest first</option>
         <option value="oldest">Oldest first</option>
