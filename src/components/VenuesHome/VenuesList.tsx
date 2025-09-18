@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { type TVenue } from '../../types/venueTypes';
 import { VenueSort } from './VenueSort';
 import { VenueCard } from './VenueCard';
@@ -11,10 +12,16 @@ import {
   sortVenues,
   type SortOrder,
 } from './sortAndFilter';
+import { searchVenuesByName } from '../../api/venuesApi';
 
 type VenuesListProps = { pageSize?: number };
 
 export function VenuesList({ pageSize = 12 }: VenuesListProps) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchQuery =
+    new URLSearchParams(location.search).get('q')?.trim() ?? '';
+
   const { venues: allVenues, loading, error: loadError } = useVenues(100);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -67,6 +74,77 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   function handleNextPage() {
     setCurrentPage((prev) => Math.min(totalPages, prev + 1));
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [searchResults, setSearchResults] = useState<TVenue[]>([]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function run() {
+      if (!searchQuery) {
+        setIsSearching(false);
+        setSearchError(null);
+        setSearchResults([]);
+        return;
+      }
+      setIsSearching(true);
+      setSearchError(null);
+      try {
+        const items = await searchVenuesByName(searchQuery);
+        if (isActive) setSearchResults(items);
+      } catch (err: any) {
+        if (isActive) setSearchError(err?.message ?? 'Search failed');
+      } finally {
+        if (isActive) setIsSearching(false);
+      }
+    }
+    run();
+    return () => {
+      isActive = false;
+    };
+  }, [searchQuery]);
+
+  function clearSearch() {
+    const params = new URLSearchParams(location.search);
+    params.delete('q');
+    navigate({ pathname: '/', search: params.toString() }, { replace: false });
+  }
+
+  if (searchQuery) {
+    return (
+      <section className="m-auto w-full px-10 py-10">
+        <div className="mb-4 flex items-center gap-3">
+          <h2 className="text-2xl font-medium">
+            Results <span className="text-gray-500">for “{searchQuery}”</span>
+          </h2>
+          <button
+            type="button"
+            onClick={clearSearch}
+            className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
+          >
+            Clear search
+          </button>
+        </div>
+
+        {isSearching && <p className="text-gray-600">Searching…</p>}
+        {!isSearching && searchError && (
+          <p className="text-red-600">{searchError}</p>
+        )}
+        {!isSearching && !searchError && searchResults.length === 0 && (
+          <p className="text-gray-600">No venues found.</p>
+        )}
+        {!isSearching && !searchError && searchResults.length > 0 && (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {searchResults.map((venue) => (
+              <VenueCard key={venue.id} venue={venue} />
+            ))}
+          </div>
+        )}
+      </section>
+    );
   }
 
   return (

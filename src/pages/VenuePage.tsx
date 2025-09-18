@@ -1,4 +1,3 @@
-// pages/VenuePage.tsx
 import { useMemo, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getVenue } from '../api/venuesApi';

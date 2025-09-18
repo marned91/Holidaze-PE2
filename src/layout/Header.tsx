@@ -1,6 +1,6 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import Logo from '../assets/holidaze-logo-transparent.png';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaBars, FaUser, FaHome, FaSignOutAlt } from 'react-icons/fa';
 import { logout } from '../api/authApi';
 import { useAuthStatus } from '../hooks/useAuthStatus';
@@ -14,7 +14,38 @@ function getProfileUrl(): string {
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { isLoggedIn } = useAuthStatus();
+
+  // ---- Søk (synk med URL ?q=) ----
+  const [searchTerm, setSearchTerm] = useState<string>(() => {
+    return new URLSearchParams(location.search).get('q') ?? '';
+  });
+
+  useEffect(() => {
+    // Oppdater input hvis URL endres via back/forward osv.
+    setSearchTerm(new URLSearchParams(location.search).get('q') ?? '');
+  }, [location.search]);
+
+  function pushSearchToHome(term: string) {
+    const trimmed = term.trim();
+    const params = new URLSearchParams(location.search);
+    if (trimmed) params.set('q', trimmed);
+    else params.delete('q');
+
+    navigate(
+      {
+        pathname: '/', // alltid vis resultater på Home
+        search: params.toString() ? `?${params.toString()}` : '',
+      },
+      { replace: false }
+    );
+  }
+
+  function handleSearchChange(next: string) {
+    setSearchTerm(next);
+    pushSearchToHome(next);
+  }
 
   function handleLogout() {
     logout();
@@ -25,12 +56,11 @@ export function Header() {
 
   const mobileMenuId = 'primary-mobile-menu';
 
-  // Felles “pill”-stil (Join us / Log in / Log out / Home i mobilmeny)
-  const pillButtonClass =
+  // Felles, beskrivende klassenavn
+  const pillButtonClassName =
     'uppercase text-white text-sm px-3 py-1.5 rounded-lg bg-white/20 font-medium hover:ring-1 hover:ring-white/60';
 
-  // Rund ikon-knapp (Home & profil på desktop, profil på mobil)
-  const roundIconButtonClass = (isActiveRoute: boolean) =>
+  const roundIconButtonClassName = (isActiveRoute: boolean) =>
     `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 ${
       isActiveRoute ? 'ring-2 ring-white/60' : ''
     }`;
@@ -51,7 +81,9 @@ export function Header() {
                 <li>
                   <NavLink
                     to="/"
-                    className={({ isActive }) => roundIconButtonClass(isActive)}
+                    className={({ isActive }) =>
+                      roundIconButtonClassName(isActive)
+                    }
                     aria-label="Home"
                     title="Home"
                   >
@@ -59,14 +91,14 @@ export function Header() {
                   </NavLink>
                 </li>
 
-                {/* Ulogget: Home → Join us → Log in */}
                 {!isLoggedIn ? (
+                  // ULOGGET: Home → Join us → Log in
                   <>
                     <li>
                       <NavLink
                         to="/signup"
                         className={({ isActive }) =>
-                          `${pillButtonClass} ${
+                          `${pillButtonClassName} ${
                             isActive ? 'ring-2 ring-white/60' : ''
                           }`
                         }
@@ -78,7 +110,7 @@ export function Header() {
                       <NavLink
                         to="/login"
                         className={({ isActive }) =>
-                          `${pillButtonClass} ${
+                          `${pillButtonClassName} ${
                             isActive ? 'ring-2 ring-white/60' : ''
                           }`
                         }
@@ -88,13 +120,13 @@ export function Header() {
                     </li>
                   </>
                 ) : (
+                  // INNLOGGET: Home → Profile → Log out
                   <>
-                    {/* INNLOGGET: Home → Profile → Log out (byttet rekkefølge) */}
                     <li>
                       <NavLink
                         to={getProfileUrl()}
                         className={({ isActive }) =>
-                          roundIconButtonClass(isActive)
+                          roundIconButtonClassName(isActive)
                         }
                         aria-label="Profile"
                         title="Profile"
@@ -106,7 +138,7 @@ export function Header() {
                       <button
                         type="button"
                         onClick={handleLogout}
-                        className={pillButtonClass}
+                        className={pillButtonClassName}
                       >
                         Log out
                       </button>
@@ -116,16 +148,11 @@ export function Header() {
               </ul>
             </nav>
 
-            {/* Søk kommer sist på desktop */}
+            {/* Desktop-søk (kontrollert) */}
             <form
               role="search"
               onSubmit={(event) => event.preventDefault()}
-              className="
-                w-[22rem]
-                lg:w-[22rem]
-                md:w-[18rem]
-                sm:w-[16rem]
-              "
+              className="w-[22rem] lg:w-[22rem] md:w-[18rem] sm:w-[16rem]"
             >
               <label htmlFor="site-search-desktop" className="sr-only">
                 Search
@@ -133,6 +160,8 @@ export function Header() {
               <input
                 id="site-search-desktop"
                 placeholder="Search venues..."
+                value={searchTerm}
+                onChange={(event) => handleSearchChange(event.target.value)}
                 className="w-full rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
               />
             </form>
@@ -164,7 +193,9 @@ export function Header() {
             <NavLink
               to="/login"
               className={({ isActive }) =>
-                `${pillButtonClass} ${isActive ? 'ring-2 ring-white/60' : ''}`
+                `${pillButtonClassName} ${
+                  isActive ? 'ring-2 ring-white/60' : ''
+                }`
               }
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -173,7 +204,7 @@ export function Header() {
           ) : (
             <NavLink
               to={getProfileUrl()}
-              className={({ isActive }) => roundIconButtonClass(isActive)}
+              className={({ isActive }) => roundIconButtonClassName(isActive)}
               aria-label="Profile"
               title="Profile"
               onClick={() => setIsMobileMenuOpen(false)}
@@ -195,7 +226,7 @@ export function Header() {
                   to="/signup"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={({ isActive }) =>
-                    `${pillButtonClass} flex w-fit items-center gap-2 ${
+                    `${pillButtonClassName} flex w-fit items-center gap-2 ${
                       isActive ? 'ring-2 ring-white/60' : ''
                     }`
                   }
@@ -207,13 +238,13 @@ export function Header() {
                 <NavLink
                   to="/"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`${pillButtonClass} flex w-fit items-center gap-2`}
+                  className={`${pillButtonClassName} flex w-fit items-center gap-2`}
                 >
                   <FaHome aria-hidden className="text-base" />
                   <span>Home</span>
                 </NavLink>
 
-                {/* Søk nederst */}
+                {/* Søk nederst (kontrollert) */}
                 <form
                   role="search"
                   onSubmit={(event) => event.preventDefault()}
@@ -225,6 +256,8 @@ export function Header() {
                   <input
                     id="site-search-mobile"
                     placeholder="Search venues..."
+                    value={searchTerm}
+                    onChange={(event) => handleSearchChange(event.target.value)}
                     className="w-[80%] rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
                   />
                 </form>
@@ -235,7 +268,7 @@ export function Header() {
                 <NavLink
                   to="/"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`${pillButtonClass} flex w-fit items-center gap-2`}
+                  className={`${pillButtonClassName} flex w-fit items-center gap-2`}
                 >
                   <FaHome aria-hidden className="text-base" />
                   <span>Home</span>
@@ -244,7 +277,7 @@ export function Header() {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className={`${pillButtonClass} flex w-fit items-center gap-2`}
+                  className={`${pillButtonClassName} flex w-fit items-center gap-2`}
                 >
                   <FaSignOutAlt aria-hidden className="text-base" />
                   <span>Log out</span>
@@ -261,6 +294,8 @@ export function Header() {
                   <input
                     id="site-search-mobile"
                     placeholder="Search venues..."
+                    value={searchTerm}
+                    onChange={(event) => handleSearchChange(event.target.value)}
                     className="w-[80%] rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
                   />
                 </form>

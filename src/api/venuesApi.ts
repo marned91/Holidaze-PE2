@@ -161,3 +161,20 @@ export async function deleteVenue(venueId: string): Promise<void> {
     throw new Error(message);
   }
 }
+export async function searchVenuesByName(query: string): Promise<TVenue[]> {
+  const q = query.trim();
+  if (!q) return [];
+
+  const url = `${API_VENUES}/search?q=${encodeURIComponent(q)}`;
+
+  const data = await doFetch<TVenue[]>(url, {
+    method: 'GET',
+    auth: false,
+    headers: { Accept: 'application/json' },
+  });
+
+  const items = data ?? [];
+
+  const lower = q.toLowerCase();
+  return items.filter((v) => (v.name ?? '').toLowerCase().includes(lower));
+}
