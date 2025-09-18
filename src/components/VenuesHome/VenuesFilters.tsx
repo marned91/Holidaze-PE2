@@ -98,12 +98,10 @@ export function VenuesFilters({
           formatDotFromISO(dateRange.endDate) || '…'
         }`
       : 'Select dates';
-
   const baseButton =
     'relative inline-flex items-center gap-3 rounded-full border px-4 py-2 shadow-sm transition-colors';
-  const inactiveButton = `${baseButton} border-gray-300 bg-white hover:bg-gray-50`;
+  const inactiveButton = `${baseButton} border-gray-300 shadow-md bg-white hover:bg-gray-50 hover:border-gray-500`;
   const activeButton = `${baseButton} border-gray-400 bg-gray-50`;
-
   const popoverPanelClass =
     'sm:absolute sm:left-0 sm:top-full sm:mt-2 fixed left-1/2 top-28 -translate-x-1/2 z-[90] w-[min(92vw,22rem)] sm:w-64 max-h-[80vh] overflow-auto overscroll-contain rounded-lg border border-gray-200 bg-white p-3 shadow-lg';
 
@@ -117,7 +115,7 @@ export function VenuesFilters({
           className="fixed inset-0 z-[70] bg-transparent cursor-default"
         />
       )}
-      <div className="relative flex flex-wrap justify-center gap-3">
+      <div className="relative flex flex-wrap justify-center gap-3 font-text font-medium text-dark">
         <div
           className={`relative inline-block ${isCityOpen ? 'z-[80]' : 'z-10'}`}
         >
@@ -142,7 +140,7 @@ export function VenuesFilters({
                   event.stopPropagation();
                   clearCity();
                 }}
-                className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100"
+                className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 font-medium-buttons cursor-pointer"
               >
                 <FaTimes className="h-3 w-3" />
               </button>
@@ -155,7 +153,7 @@ export function VenuesFilters({
                   type="button"
                   onClick={() => setCityDraft(null)}
                   className={`mb-2 w-full rounded-md px-2 py-1 text-left ${
-                    cityDraft == null ? 'bg-gray-100' : 'hover:bg-gray-50'
+                    cityDraft == null ? 'bg-gray-200' : 'hover:bg-gray-200'
                   }`}
                 >
                   All Norway
@@ -167,8 +165,8 @@ export function VenuesFilters({
                     onClick={() => setCityDraft(cityName)}
                     className={`mb-1 w-full rounded-md px-2 py-1 text-left ${
                       cityDraft === cityName
-                        ? 'bg-gray-100'
-                        : 'hover:bg-gray-50'
+                        ? 'bg-gray-200'
+                        : 'hover:bg-gray-200'
                     }`}
                   >
                     {cityName}
@@ -179,14 +177,14 @@ export function VenuesFilters({
                 <button
                   type="button"
                   onClick={closeAll}
-                  className="rounded-md border px-3 py-1 text-sm"
+                  className="rounded-md border px-3 py-1 text-sm cursor-pointer font-medium-buttons"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={applyCity}
-                  className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight"
+                  className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight font-medium-buttons cursor-pointer"
                 >
                   Apply
                 </button>
@@ -221,7 +219,7 @@ export function VenuesFilters({
                   event.stopPropagation();
                   clearGuests();
                 }}
-                className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100"
+                className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 font-medium-buttons cursor-pointer"
               >
                 <FaTimes className="h-3 w-3" />
               </button>
@@ -231,7 +229,7 @@ export function VenuesFilters({
             <div className={popoverPanelClass}>
               <label
                 htmlFor="guests-input"
-                className="mb-1 block text-sm text-gray-700"
+                className="mb-1 block text-sm text-gray-700 font-text"
               >
                 Minimum guests
               </label>
@@ -243,20 +241,20 @@ export function VenuesFilters({
                 placeholder="e.g. 4"
                 value={guestsDraft}
                 onChange={(event) => setGuestsDraft(event.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-highlight"
+                className="w-full rounded-md border border-gray-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-highlight font-text"
               />
               <div className="mt-3 flex justify-between gap-2">
                 <button
                   type="button"
                   onClick={closeAll}
-                  className="rounded-md border px-3 py-1 text-sm"
+                  className="rounded-md border px-3 py-1 text-sm font-medium-buttons cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={applyGuests}
-                  className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight"
+                  className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight font-medium-buttons cursor-pointer"
                 >
                   Apply
                 </button>
@@ -295,7 +293,7 @@ export function VenuesFilters({
                   event.stopPropagation();
                   clearDates();
                 }}
-                className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100"
+                className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 cursor-pointer font-medium-buttons cursor-pointer"
               >
                 <FaTimes className="h-3 w-3" />
               </button>
@@ -321,14 +319,14 @@ export function VenuesFilters({
                 <button
                   type="button"
                   onClick={closeAll}
-                  className="rounded-md border px-3 py-1 text-sm"
+                  className="rounded-md border px-3 py-1 text-sm font-medium-buttons"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={applyDates}
-                  className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight"
+                  className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight font-medium-buttons cursor-pointer"
                 >
                   Apply
                 </button>
