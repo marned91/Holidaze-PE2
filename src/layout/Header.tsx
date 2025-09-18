@@ -1,10 +1,11 @@
-import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Logo from '../assets/holidaze-logo-transparent.png';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FaBars, FaUser, FaHome, FaSignOutAlt } from 'react-icons/fa';
 import { logout } from '../api/authApi';
 import { useAuthStatus } from '../hooks/useAuthStatus';
 import { getUsername } from '../utils/authStorage';
+import { SearchBox } from '../components/Common/SearchBox';
 
 function getProfileUrl(): string {
   const stored = getUsername();
@@ -14,36 +15,7 @@ function getProfileUrl(): string {
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const { isLoggedIn } = useAuthStatus();
-
-  const [searchTerm, setSearchTerm] = useState<string>(() => {
-    return new URLSearchParams(location.search).get('q') ?? '';
-  });
-
-  useEffect(() => {
-    setSearchTerm(new URLSearchParams(location.search).get('q') ?? '');
-  }, [location.search]);
-
-  function pushSearchToHome(term: string) {
-    const trimmed = term.trim();
-    const params = new URLSearchParams(location.search);
-    if (trimmed) params.set('q', trimmed);
-    else params.delete('q');
-
-    navigate(
-      {
-        pathname: '/', // alltid vis resultater på Home
-        search: params.toString() ? `?${params.toString()}` : '',
-      },
-      { replace: false }
-    );
-  }
-
-  function handleSearchChange(next: string) {
-    setSearchTerm(next);
-    pushSearchToHome(next);
-  }
 
   function handleLogout() {
     logout();
@@ -54,7 +26,6 @@ export function Header() {
 
   const mobileMenuId = 'primary-mobile-menu';
 
-  // Felles, beskrivende klassenavn
   const pillButtonClassName =
     'uppercase text-white text-sm px-3 py-1.5 rounded-lg bg-white/20 font-medium hover:ring-1 hover:ring-white/60';
 
@@ -75,7 +46,7 @@ export function Header() {
           <div className="flex items-center gap-4">
             <nav aria-label="Primary">
               <ul className="flex list-none items-center gap-4 p-0 font-small-nav-footer">
-                {/* Home (alltid synlig) */}
+                {/* Home */}
                 <li>
                   <NavLink
                     to="/"
@@ -90,7 +61,7 @@ export function Header() {
                 </li>
 
                 {!isLoggedIn ? (
-                  // ULOGGET: Home → Join us → Log in
+                  // Ulogget: Home → Join us → Log in
                   <>
                     <li>
                       <NavLink
@@ -118,7 +89,7 @@ export function Header() {
                     </li>
                   </>
                 ) : (
-                  // INNLOGGET: Home → Profile → Log out
+                  // Innlogget: Home → Profile → Log out
                   <>
                     <li>
                       <NavLink
@@ -146,23 +117,12 @@ export function Header() {
               </ul>
             </nav>
 
-            {/* Desktop-søk (kontrollert) */}
-            <form
-              role="search"
-              onSubmit={(event) => event.preventDefault()}
-              className="w-[22rem] lg:w-[22rem] md:w-[18rem] sm:w-[16rem]"
-            >
-              <label htmlFor="site-search-desktop" className="sr-only">
-                Search
-              </label>
-              <input
-                id="site-search-desktop"
-                placeholder="Search venues..."
-                value={searchTerm}
-                onChange={(event) => handleSearchChange(event.target.value)}
-                className="w-full rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
-              />
-            </form>
+            {/* Desktop-søk via egen komponent */}
+            <SearchBox
+              inputId="site-search-desktop"
+              wrapperClassName="w-[22rem] lg:w-[22rem] md:w-[18rem] sm:w-[16rem]"
+              inputClassName="w-full rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
+            />
           </div>
         </div>
       </div>
@@ -170,7 +130,7 @@ export function Header() {
       {/* Mobile */}
       <div className="px-4 py-5 md:hidden">
         <div className="flex items-center justify-between">
-          {/* Større hamburger */}
+          {/* Hamburger */}
           <button
             onClick={() => setIsMobileMenuOpen((wasOpen) => !wasOpen)}
             aria-label="Toggle menu"
@@ -186,7 +146,7 @@ export function Header() {
             <img src={Logo} alt="Holidaze logo" className="h-8" />
           </Link>
 
-          {/* Høyre: Log in (ulogget) / profil (innlogget) */}
+          {/* Høyre: Log in (ulogget) / Profil (innlogget) */}
           {!isLoggedIn ? (
             <NavLink
               to="/login"
@@ -242,27 +202,16 @@ export function Header() {
                   <span>Home</span>
                 </NavLink>
 
-                {/* Søk nederst (kontrollert) */}
-                <form
-                  role="search"
-                  onSubmit={(event) => event.preventDefault()}
-                  className="pt-2"
-                >
-                  <label htmlFor="site-search-mobile" className="sr-only">
-                    Search
-                  </label>
-                  <input
-                    id="site-search-mobile"
-                    placeholder="Search venues..."
-                    value={searchTerm}
-                    onChange={(event) => handleSearchChange(event.target.value)}
-                    className="w-[80%] rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
-                  />
-                </form>
+                {/* Søk nederst */}
+                <SearchBox
+                  inputId="site-search-mobile"
+                  wrapperClassName="pt-2"
+                  inputClassName="w-[80%] rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
+                />
               </>
             ) : (
               <>
-                {/* INNLOGGET (mobil meny): Home → Log out → Search */}
+                {/* Home */}
                 <NavLink
                   to="/"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -272,6 +221,7 @@ export function Header() {
                   <span>Home</span>
                 </NavLink>
 
+                {/* Log out */}
                 <button
                   type="button"
                   onClick={handleLogout}
@@ -281,22 +231,12 @@ export function Header() {
                   <span>Log out</span>
                 </button>
 
-                <form
-                  role="search"
-                  onSubmit={(event) => event.preventDefault()}
-                  className="pt-2"
-                >
-                  <label htmlFor="site-search-mobile" className="sr-only">
-                    Search
-                  </label>
-                  <input
-                    id="site-search-mobile"
-                    placeholder="Search venues..."
-                    value={searchTerm}
-                    onChange={(event) => handleSearchChange(event.target.value)}
-                    className="w-[80%] rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
-                  />
-                </form>
+                {/* Søk nederst */}
+                <SearchBox
+                  inputId="site-search-mobile"
+                  wrapperClassName="pt-2"
+                  inputClassName="w-[80%] rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
+                />
               </>
             )}
           </div>
