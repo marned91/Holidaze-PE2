@@ -48,7 +48,7 @@ export function isVenueAvailableForRange(
   return bookings.every((b) => {
     const bs = parseLocal(b.dateFrom?.split('T')[0] ?? '');
     const be = parseLocal(b.dateTo?.split('T')[0] ?? '');
-    if (!bs || !be) return true; // ignore malformed bookings
+    if (!bs || !be) return true;
     return !rangesOverlapInclusive(wanted.from, wanted.to, bs, be);
   });
 }

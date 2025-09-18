@@ -1,7 +1,7 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Logo from '../assets/holidaze-logo-transparent.png';
 import { useState } from 'react';
-import { FaBars, FaUser } from 'react-icons/fa';
+import { FaBars, FaUser, FaHome, FaSignOutAlt } from 'react-icons/fa';
 import { logout } from '../api/authApi';
 import { useAuthStatus } from '../hooks/useAuthStatus';
 import { getUsername } from '../utils/authStorage';
@@ -12,18 +12,28 @@ function getProfileUrl(): string {
 }
 
 export function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { isLoggedIn } = useAuthStatus();
 
   function handleLogout() {
     logout();
     alert('You have been logged out.');
-    setMenuOpen(false);
+    setIsMobileMenuOpen(false);
     navigate('/');
   }
 
-  const menuId = 'primary-mobile-menu';
+  const mobileMenuId = 'primary-mobile-menu';
+
+  // Felles “pill”-stil (Join us / Log in / Log out / Home i mobilmeny)
+  const pillButtonClass =
+    'uppercase text-white text-sm px-3 py-1.5 rounded-lg bg-white/20 font-medium hover:ring-1 hover:ring-white/60';
+
+  // Rund ikon-knapp (Home & profil på desktop, profil på mobil)
+  const roundIconButtonClass = (isActiveRoute: boolean) =>
+    `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 ${
+      isActiveRoute ? 'ring-2 ring-white/60' : ''
+    }`;
 
   return (
     <header className="w-full bg-main-light">
@@ -37,13 +47,26 @@ export function Header() {
           <div className="flex items-center gap-4">
             <nav aria-label="Primary">
               <ul className="flex list-none items-center gap-4 p-0 font-small-nav-footer">
+                {/* Home (alltid synlig) */}
+                <li>
+                  <NavLink
+                    to="/"
+                    className={({ isActive }) => roundIconButtonClass(isActive)}
+                    aria-label="Home"
+                    title="Home"
+                  >
+                    <FaHome className="text-lg text-white" />
+                  </NavLink>
+                </li>
+
+                {/* Ulogget: Home → Join us → Log in */}
                 {!isLoggedIn ? (
                   <>
                     <li>
                       <NavLink
                         to="/signup"
                         className={({ isActive }) =>
-                          `uppercase text-white px-3 py-2 rounded-lg bg-white/20 font-medium hover:ring-1 hover:ring-white/60 ${
+                          `${pillButtonClass} ${
                             isActive ? 'ring-2 ring-white/60' : ''
                           }`
                         }
@@ -55,35 +78,23 @@ export function Header() {
                       <NavLink
                         to="/login"
                         className={({ isActive }) =>
-                          `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 ${
+                          `${pillButtonClass} ${
                             isActive ? 'ring-2 ring-white/60' : ''
                           }`
                         }
-                        aria-label="Login"
-                        title="Login"
                       >
-                        <FaUser className="text-lg text-white" />
+                        Log in
                       </NavLink>
                     </li>
                   </>
                 ) : (
                   <>
-                    <li>
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        className="uppercase text-white px-3 py-2 rounded-lg bg-white/20 font-medium hover:ring-1 hover:ring-white/60"
-                      >
-                        Log out
-                      </button>
-                    </li>
+                    {/* INNLOGGET: Home → Profile → Log out (byttet rekkefølge) */}
                     <li>
                       <NavLink
                         to={getProfileUrl()}
                         className={({ isActive }) =>
-                          `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 ${
-                            isActive ? 'ring-2 ring-white/60' : ''
-                          }`
+                          roundIconButtonClass(isActive)
                         }
                         aria-label="Profile"
                         title="Profile"
@@ -91,15 +102,30 @@ export function Header() {
                         <FaUser className="text-lg text-white" />
                       </NavLink>
                     </li>
+                    <li>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className={pillButtonClass}
+                      >
+                        Log out
+                      </button>
+                    </li>
                   </>
                 )}
               </ul>
             </nav>
 
+            {/* Søk kommer sist på desktop */}
             <form
               role="search"
               onSubmit={(event) => event.preventDefault()}
-              className="w-[22rem]"
+              className="
+                w-[22rem]
+                lg:w-[22rem]
+                md:w-[18rem]
+                sm:w-[16rem]
+              "
             >
               <label htmlFor="site-search-desktop" className="sr-only">
                 Search
@@ -117,100 +143,125 @@ export function Header() {
       {/* Mobile */}
       <div className="px-4 py-5 md:hidden">
         <div className="flex items-center justify-between">
+          {/* Større hamburger */}
           <button
-            onClick={() => setMenuOpen((previous) => !previous)}
+            onClick={() => setIsMobileMenuOpen((wasOpen) => !wasOpen)}
             aria-label="Toggle menu"
-            aria-expanded={menuOpen}
-            aria-controls={menuId}
-            className="text-white"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls={mobileMenuId}
+            className="text-white -m-2 p-2 flex h-10 w-10 items-center justify-center"
           >
-            <FaBars className="text-lg" />
+            <FaBars className="text-2xl" />
           </button>
 
-          <Link to="/" onClick={() => setMenuOpen(false)}>
+          {/* Logo */}
+          <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
             <img src={Logo} alt="Holidaze logo" className="h-8" />
           </Link>
 
+          {/* Høyre: Log in (ulogget) / profil (innlogget) */}
           {!isLoggedIn ? (
             <NavLink
               to="/login"
               className={({ isActive }) =>
-                `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 ${
-                  isActive ? 'ring-2 ring-white/60' : ''
-                }`
+                `${pillButtonClass} ${isActive ? 'ring-2 ring-white/60' : ''}`
               }
-              aria-label="Login"
-              title="Login"
-              onClick={() => setMenuOpen(false)}
+              onClick={() => setIsMobileMenuOpen(false)}
             >
-              <FaUser className="text-md text-white" />
+              Log in
             </NavLink>
           ) : (
             <NavLink
               to={getProfileUrl()}
-              className={({ isActive }) =>
-                `flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 ${
-                  isActive ? 'ring-2 ring-white/60' : ''
-                }`
-              }
+              className={({ isActive }) => roundIconButtonClass(isActive)}
               aria-label="Profile"
               title="Profile"
-              onClick={() => setMenuOpen(false)}
+              onClick={() => setIsMobileMenuOpen(false)}
             >
               <FaUser className="text-md text-white" />
             </NavLink>
           )}
         </div>
 
-        {menuOpen && (
-          <div id={menuId} className="mt-4 space-y-3">
+        {isMobileMenuOpen && (
+          <div
+            id={mobileMenuId}
+            className="mt-10 pt-4 space-y-3 border-t border-white/60 -mx-4 px-4"
+          >
             {!isLoggedIn ? (
               <>
+                {/* Join us */}
                 <NavLink
                   to="/signup"
-                  onClick={() => setMenuOpen(false)}
-                  className="block uppercase tracking-wide text-white pl-1"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `${pillButtonClass} flex w-fit items-center gap-2 ${
+                      isActive ? 'ring-2 ring-white/60' : ''
+                    }`
+                  }
                 >
                   Join us!
                 </NavLink>
 
+                {/* Home */}
+                <NavLink
+                  to="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`${pillButtonClass} flex w-fit items-center gap-2`}
+                >
+                  <FaHome aria-hidden className="text-base" />
+                  <span>Home</span>
+                </NavLink>
+
+                {/* Søk nederst */}
                 <form
                   role="search"
                   onSubmit={(event) => event.preventDefault()}
-                  className="pt-1"
+                  className="pt-2"
                 >
                   <label htmlFor="site-search-mobile" className="sr-only">
                     Search
                   </label>
                   <input
                     id="site-search-mobile"
-                    placeholder="Search"
-                    className="w-full rounded-2xl bg-white px-4 py-1.5 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
+                    placeholder="Search venues..."
+                    className="w-[80%] rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
                   />
                 </form>
               </>
             ) : (
               <>
+                {/* INNLOGGET (mobil meny): Home → Log out → Search */}
+                <NavLink
+                  to="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`${pillButtonClass} flex w-fit items-center gap-2`}
+                >
+                  <FaHome aria-hidden className="text-base" />
+                  <span>Home</span>
+                </NavLink>
+
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="block text-left uppercase text-white"
+                  className={`${pillButtonClass} flex w-fit items-center gap-2`}
                 >
-                  Log out
+                  <FaSignOutAlt aria-hidden className="text-base" />
+                  <span>Log out</span>
                 </button>
 
                 <form
                   role="search"
                   onSubmit={(event) => event.preventDefault()}
-                  className="pt-1"
+                  className="pt-2"
                 >
                   <label htmlFor="site-search-mobile" className="sr-only">
                     Search
                   </label>
                   <input
                     id="site-search-mobile"
-                    placeholder="Search"
-                    className="w-full rounded-2xl bg-white px-4 py-1.5 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
+                    placeholder="Search venues..."
+                    className="w-[80%] rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
                   />
                 </form>
               </>

@@ -13,7 +13,7 @@ type RangeCalendarProps = {
   value: TDateRange;
   onChange: (next: TDateRange) => void;
   bookings?: TVenueBooking[];
-  months?: number; // hvor mange måneder du vil ha i “double view” på store skjermer
+  months?: number;
 };
 
 export function RangeCalendar({
@@ -55,7 +55,6 @@ export function RangeCalendar({
       setIsSmallScreen(matches);
     };
 
-    // Initielt kall, i tilfelle noe endret seg før effect
     handleMediaQueryChange(mediaQueryList);
 
     // Moderne nettlesere
