@@ -9,11 +9,9 @@ export async function getProfile(
   const params: string[] = [];
   if (options?.venues) params.push('_venues=true');
   if (options?.bookings) params.push('_bookings=true');
-
   const url =
     `${API_PROFILES}/${encodeURIComponent(username)}` +
     (params.length ? `?${params.join('&')}` : '');
-
   try {
     const data = await doFetch<TProfile>(url, { method: 'GET', auth: true });
     if (!data) throw new Error('Profile not found');
@@ -33,7 +31,6 @@ export async function setProfilePicture(
 ): Promise<TProfile> {
   const endpoint = `${API_PROFILES}/${encodeURIComponent(username)}`;
   const body = JSON.stringify({ avatar: { url, alt } });
-
   try {
     const data = await doFetch<TProfile>(endpoint, {
       method: 'PUT',

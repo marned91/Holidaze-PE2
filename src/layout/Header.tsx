@@ -17,13 +17,11 @@ export function Header() {
   const location = useLocation();
   const { isLoggedIn } = useAuthStatus();
 
-  // ---- Søk (synk med URL ?q=) ----
   const [searchTerm, setSearchTerm] = useState<string>(() => {
     return new URLSearchParams(location.search).get('q') ?? '';
   });
 
   useEffect(() => {
-    // Oppdater input hvis URL endres via back/forward osv.
     setSearchTerm(new URLSearchParams(location.search).get('q') ?? '');
   }, [location.search]);
 

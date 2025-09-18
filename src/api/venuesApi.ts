@@ -6,7 +6,6 @@ export async function getVenue(venueId: string): Promise<TVenue> {
   const url = `${API_VENUES}/${encodeURIComponent(
     venueId
   )}?_bookings=true&_owner=true`;
-
   try {
     const data = await doFetch<TVenue>(url, { method: 'GET', auth: false });
     if (!data) throw new Error('Venue not found');
@@ -19,7 +18,6 @@ export async function getVenue(venueId: string): Promise<TVenue> {
 
 export async function listVenues(limit = 100): Promise<TVenue[]> {
   const url = `${API_VENUES}?limit=${encodeURIComponent(limit)}&_bookings=true`;
-
   try {
     const data = await doFetch<TVenue[]>(url, { method: 'GET', auth: false });
     return data ?? [];
@@ -39,10 +37,8 @@ export async function getVenuesByOwner(
   if (options?.withBookings) params.set('_bookings', 'true');
   if (options?.limit) params.set('limit', String(options.limit));
   if (options?.page) params.set('page', String(options.page));
-
   const base = `${API_PROFILES}/${encodeURIComponent(profileName)}/venues`;
   const url = params.toString() ? `${base}?${params.toString()}` : base;
-
   try {
     const data = await doFetch<TVenue[]>(url, { method: 'GET', auth: true });
     return data ?? [];
@@ -55,14 +51,12 @@ export async function getVenuesByOwner(
 
 export async function createVenue(input: CreateVenueInput): Promise<TVenue> {
   const body = JSON.stringify(input);
-
   try {
     const data = await doFetch<TVenue>(API_VENUES, {
       method: 'POST',
       auth: true,
       body,
     });
-
     if (!data) throw new Error('No venue returned after create');
     return data;
   } catch (unknownError: unknown) {
@@ -82,16 +76,13 @@ export async function listVenuesPaged(options?: {
   const page = options?.page ?? 1;
   const limit = options?.limit ?? 100;
   const withBookings = options?.withBookings ?? true;
-
   const params = new URLSearchParams();
   params.set('page', String(page));
   params.set('limit', String(limit));
   if (withBookings) params.set('_bookings', 'true');
   if (options?.sort) params.set('sort', options.sort);
   if (options?.sortOrder) params.set('sortOrder', options.sortOrder);
-
   const url = `${API_VENUES}?${params.toString()}`;
-
   try {
     const data = await doFetch<TVenue[]>(url, { method: 'GET', auth: false });
     return data ?? [];
@@ -112,7 +103,6 @@ export async function listVenuesAll(options?: {
 }): Promise<TVenue[]> {
   const limitPerPage = options?.limitPerPage ?? 100;
   const maxPages = options?.maxPages ?? 10;
-
   const all: TVenue[] = [];
   for (let page = 1; page <= maxPages; page += 1) {
     const batch = await listVenuesPaged({
@@ -135,7 +125,6 @@ export async function updateVenue(
 ): Promise<TVenue> {
   const url = `${API_VENUES}/${encodeURIComponent(venueId)}`;
   const body = JSON.stringify(input);
-
   try {
     const data = await doFetch<TVenue>(url, {
       method: 'PUT',
@@ -161,20 +150,17 @@ export async function deleteVenue(venueId: string): Promise<void> {
     throw new Error(message);
   }
 }
+
 export async function searchVenuesByName(query: string): Promise<TVenue[]> {
   const q = query.trim();
   if (!q) return [];
-
   const url = `${API_VENUES}/search?q=${encodeURIComponent(q)}`;
-
   const data = await doFetch<TVenue[]>(url, {
     method: 'GET',
     auth: false,
     headers: { Accept: 'application/json' },
   });
-
   const items = data ?? [];
-
   const lower = q.toLowerCase();
   return items.filter((v) => (v.name ?? '').toLowerCase().includes(lower));
 }

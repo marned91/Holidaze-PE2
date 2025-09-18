@@ -1,4 +1,3 @@
-// components/Common/DateRangeFields.tsx
 import Calendar from 'react-calendar';
 import type { Value } from 'react-calendar/dist/shared/types.js';
 import React, {
@@ -29,15 +28,13 @@ type DateRangeFieldsProps = {
   value: TDateRange;
   onChange: (next: TDateRange) => void;
   className?: string;
-  /** 'calendar' = to separate inputs med små popovers */
   variant?: 'native' | 'text' | 'calendar';
   labelFrom?: string;
   labelTo?: string;
   bookings?: BookingLike[];
-  months?: 1 | 2; // 1 som standard for kompakt popover
+  months?: 1 | 2;
 };
 
-/** Popover i portal: flipper opp/ned etter plass, klemmer høyde til viewport */
 function PopoverPortal({
   anchor,
   align = 'left',
@@ -63,22 +60,19 @@ function PopoverPortal({
         window.visualViewport?.height ?? window.innerHeight;
       const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
 
-      const margin = 8; // luft mellom felt og popover
-      const wantedMinHeight = 320; // “ønsket” min høyde for kalender
+      const margin = 8;
+      const wantedMinHeight = 320;
       const spaceBelow = viewportHeight - (anchorRect.bottom + margin);
       const spaceAbove = anchorRect.top - margin;
 
-      // Plasser over hvis for lite plass under og bedre plass over
       const placeAbove =
         spaceBelow < wantedMinHeight && spaceAbove > spaceBelow;
 
-      // Maks høyde vi faktisk kan bruke (med litt buffer)
       const availableHeight = Math.max(
         160,
         (placeAbove ? spaceAbove : spaceBelow) - 8
       );
 
-      // Horisontal plassering – ikke gå utenfor skjermen
       const leftPos =
         align === 'left'
           ? Math.max(8, Math.min(anchorRect.left, viewportWidth - 16))
@@ -97,11 +91,11 @@ function PopoverPortal({
         left: leftPos,
         right: rightPos,
         zIndex: 9999,
-        maxHeight: availableHeight, // klem høyde
-        overflowY: 'auto', // scroll inni popover
+        maxHeight: availableHeight,
+        overflowY: 'auto',
         overscrollBehavior: 'contain',
         WebkitOverflowScrolling: 'touch',
-        paddingBottom: 'env(safe-area-inset-bottom)', // iOS-safe area
+        paddingBottom: 'env(safe-area-inset-bottom)',
         opacity: 1,
       });
     }
@@ -141,13 +135,11 @@ export function DateRangeFields({
   const startInputId = useId();
   const endInputId = useId();
 
-  // Felles for native/text
   const todayISO = formatISOYmd(startOfToday());
   const startMin = todayISO;
   const endMin = value.startDate ?? todayISO;
   const startMax = value.endDate ?? undefined;
 
-  // For blokkering i kalender
   const blockedRanges = useMemo(() => {
     const ranges =
       (bookings
@@ -169,7 +161,6 @@ export function DateRangeFields({
     return false;
   }
 
-  // ---------- VARIANT: to popover-kalendere ----------
   if (variant === 'calendar') {
     const [openStart, setOpenStart] = useState(false);
     const [openEnd, setOpenEnd] = useState(false);
@@ -178,7 +169,6 @@ export function DateRangeFields({
     const endButtonRef = useRef<HTMLButtonElement | null>(null);
     const popoverContentRef = useRef<HTMLDivElement | null>(null);
 
-    // Lukking ved klikk utenfor (anchor + popover)
     useEffect(() => {
       function onDocMouseDown(event: MouseEvent) {
         const target = event.target as Node;
@@ -195,7 +185,6 @@ export function DateRangeFields({
       return () => document.removeEventListener('mousedown', onDocMouseDown);
     }, []);
 
-    // Verdier
     const selectedStart = useMemo(
       () => parseISOYmd(value.startDate) ?? null,
       [value.startDate]
@@ -205,7 +194,6 @@ export function DateRangeFields({
       [value.endDate]
     );
 
-    // End: i tillegg blokker datoer før valgt start
     function endTileDisabled(args: TileDisabledArgs): boolean {
       if (baseTileDisabled(args)) return true;
       if (args.view !== 'month') return false;
@@ -213,7 +201,6 @@ export function DateRangeFields({
       return false;
     }
 
-    // Handlers (single-date per felt)
     function handleStartChange(nextValue: Value): void {
       if (nextValue instanceof Date) {
         const nextStartISO = formatISOYmd(nextValue);
@@ -225,7 +212,7 @@ export function DateRangeFields({
           endDate: shouldClearEnd ? undefined : currentEndISO,
         });
         setOpenStart(false);
-        setOpenEnd(true); // åpne end for kjapp viderevalg
+        setOpenEnd(true);
       } else {
         onChange({ startDate: undefined, endDate: value.endDate });
       }
@@ -253,7 +240,6 @@ export function DateRangeFields({
     return (
       <div className={className ?? ''}>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {/* Start */}
           <div>
             <label
               htmlFor={startInputId}
@@ -273,7 +259,6 @@ export function DateRangeFields({
             >
               {displayStart}
             </button>
-
             {openStart && (
               <PopoverPortal anchor={startButtonRef.current} align="left">
                 <div
@@ -320,8 +305,6 @@ export function DateRangeFields({
               </PopoverPortal>
             )}
           </div>
-
-          {/* End */}
           <div>
             <label
               htmlFor={endInputId}
@@ -342,7 +325,6 @@ export function DateRangeFields({
             >
               {displayEnd}
             </button>
-
             {openEnd && (
               <PopoverPortal anchor={endButtonRef.current} align="left">
                 <div
@@ -393,8 +375,6 @@ export function DateRangeFields({
       </div>
     );
   }
-
-  // ---------- VARIANTER: NATIVE / TEXT ----------
   return (
     <div className={className ?? ''}>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
