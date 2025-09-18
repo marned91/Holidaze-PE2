@@ -105,10 +105,7 @@ export function VenuesFilters({
   const activeButton = `${baseButton} border-gray-400 bg-gray-50`;
 
   const popoverPanelClass =
-    'sm:absolute sm:left-0 sm:top-full sm:mt-2 ' +
-    'fixed left-1/2 top-28 -translate-x-1/2 ' +
-    'z-[90] w-[min(92vw,22rem)] sm:w-64 max-h-[80vh] overflow-auto overscroll-contain ' +
-    'rounded-lg border border-gray-200 bg-white p-3 shadow-lg';
+    'sm:absolute sm:left-0 sm:top-full sm:mt-2 fixed left-1/2 top-28 -translate-x-1/2 z-[90] w-[min(92vw,22rem)] sm:w-64 max-h-[80vh] overflow-auto overscroll-contain rounded-lg border border-gray-200 bg-white p-3 shadow-lg';
 
   return (
     <div className="mx-auto mb-4 max-w-6xl px-4 relative">
