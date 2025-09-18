@@ -137,11 +137,6 @@ export function ProfilePage() {
     }
   }
 
-  // (Valgfritt) koble actions for my bookings – her gjør vi bare simple alerts/oppdatering
-  function handleEditMyBooking(booking: TBooking, venue: TVenue) {
-    alert(`Edit booking ${booking.id} at ${venue.name}`);
-  }
-
   async function handleCancelMyBooking(booking: TBooking, venue: TVenue) {
     const ok = window.confirm(`Cancel booking at “${venue.name}”?`);
     if (!ok) return;

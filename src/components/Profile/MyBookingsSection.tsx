@@ -190,6 +190,7 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
               totalPriceOverride={totalPriceOverride}
               onEdit={openEdit}
               onCancel={onCancelBooking}
+              hideActions={!isUpcoming(booking, todayIso)} // skjul knapper for past
             />
           ))}
         </div>

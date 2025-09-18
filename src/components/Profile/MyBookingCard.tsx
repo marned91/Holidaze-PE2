@@ -23,6 +23,7 @@ type MyBookingCardProps = {
   disableActions?: boolean;
   totalPriceOverride?: number;
   isCancelling?: boolean;
+  hideActions?: boolean;
 };
 
 export function MyBookingCard({
@@ -33,6 +34,7 @@ export function MyBookingCard({
   disableActions,
   totalPriceOverride,
   isCancelling,
+  hideActions,
 }: MyBookingCardProps) {
   const from = toIsoDateOnly(booking.dateFrom);
   const to = toIsoDateOnly(booking.dateTo);
@@ -84,27 +86,29 @@ export function MyBookingCard({
           </li>
         </ul>
 
-        <div className="mt-4 flex gap-3">
-          <button
-            type="button"
-            onClick={() => onEdit?.(booking, venue)}
-            disabled={!onEdit || disableActions || isCancelling}
-            className="rounded-lg border px-3 py-1.5 text-sm transition duration-300 ease-out hover:scale-105 font-medium-buttons hover:bg-gray-50 cursor-pointer"
-          >
-            Edit
-          </button>
-          <button
-            type="button"
-            onClick={() => onCancel?.(booking, venue)}
-            disabled={!onCancel || disableActions || isCancelling}
-            aria-busy={isCancelling || undefined}
-            className={`rounded-lg border border-red-300 px-3 py-1.5 text-sm text-red-700 hover:bg-red-50 transition duration-300 ease-out hover:scale-105 font-medium-buttons hover:bg-gray-50 cursor-pointer ${
-              isCancelling ? 'opacity-70 cursor-wait' : ''
-            }`}
-          >
-            {isCancelling ? 'Cancelling…' : 'Cancel'}
-          </button>
-        </div>
+        {!hideActions && (
+          <div className="mt-4 flex gap-3">
+            <button
+              type="button"
+              onClick={() => onEdit?.(booking, venue)}
+              disabled={!onEdit || disableActions || isCancelling}
+              className="rounded-lg border px-3 py-1.5 text-sm transition duration-300 ease-out hover:scale-105 font-medium-buttons hover:bg-gray-50 cursor-pointer"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              onClick={() => onCancel?.(booking, venue)}
+              disabled={!onCancel || disableActions || isCancelling}
+              aria-busy={isCancelling || undefined}
+              className={`rounded-lg border border-red-300 px-3 py-1.5 text-sm text-red-700 hover:bg-red-50 transition duration-300 ease-out hover:scale-105 font-medium-buttons hover:bg-gray-50 cursor-pointer ${
+                isCancelling ? 'opacity-70 cursor-wait' : ''
+              }`}
+            >
+              {isCancelling ? 'Cancelling…' : 'Cancel'}
+            </button>
+          </div>
+        )}
       </div>
     </article>
   );
