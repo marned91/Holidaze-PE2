@@ -26,8 +26,6 @@ export function RangeCalendar({
   const endDate = parseISOYmd(value.endDate);
   const today = startOfToday();
 
-  // --- Gjør doubleView responsivt: slå helt av på små skjermer ---
-  // Breakpoint matcher Tailwind “sm”: 640px
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(() => {
     if (
       typeof window === 'undefined' ||
@@ -41,45 +39,24 @@ export function RangeCalendar({
     if (
       typeof window === 'undefined' ||
       typeof window.matchMedia !== 'function'
-    )
+    ) {
       return;
-
-    const mediaQueryList: MediaQueryList =
-      window.matchMedia('(max-width: 640px)');
-
-    const handleMediaQueryChange = (
-      event: MediaQueryListEvent | MediaQueryList
-    ) => {
-      const matches =
-        'matches' in event ? event.matches : (event as MediaQueryList).matches;
-      setIsSmallScreen(matches);
-    };
-
-    handleMediaQueryChange(mediaQueryList);
-
-    // Moderne nettlesere
-    if ('addEventListener' in mediaQueryList) {
-      mediaQueryList.addEventListener(
-        'change',
-        handleMediaQueryChange as unknown as EventListener
-      );
-      return () =>
-        mediaQueryList.removeEventListener(
-          'change',
-          handleMediaQueryChange as unknown as EventListener
-        );
     }
 
-    // Safari < 14 fallback
-    // @ts-expect-error: eldre Safari API
-    mediaQueryList.addListener(handleMediaQueryChange);
+    const mediaQueryList = window.matchMedia('(max-width: 640px)');
+
+    setIsSmallScreen(mediaQueryList.matches);
+
+    const handleChange = () => {
+      setIsSmallScreen(mediaQueryList.matches);
+    };
+
+    mediaQueryList.addEventListener('change', handleChange);
     return () => {
-      // @ts-expect-error: eldre Safari API
-      mediaQueryList.removeListener(handleMediaQueryChange);
+      mediaQueryList.removeEventListener('change', handleChange);
     };
   }, []);
 
-  // Blokkerte intervaller (utilgjengelige datoer)
   const blockedRanges = useMemo(() => {
     const ranges =
       (bookings
@@ -92,7 +69,6 @@ export function RangeCalendar({
     return ranges;
   }, [bookings]);
 
-  // Verdi til react-calendar
   const selectedValue =
     startDate && endDate
       ? ([startDate, endDate] as [Date, Date])
@@ -104,7 +80,6 @@ export function RangeCalendar({
         locale="en-GB"
         calendarType="iso8601"
         selectRange
-        // Av double view på små skjermer:
         showDoubleView={months >= 2 && !isSmallScreen}
         minDate={today}
         prev2Label={null}

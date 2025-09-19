@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
-
 import { Modal } from '../../Common/Modal';
 import { updateVenue } from '../../../api/venuesApi';
 import type { TVenue } from '../../../types/venueTypes';
@@ -12,7 +11,6 @@ import {
   venueToFormValues,
   formValuesToCreatePayload,
 } from '../../../utils/venueFormMapping';
-
 import { TitleField } from '../forms/VenueFormFields/TitleField';
 import { DescriptionField } from '../forms/VenueFormFields/DescriptionField';
 import { ImagesField } from '../forms/VenueFormFields/ImageField';
@@ -85,14 +83,12 @@ export function EditVenueModal({
           <p className="text-sm text-gray-600 font-text">
             Update the details for your venue.
           </p>
-
           <TitleField max={100} />
           <DescriptionField max={1000} />
           <ImagesField />
           <PriceGuestsRow />
           <CityField />
           <FacilitiesField />
-
           <FormActions
             onCancel={onClose}
             submitting={isSubmitting}

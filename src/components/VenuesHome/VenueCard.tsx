@@ -36,10 +36,10 @@ export function VenueCard({ venue }: VenueCardProps) {
           />
         </div>
         <div className="flex flex-1 flex-col p-3">
-          <div className="space-y-1">
-            <h3 className="font-small-nav-footer font-medium">
+          <div className="space-y-1 font-text">
+            <h4 className="font-small-nav-footer font-medium text-lg">
               {venue.name || 'Untitled venue'}
-            </h3>
+            </h4>
             <div className="flex items-center text-sm text-gray-600 font-text">
               <FaMapMarkerAlt className="mr-1 text-main-light" />
               <span>{locationText}</span>

@@ -80,7 +80,6 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
         ))}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/35 to-transparent" />
       </div>
-
       {hasMultiple && (
         <>
           <button
@@ -105,7 +104,6 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
           >
             <FaChevronRight className="text-gray-800" />
           </button>
-
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/35 px-2 py-1">
             {slides.map((_, indexNumber) => (
               <button

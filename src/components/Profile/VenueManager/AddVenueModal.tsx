@@ -1,13 +1,11 @@
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
 import { Modal } from '../../Common/Modal';
 import { createVenue } from '../../../api/venuesApi';
 import type { CreateVenueInput, TVenue } from '../../../types/venueTypes';
 import type { TVenueFormValues } from '../../../types/formTypes';
 import { venueSchema } from '../forms/validateCreateAndEditVenueSchema';
-
 import { TitleField } from '../forms/VenueFormFields/TitleField';
 import { ImagesField } from '../forms/VenueFormFields/ImageField';
 import { DescriptionField } from '../forms/VenueFormFields/DescriptionField';

@@ -20,13 +20,13 @@ export function SearchResults({ query }: SearchResultsProps) {
   return (
     <section className="m-auto w-full px-10 py-10">
       <div className="mb-4 flex items-center gap-3">
-        <h2 className="text-2xl font-medium">
+        <h2 className="text-2xl font-medium font-medium-buttons">
           Results <span className="text-gray-500">for “{query}”</span>
         </h2>
         <button
           type="button"
           onClick={clearSearch}
-          className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
+          className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50 font-medium-buttons"
         >
           Clear search
         </button>

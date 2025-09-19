@@ -21,16 +21,14 @@ export function VenueDates({
     <section aria-labelledby={`${sectionId}-title`}>
       <h3
         id={`${sectionId}-title`}
-        className="text-2xl font-medium font-small-nav-footer"
+        className="text-xl font-medium font-small-nav-footer"
       >
         Availability
       </h3>
-
       <p id={descriptionId} className="mt-3 text-sm text-gray-500 font-text">
         Click a start date, then an end date. Unavailable and past dates are
         disabled.
       </p>
-
       <div
         className="mt-3 w-full rounded-lg border border-gray-200 bg-white p-4 shadow-xl"
         role="group"

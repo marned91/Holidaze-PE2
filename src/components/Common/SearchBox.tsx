@@ -66,7 +66,7 @@ export function SearchBox({
         onChange={(event) => handleInputChange(event.target.value)}
         className={
           inputClassName ??
-          'w-full rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500'
+          'w-full rounded-xl text-sm bg-white px-4 py-2 font-text text-gray-800 shadow-sm outline-none placeholder:text-gray-500'
         }
       />
     </form>

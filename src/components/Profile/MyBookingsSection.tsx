@@ -108,7 +108,7 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
   return (
     <section>
       <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-3xl font-medium font-medium-buttons">{title}</h2>
+        <h2 className="text-2xl font-medium font-medium-buttons">{title}</h2>
         <div
           className="flex w-full sm:w-auto flex-wrap items-center gap-2 overflow-x-auto sm:overflow-visible -mx-1 px-1"
           aria-label="Filter bookings"
@@ -129,7 +129,7 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => setFilter(key)}
-                className={`shrink-0 snap-start flex items-center gap-2 rounded-xl border px-3 py-1.5 text-sm transition-colors ${
+                className={`shrink-0 snap-start flex items-center gap-2 rounded-xl border px-3 py-1.5 text-sm transition-colors font-medium-buttons ${
                   isActive
                     ? 'border-gray-900 bg-dark text-white'
                     : 'border-gray-300 text-gray-700 hover:bg-dark hover:text-white'
@@ -150,7 +150,6 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
           })}
         </div>
       </div>
-
       {isLoading && (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
@@ -169,19 +168,16 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
           ))}
         </div>
       )}
-
       {errorMessage && <p className="text-red-600">{errorMessage}</p>}
-
       {!isLoading && !errorMessage && sorted.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center">
+        <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center font-text">
           <p className="text-gray-700">
             You do not have any past bookings yet.
           </p>
         </div>
       )}
-
       {!isLoading && !errorMessage && sorted.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 font-text">
           {sorted.map(({ booking, venue, totalPriceOverride }) => (
             <MyBookingCard
               key={booking.id}
@@ -190,12 +186,11 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
               totalPriceOverride={totalPriceOverride}
               onEdit={openEdit}
               onCancel={onCancelBooking}
-              hideActions={!isUpcoming(booking, todayIso)} // skjul knapper for past
+              hideActions={!isUpcoming(booking, todayIso)}
             />
           ))}
         </div>
       )}
-
       {selected && (
         <EditBookingModal
           open={isEditOpen}

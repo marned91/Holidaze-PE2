@@ -112,7 +112,7 @@ export function VenuesFilters({
           type="button"
           aria-label="Close filters"
           onClick={closeAll}
-          className="fixed inset-0 z-[70] bg-transparent cursor-default"
+          className="fixed inset-0 z-[70] bg-transparent cursor-default font-medium-buttons"
         />
       )}
       <div className="relative flex flex-wrap justify-center gap-3 font-text font-medium text-dark">

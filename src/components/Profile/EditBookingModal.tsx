@@ -1,15 +1,11 @@
-// components/Profile/EditBookingModal.tsx
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Modal } from '../Common/Modal';
-
 import type { TBooking, TUpdateBookingPayload } from '../../types/bookingType';
 import type { TVenue } from '../../types/venueTypes';
 import type { TDateRange } from '../../types/dateType';
-
 import { getVenue } from '../../api/venuesApi';
 import { updateBooking } from '../../api/bookingsApi';
-
 import { DateRangeFields } from '../Common/DateRangeFields';
 import {
   normalizeDateRange,
@@ -17,7 +13,6 @@ import {
 } from '../../utils/dateRange';
 import { nightsBetween } from '../../utils/date';
 
-// ---------- local helpers ----------
 function toDateOnly(input?: string) {
   return (input || '').slice(0, 10);
 }
@@ -37,7 +32,6 @@ function dateRangesOverlap(
   const endTimeB = parseDate(endB).getTime();
   return startTimeA < endTimeB && endTimeA > startTimeB;
 }
-// -----------------------------------
 
 type EditBookingModalProps = {
   open: boolean;
@@ -74,7 +68,6 @@ export function EditBookingModal({
     },
   });
 
-  // Last inn venue (med bookings) når modalen åpnes
   useEffect(() => {
     if (!open) return;
     let isMounted = true;
@@ -82,7 +75,7 @@ export function EditBookingModal({
       try {
         setIsVenueLoading(true);
         setVenueLoadError(null);
-        const data = await getVenue(venue.id); // forutsetter ?_bookings=true i API-et
+        const data = await getVenue(venue.id);
         if (!isMounted) return;
         setLoadedVenue(data);
       } catch (error) {
@@ -92,31 +85,27 @@ export function EditBookingModal({
         if (isMounted) setIsVenueLoading(false);
       }
     }
-    setLoadedVenue(null); // sørg for fersk fetch når modal åpnes på nytt
+    setLoadedVenue(null);
     loadVenueWithBookings();
     return () => {
       isMounted = false;
     };
   }, [open, venue.id]);
 
-  // --- form state ---
   const dateFrom = watch('dateFrom');
   const dateTo = watch('dateTo');
   const guests = watch('guests') ?? 0;
 
-  // Sync RHF <-> DateRangeFields
   const dateRangeValue: TDateRange = useMemo(
     () => ({ startDate: dateFrom || undefined, endDate: dateTo || undefined }),
     [dateFrom, dateTo]
   );
 
-  // Normalisering
   const normalizedRange = useMemo(
     () => normalizeDateRange(dateRangeValue),
     [dateRangeValue]
   );
 
-  // Utilgjengelige perioder (ekskluder denne bookingen og identisk range)
   const unavailableRaw = (loadedVenue?.bookings ?? []) as Array<{
     dateFrom: string;
     dateTo: string;
@@ -133,12 +122,10 @@ export function EditBookingModal({
     });
   }, [unavailableRaw, booking.id, booking.dateFrom, booking.dateTo]);
 
-  // Ikke vis tilgjengelighetsstatus før brukeren faktisk har endret datoene
   const isSameAsOriginal =
     toDateOnly(dateFrom || '') === toDateOnly(booking.dateFrom) &&
     toDateOnly(dateTo || '') === toDateOnly(booking.dateTo);
 
-  // Tilgjengelighet mot "andre" bookinger (ikke denne)
   const venueForAvailability: TVenue = useMemo(() => {
     const src = (loadedVenue || venue) as TVenue;
     return {
@@ -160,7 +147,6 @@ export function EditBookingModal({
 
   const maxGuests = loadedVenue?.maxGuests ?? venue.maxGuests;
 
-  // Valideringer
   const hasDateOrderError =
     !!dateFrom &&
     !!dateTo &&
@@ -221,15 +207,17 @@ export function EditBookingModal({
       title="Edit booking"
       ariaLabel="Edit booking"
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-5 font-text"
+        noValidate
+      >
         {isVenueLoading && (
           <p className="text-sm text-gray-600">Loading availability…</p>
         )}
         {venueLoadError && (
-          <p className="text-sm text-red-600">{venueLoadError}</p>
+          <p className="text-sm text-red-600 font-text">{venueLoadError}</p>
         )}
-
-        {/* Guests */}
         <div>
           <label className="mb-1 block text-sm font-medium font-text">
             Guests
@@ -258,8 +246,6 @@ export function EditBookingModal({
             </p>
           )}
         </div>
-
-        {/* Date range – to felt med små popovers (blokkerer fortid + opptatte datoer) */}
         <div className="font-text">
           <DateRangeFields
             value={dateRangeValue}
@@ -273,8 +259,6 @@ export function EditBookingModal({
             bookings={unavailableFiltered}
             months={1}
           />
-
-          {/* Live hint – vises først når brukeren har endret datoer */}
           {normalizedRange && availability === true && (
             <p className="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
               Available for the selected dates!
@@ -286,21 +270,17 @@ export function EditBookingModal({
             </p>
           )}
         </div>
-
-        {/* Regelbrudd (rekkefølge / overlap) */}
         {!!dateFrom &&
           !!dateTo &&
           (hasDateOrderError || hasOverlapWithUnavailableDates) && (
-            <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            <div className="rounded-md border border-red-200 font-text bg-red-50 px-3 py-2 text-sm text-red-700">
               {hasDateOrderError
                 ? 'The end date must be after the start date.'
                 : 'Those dates are not available. Please choose another range.'}
             </div>
           )}
-
-        {/* Total-info */}
         {normalizedRange && availability === true && (
-          <div className="mt-2 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-800">
+          <div className="mt-2 rounded-md bg-gray-50 px-3 py-2 font-text text-sm text-gray-800">
             <div className="flex items-center justify-between">
               <span>
                 {numberOfNights} {numberOfNights === 1 ? 'night' : 'nights'}
@@ -312,7 +292,6 @@ export function EditBookingModal({
             </div>
           </div>
         )}
-
         <div className="mt-6 flex items-center justify-end gap-3">
           <button
             type="button"

@@ -157,7 +157,7 @@ export function SignUpPage() {
             role="region"
             aria-live="polite"
           >
-            <h2 className="text-xl font-semibold font-medium-buttons mb-1">
+            <h2 className="text-2xl font-semibold font-medium-buttons mb-1">
               {isVenueManager ? 'Venue manager account' : 'Customer account'}
             </h2>
             {isVenueManager ? (

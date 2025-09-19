@@ -15,7 +15,7 @@ import { BookingConfirmedModal } from '../components/Booking/BookingConfirmedMod
 import { normalizeDateRange } from '../utils/dateRange';
 import { formatCurrencyNOK } from '../utils/currency';
 import { getLocationText, getVenueImage } from '../utils/venue';
-import { dateRangeLabel, nightsBetween, formatISOYmd } from '../utils/date'; // <-- viktig
+import { dateRangeLabel, nightsBetween, formatISOYmd } from '../utils/date';
 
 type ModalView = 'none' | 'login' | 'review' | 'confirmed';
 
@@ -41,7 +41,6 @@ export function VenuePage() {
 
   useEffect(() => {
     let isActive = true;
-
     async function load() {
       if (!venueId) return;
       setLoading(true);
@@ -81,7 +80,6 @@ export function VenuePage() {
   const nights = normalized ? nightsBetween(normalized.from, normalized.to) : 0;
   const nightly = typeof venue.price === 'number' ? venue.price : 0;
   const total = nights * nightly;
-
   const { url: firstImageUrl } = getVenueImage(venue);
   const dateText = normalized
     ? `${dateRangeLabel(normalized.from, normalized.to)} (${nights} ${
@@ -138,7 +136,6 @@ export function VenuePage() {
                 setModalView('login');
                 return;
               }
-              // Bruk date-only (lokal) i state videre inn i review
               setSelectedDates({
                 startDate: formatISOYmd(range.from),
                 endDate: formatISOYmd(range.to),
@@ -157,7 +154,6 @@ export function VenuePage() {
         onGotoLogin={() => navigate('/login')}
         onGotoRegister={() => navigate('/signup')}
       />
-
       <BookingReviewModal
         open={modalView === 'review'}
         onClose={() => setModalView('none')}
@@ -165,7 +161,6 @@ export function VenuePage() {
           const range = normalizeDateRange(selectedDates);
           const guests = (window as any).__bookingGuests ?? 1;
           if (!range) return;
-          // Send date-only til API
           const payload: TCreateBookingPayload = {
             dateFrom: formatISOYmd(range.from),
             dateTo: formatISOYmd(range.to),
@@ -185,7 +180,6 @@ export function VenuePage() {
         submitting={submitting}
         error={submitError}
       />
-
       <BookingConfirmedModal
         open={modalView === 'confirmed'}
         onClose={() => setModalView('none')}

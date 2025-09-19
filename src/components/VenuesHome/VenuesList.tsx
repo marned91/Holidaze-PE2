@@ -1,4 +1,3 @@
-// components/VenuesHome/VenuesList.tsx
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { type TVenue } from '../../types/venueTypes';
@@ -86,7 +85,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
       </div>
       <div className="mb-6 border-b border-gray-400" />
       <div className="mb-4 flex-wrap sm:flex items-end justify-between gap-5">
-        <h2 className="text-2xl font-medium">Venues</h2>
+        <h2 className="text-2xl font-medium font-medium-buttons">Venues</h2>
         {!loading && !loadError && totalVenues > 0 && (
           <VenueSort
             sortOrder={sortOrder}

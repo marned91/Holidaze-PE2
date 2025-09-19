@@ -64,7 +64,7 @@ export function UpcomingVenueBookings({
 
   return (
     <section>
-      <h2 className="mb-4 text-3xl font-medium font-medium-buttons">
+      <h2 className="mb-4 text-2xl font-medium font-medium-buttons">
         Upcoming bookings for your venues
       </h2>
       {isLoading && (
@@ -73,7 +73,7 @@ export function UpcomingVenueBookings({
           className="divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-white"
         >
           {Array.from({ length: 5 }).map((_, i) => (
-            <li key={i} className="flex items-start gap-4 p-5">
+            <li key={i} className="flex items-start gap-4 p-5 font-text">
               <div className="h-24 w-32 rounded-lg bg-gray-100 animate-pulse" />
               <div className="flex-1">
                 <div className="h-5 w-1/3 rounded bg-gray-100 animate-pulse" />
@@ -85,18 +85,15 @@ export function UpcomingVenueBookings({
           ))}
         </ul>
       )}
-
       {errorMessage && <p className="text-red-600">{errorMessage}</p>}
-
       {!isLoading && !errorMessage && upcoming.length === 0 && (
-        <div className="rounded-xl border border-dashed border-gray-300 px-8 py-15 text-center text-font">
+        <div className="rounded-xl border border-dashed border-gray-300 px-8 py-15 text-center font-text">
           <p className="text-gray-700 mb-2">No upcoming bookings.</p>
           <p className="text-sm text-gray-500">
             New bookings for your venues will show up here.
           </p>
         </div>
       )}
-
       {!isLoading &&
         !errorMessage &&
         Object.entries(grouped).map(([key, items]) => (
@@ -139,7 +136,7 @@ export function UpcomingVenueBookings({
                       </div>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="truncate text-base font-medium font-small-nav-footer">
+                      <h4 className="truncate text-lg font-semibold font-text">
                         {venue.name}
                       </h4>
 

@@ -74,13 +74,11 @@ export function BookingSidebar({
 
   return (
     <div className="rounded-lg border border-gray-200 p-5 shadow-sm">
-      <h2 className="text-3xl font-semibold font-medium-buttons">Book Now</h2>
-
+      <h2 className="text-2xl font-semibold font-medium-buttons">Book Now</h2>
       <div className="mt-2 text-lg font-text">
         <span className="font-semibold">{priceText}</span>
         <span className="text-gray-600"> / night</span>
       </div>
-
       <div className="mt-2 flex items-center gap-2 text-gray-700 font-text">
         <FaUser className="text-gray-600" />
         <span>{getGuestsText(guests)}</span>
@@ -111,14 +109,12 @@ export function BookingSidebar({
             </option>
           ))}
         </select>
-
         {typeof venue.maxGuests === 'number' && guests > venue.maxGuests && (
           <p className="mt-2 text-xs text-red-600">
             Max {venue.maxGuests} guests for this venue.
           </p>
         )}
       </div>
-
       {normalized && isAvailable === true && (
         <p className="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-700 font-text">
           Available for the selected dates!
@@ -129,7 +125,6 @@ export function BookingSidebar({
           Not available for the selected dates.
         </p>
       )}
-
       {normalized && isAvailable === true && (
         <div className="mt-4 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-800 font-text">
           <div className="flex items-center justify-between">
@@ -146,7 +141,6 @@ export function BookingSidebar({
           </div>
         </div>
       )}
-
       <button
         type="button"
         disabled={!canRequest}

@@ -30,7 +30,6 @@ export function ProfileTabs({ active, onChange, isManager }: ProfileTabsProps) {
       >
         My Venues
       </button>
-
       <button
         type="button"
         role="tab"
@@ -43,7 +42,6 @@ export function ProfileTabs({ active, onChange, isManager }: ProfileTabsProps) {
       >
         Bookings for your venues
       </button>
-
       <button
         type="button"
         role="tab"

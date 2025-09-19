@@ -23,14 +23,14 @@ export function LoginRequiredModal({
         <button
           type="button"
           onClick={onGotoLogin}
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 font-medium hover:bg-gray-50"
+          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 font-medium hover:bg-gray-50 font-medium-buttons"
         >
           Sign in
         </button>
         <button
           type="button"
           onClick={onGotoRegister}
-          className="w-full rounded-lg bg-main-dark px-4 py-3 font-medium text-white hover:bg-dark-highlight"
+          className="w-full rounded-lg bg-main-dark px-4 py-3 font-medium text-white hover:bg-dark-highlight font-medium-buttons"
         >
           Create account
         </button>

@@ -53,7 +53,6 @@ export function VenueManager({
           onDeleteVenue={onDeleteVenue}
         />
       )}
-
       {activeTab === 'managerBookings' && (
         <section id="tab-managerBookings" className="mt-2">
           <UpcomingVenueBookings
@@ -63,7 +62,6 @@ export function VenueManager({
           />
         </section>
       )}
-
       {activeTab === 'myBookings' && (
         <section id="tab-myBookings" className="mt-2">
           <MyBookingsSection

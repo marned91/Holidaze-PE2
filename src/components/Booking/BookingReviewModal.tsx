@@ -38,25 +38,20 @@ export function BookingReviewModal({
             <div className="aspect-[4/3] w-full" />
           )}
         </div>
-
         <div>
-          <h3 className="text-2xl font-small-nav-footer">{venueTitle}</h3>
-
+          <h3 className="text-xl font-small-nav-footer">{venueTitle}</h3>
           <div className="mt-3 flex items-center gap-2 text-gray-700">
             <FaMapMarkerAlt className="text-main-light" />
             <span className="font-text">{locationText}</span>
           </div>
-
           <div className="mt-4 text-gray-800 font-text">{dateRangeText}</div>
           <div className="mt-1 text-gray-800 font-text">{guestsText}</div>
           <div className="mt-4 text-xl font-bold font-text">{totalText}</div>
-
           {error && (
             <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 font-text">
               {error}
             </p>
           )}
-
           <button
             type="button"
             onClick={onConfirm}

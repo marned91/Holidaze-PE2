@@ -243,7 +243,7 @@ export function DateRangeFields({
           <div>
             <label
               htmlFor={startInputId}
-              className="mb-1 block text-sm text-gray-700"
+              className="mb-1 block text-sm text-gray-700 font-text"
             >
               {labelFrom}
             </label>
@@ -263,7 +263,7 @@ export function DateRangeFields({
               <PopoverPortal anchor={startButtonRef.current} align="left">
                 <div
                   ref={popoverContentRef}
-                  className="rounded-xl border border-gray-200 bg-white p-2 shadow-2xl"
+                  className="rounded-xl border border-gray-200 bg-white p-2 shadow-2xl font-text"
                 >
                   <Calendar
                     selectRange={false}
@@ -289,14 +289,14 @@ export function DateRangeFields({
                           endDate: value.endDate,
                         })
                       }
-                      className="rounded-md border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50"
+                      className="rounded-md border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50 font-medium-buttons"
                     >
                       Clear
                     </button>
                     <button
                       type="button"
                       onClick={() => setOpenStart(false)}
-                      className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight"
+                      className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight font-medium-buttons"
                     >
                       Done
                     </button>
@@ -308,7 +308,7 @@ export function DateRangeFields({
           <div>
             <label
               htmlFor={endInputId}
-              className="mb-1 block text-sm text-gray-700"
+              className="mb-1 block text-sm text-gray-700 font-text"
             >
               {labelTo}
             </label>
@@ -321,7 +321,7 @@ export function DateRangeFields({
                 setOpenEnd((s) => !s);
               }}
               disabled={!value.startDate}
-              className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-left outline-none focus:ring-2 focus:ring-highlight font-text disabled:opacity-60"
+              className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-left outline-none focus:ring-2 focus:ring-highlight font-text disabled:opacity-60 font-medium-buttons"
             >
               {displayEnd}
             </button>
@@ -329,7 +329,7 @@ export function DateRangeFields({
               <PopoverPortal anchor={endButtonRef.current} align="left">
                 <div
                   ref={popoverContentRef}
-                  className="rounded-xl border border-gray-200 bg-white p-2 shadow-2xl"
+                  className="rounded-xl border border-gray-200 bg-white p-2 shadow-2xl font-text"
                 >
                   <Calendar
                     selectRange={false}
@@ -355,14 +355,14 @@ export function DateRangeFields({
                           endDate: undefined,
                         })
                       }
-                      className="rounded-md border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50"
+                      className="rounded-md border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50 font-medium-buttons"
                     >
                       Clear
                     </button>
                     <button
                       type="button"
                       onClick={() => setOpenEnd(false)}
-                      className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight"
+                      className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight font-medium-buttons"
                     >
                       Done
                     </button>

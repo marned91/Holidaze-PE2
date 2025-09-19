@@ -29,11 +29,9 @@ export function ProfileHeader({
           className="h-full w-full object-cover"
         />
       </div>
-
       <div className="flex-1 font-text">
         <p className="text-lg font-bold">{profile.name}</p>
         <p className="text-gray-600">{profile.email}</p>
-
         <div className="mt-3">
           <button
             type="button"

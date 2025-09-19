@@ -60,15 +60,15 @@ export function MyBookingCard({
             loading="lazy"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-sm text-gray-500">
+          <div className="flex h-full w-full font-text items-center justify-center text-sm text-gray-500">
             No image
           </div>
         )}
       </div>
       <div className="p-4">
-        <h3 className="truncate text-base font-medium font-small-nav-footer">
+        <h4 className="text-lg font-small-nav-footer font-medium">
           {venue.name}
-        </h3>
+        </h4>
         <ul className="mt-2 space-y-1 text-sm text-gray-700 font-text">
           <li>
             <span className="text-gray-500">Dates: </span>
@@ -85,7 +85,6 @@ export function MyBookingCard({
             <span className="font-semibold">{formatCurrencyNOK(total)}</span>
           </li>
         </ul>
-
         {!hideActions && (
           <div className="mt-4 flex gap-3">
             <button

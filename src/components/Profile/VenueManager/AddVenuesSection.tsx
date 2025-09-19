@@ -22,24 +22,22 @@ export function AddVenues({
   return (
     <section id="tab-addVenue">
       <div className="mb-4">
-        <h1 className="text-3xl font-large">My Venues</h1>
+        <h1 className="text-3xl font-large font-dark">My Venues</h1>
       </div>
-
       {isLoading && <p>Loading venues…</p>}
       {errorMessage && <p className="text-red-600">{errorMessage}</p>}
-
       {!isLoading && !errorMessage && venues.length === 0 && (
         <div className="rounded-xl border border-dashed border-gray-300 p-8 text-center">
           <p className="mb-4 text-gray-700 font-text">
             You do not have any venues yet!
           </p>
-          <div className="mx-auto max-w-sm">
+          <div className="mx-auto max-w-sm font-text">
             <AddVenueCard onClick={onCreateVenue} />
           </div>
         </div>
       )}
       {!errorMessage && !isLoading && venues.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 font-text">
           <AddVenueCard onClick={onCreateVenue} />
           {venues.map((venue) => (
             <ManageVenues

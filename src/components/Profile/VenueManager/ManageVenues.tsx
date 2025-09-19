@@ -28,9 +28,11 @@ export function ManageVenues({ venue, onEdit, onDelete }: ManageVenuesProps) {
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-medium font-small-nav-footer">{venue.name}</h3>
+        <h4 className="text-lg font-medium font-small-nav-footer">
+          {venue.name}
+        </h4>
 
-        <ul className="mt-2 space-y-1 text-sm text-gray-600">
+        <ul className="mt-2 space-y-1 text-sm text-gray-600 font-text">
           <li>
             <span className="font-semibold">Price:</span>{' '}
             {formatCurrencyNOK(venue.price)} / night

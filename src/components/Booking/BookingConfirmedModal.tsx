@@ -34,7 +34,7 @@ export function BookingConfirmedModal({
         >
           <FaCheckCircle className="h-8 w-8" />
         </div>
-        <h3 className="text-2xl font-semibold font-small-nav-footer">
+        <h3 className="text-xl font-semibold font-small-nav-footer">
           You’re booked!
         </h3>
         <p className="mt-1 text-sm text-gray-600 font-text">

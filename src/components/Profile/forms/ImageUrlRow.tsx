@@ -29,12 +29,11 @@ export function ImageUrlRow({
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs text-gray-500">
+          <div className="flex h-full w-full items-center font-text justify-center text-xs text-gray-500">
             No preview
           </div>
         )}
       </div>
-
       <div className="w-full min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <input
@@ -53,13 +52,12 @@ export function ImageUrlRow({
             <button
               type="button"
               onClick={onRemove}
-              className="rounded-md border px-3 py-2 text-sm hover:bg-gray-50 font-text"
+              className="rounded-md border px-3 py-2 text-sm hover:bg-gray-50 font-text font-medium-buttons"
             >
               Remove
             </button>
           )}
         </div>
-
         {errorMessage && (
           <p className="mt-1 text-sm text-red-600 font-text">{errorMessage}</p>
         )}

@@ -27,7 +27,7 @@ export function Header() {
   const mobileMenuId = 'primary-mobile-menu';
 
   const pillButtonClassName =
-    'uppercase text-white text-sm px-3 py-1.5 rounded-lg bg-white/15 font-medium hover:ring-1 hover:ring-white/60';
+    'uppercase text-white text-sm px-3 py-1.5 font-small-nav-footer rounded-lg bg-white/15 font-medium hover:ring-1 hover:ring-white/60';
 
   const roundIconButtonClassName = (isActiveRoute: boolean) =>
     `flex h-10 w-10 items-center justify-center rounded-full bg-white/15 hover:bg-white/20 ${
@@ -114,7 +114,7 @@ export function Header() {
             <SearchBox
               inputId="site-search-desktop"
               wrapperClassName="w-[22rem] lg:w-[22rem] md:w-[18rem] sm:w-[16rem]"
-              inputClassName="w-full rounded-xl text-sm bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
+              inputClassName="w-full rounded-xl text-sm font-text bg-white px-4 py-2 text-gray-800 shadow-sm outline-none placeholder:text-gray-500"
             />
           </div>
         </div>
