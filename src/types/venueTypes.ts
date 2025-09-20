@@ -34,7 +34,7 @@ export type TVenue = {
   bookings?: TVenueBooking[];
 };
 
-export type CreateVenueInput = {
+export type TCreateVenueInput = {
   name: string;
   description: string;
   media: { url: string; alt?: string }[];

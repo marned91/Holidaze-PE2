@@ -7,13 +7,22 @@ export function getLocationText(venue: Pick<TVenue, 'location'>): string {
   return [city, country].filter(Boolean).join(', ') || 'Location';
 }
 
+type GetVenueImageOptions = {
+  fallback?: string;
+};
+
 export function getVenueImage(
   venue: Pick<TVenue, 'media' | 'name'>,
-  options?: { fallback?: string }
+  options?: GetVenueImageOptions
 ): { url: string; alt: string } {
-  const first = venue.media?.find((m) => (m?.url ?? '').trim().length > 0);
-  const url = first?.url?.trim() || options?.fallback || PlaceholderImage;
-  const alt = (first?.alt || venue.name || 'Venue image').trim();
+  const firstValidMedia = venue.media?.find(
+    (mediaItem) => (mediaItem?.url ?? '').trim().length > 0
+  );
+
+  const url =
+    firstValidMedia?.url?.trim() || options?.fallback || PlaceholderImage;
+  const alt = (firstValidMedia?.alt || venue.name || 'Venue image').trim();
+
   return { url, alt };
 }
 
@@ -22,7 +31,8 @@ export function getGuestsText(
   singular = 'guest',
   plural = 'guests'
 ): string {
-  if (typeof maxGuests !== 'number' || !Number.isFinite(maxGuests))
+  if (typeof maxGuests !== 'number' || !Number.isFinite(maxGuests)) {
     return 'Guests';
+  }
   return `${maxGuests} ${maxGuests === 1 ? singular : plural}`;
 }

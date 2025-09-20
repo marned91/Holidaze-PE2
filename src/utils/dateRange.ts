@@ -1,25 +1,28 @@
 import type { TDateRange } from '../types/dateType';
 import type { TVenue } from '../types/venueTypes';
 
+export type DateRangeNormalized = { from: Date; to: Date };
+
 export function todayYmd(): string {
-  const n = new Date();
-  const y = n.getFullYear();
-  const m = String(n.getMonth() + 1).padStart(2, '0');
-  const d = String(n.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 export function parseLocal(ymd?: string): Date | null {
   if (!ymd) return null;
-  const [y, m, d] = ymd.split('-').map(Number);
-  if (!y || !m || !d) return null;
-  const dt = new Date(y, m - 1, d, 0, 0, 0, 0);
-  return isNaN(dt.getTime()) ? null : dt;
+  const [year, month, day] = ymd.split('-').map(Number);
+  if (!year || !month || !day) return null;
+
+  const dateObject = new Date(year, month - 1, day, 0, 0, 0, 0);
+  return Number.isNaN(dateObject.getTime()) ? null : dateObject;
 }
 
 export function normalizeDateRange(
   range: TDateRange
-): { from: Date; to: Date } | null {
+): DateRangeNormalized | null {
   const from = parseLocal(range.startDate);
   const to = parseLocal(range.endDate);
   if (!from || !to) return null;
@@ -28,27 +31,33 @@ export function normalizeDateRange(
 }
 
 export function rangesOverlapInclusive(
-  aStart: Date,
-  aEnd: Date,
-  bStart: Date,
-  bEnd: Date
+  rangeAStart: Date,
+  rangeAEnd: Date,
+  rangeBStart: Date,
+  rangeBEnd: Date
 ): boolean {
   return (
-    aStart.getTime() <= bEnd.getTime() && bStart.getTime() <= aEnd.getTime()
+    rangeAStart.getTime() <= rangeBEnd.getTime() &&
+    rangeBStart.getTime() <= rangeAEnd.getTime()
   );
 }
 
 export function isVenueAvailableForRange(
   venue: Pick<TVenue, 'bookings'>,
-  wanted: { from: Date; to: Date }
+  wanted: DateRangeNormalized
 ): boolean {
   const bookings = venue.bookings ?? [];
   if (bookings.length === 0) return true;
 
-  return bookings.every((b) => {
-    const bs = parseLocal(b.dateFrom?.split('T')[0] ?? '');
-    const be = parseLocal(b.dateTo?.split('T')[0] ?? '');
-    if (!bs || !be) return true;
-    return !rangesOverlapInclusive(wanted.from, wanted.to, bs, be);
+  return bookings.every((booking) => {
+    const bookingStart = parseLocal(booking.dateFrom?.split('T')[0] ?? '');
+    const bookingEnd = parseLocal(booking.dateTo?.split('T')[0] ?? '');
+    if (!bookingStart || !bookingEnd) return true;
+    return !rangesOverlapInclusive(
+      wanted.from,
+      wanted.to,
+      bookingStart,
+      bookingEnd
+    );
   });
 }

@@ -16,6 +16,7 @@ export async function createBooking(
     auth: true,
     body: JSON.stringify(payload),
   });
+
   if (!data) {
     throw new Error('Failed to create booking');
   }
@@ -28,10 +29,12 @@ export async function getBookingsByProfile(
 ): Promise<TBookingWithVenue[]> {
   const params = new URLSearchParams();
   if (opts?.withVenue) params.set('_venue', 'true');
+
   const query = params.toString();
   const url = `${API_PROFILES}/${encodeURIComponent(username)}/bookings${
     query ? `?${query}` : ''
   }`;
+
   const data = await doFetch<TBookingWithVenue[]>(url, { auth: true });
   return data ?? [];
 }

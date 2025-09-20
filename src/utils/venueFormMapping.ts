@@ -1,14 +1,13 @@
-import type { TVenue } from '../types/venueTypes';
+import type { TVenue, TCreateVenueInput } from '../types/venueTypes';
 import type { TVenueFormValues } from '../types/formTypes';
 
 export function venueToFormValues(venue: TVenue): TVenueFormValues {
   return {
     name: venue.name ?? '',
     description: venue.description ?? '',
-    images: (venue.media ?? []).map((m) => ({ url: m.url || '' })) || [
-      { url: '' },
-      { url: '' },
-    ],
+    images: (venue.media ?? []).map((mediaItem) => ({
+      url: mediaItem.url || '',
+    })),
     maxGuests: typeof venue.maxGuests === 'number' ? venue.maxGuests : 0,
     price: typeof venue.price === 'number' ? venue.price : 0,
     city: venue.location?.city ?? '',
@@ -21,13 +20,15 @@ export function venueToFormValues(venue: TVenue): TVenueFormValues {
   };
 }
 
-export function formValuesToCreatePayload(values: TVenueFormValues) {
+export function formValuesToCreatePayload(
+  values: TVenueFormValues
+): TCreateVenueInput {
   const media = values.images
-    .map((item, index) => ({
-      url: item.url.trim(),
-      alt: `${values.name} photo ${index + 1}`,
+    .map((imageItem, index) => ({
+      url: imageItem.url.trim(),
+      alt: `${values.name || 'Venue'} photo ${index + 1}`,
     }))
-    .filter((m) => m.url.length > 0);
+    .filter((mediaItem) => mediaItem.url.length > 0);
 
   return {
     name: values.name.trim(),
@@ -42,5 +43,5 @@ export function formValuesToCreatePayload(values: TVenueFormValues) {
       breakfast: !!values.meta.breakfast,
       pets: !!values.meta.pets,
     },
-  } as const;
+  };
 }

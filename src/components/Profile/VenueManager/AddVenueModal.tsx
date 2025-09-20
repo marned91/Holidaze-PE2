@@ -3,7 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Modal } from '../../Common/Modal';
 import { createVenue } from '../../../api/venuesApi';
-import type { CreateVenueInput, TVenue } from '../../../types/venueTypes';
+import type { TCreateVenueInput, TVenue } from '../../../types/venueTypes';
 import type { TVenueFormValues } from '../../../types/formTypes';
 import { venueSchema } from '../forms/validateCreateAndEditVenueSchema';
 import { TitleField } from '../forms/VenueFormFields/TitleField';
@@ -69,7 +69,7 @@ export function AddVenueModal({
       }))
       .filter((m) => m.url.length > 0);
 
-    const payload: CreateVenueInput = {
+    const payload: TCreateVenueInput = {
       name: values.name.trim(),
       description: values.description.trim(),
       media,
