@@ -2,6 +2,24 @@ import { API_KEY } from './endpoints';
 import { getAccessToken } from '../utils/authStorage';
 import type { TDoFetchOptions } from '../types/apiTypes';
 
+/**
+ * Thin wrapper around `fetch` that normalizes headers and response handling.
+ *
+ * Behavior:
+ * - Adds `Content-Type: application/json` and `X-Noroff-API-Key` headers.
+ * - Adds `Authorization: Bearer <token>` unless `options.auth === false` or no token is available.
+ * - Parses the JSON response and returns the `data` property (if present); otherwise returns `null`.
+ * - Returns `null` for HTTP 204 (No Content).
+ * - On non-OK responses, throws an `Error` augmented with:
+ *    - `status` (HTTP status code)
+ *    - `details` (parsed response body when available)
+ *
+ * @template T The expected shape of `data` on success.
+ * @param url Request URL.
+ * @param options Request options; `auth` defaults to `true`.
+ * @returns Promise resolving to `T | null`.
+ * @throws Error with optional `status` and `details` when the response is not OK or parsing fails.
+ */
 export async function doFetch<T>(
   url: string,
   options: TDoFetchOptions = {}

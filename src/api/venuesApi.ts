@@ -2,7 +2,17 @@ import { API_VENUES, API_PROFILES } from './endpoints';
 import { doFetch } from './doFetch';
 import type { TVenue, TCreateVenueInput } from '../types/venueTypes';
 
-/** Fetch a single venue by id, including bookings and owner. */
+/**
+ * Fetch a single venue by id, including bookings and owner.
+ *
+ * Behavior:
+ * - Calls `doFetch` (GET) and includes `_bookings` and `_owner`.
+ * - Returns the venue or throws a user-friendly Error message.
+ *
+ * @param venueId - Venue id (UUID or slug).
+ * @returns The venue object.
+ * @throws Error when the venue is missing or the request fails.
+ */
 export async function getVenue(venueId: string): Promise<TVenue> {
   const url = `${API_VENUES}/${encodeURIComponent(
     venueId
@@ -27,7 +37,17 @@ export async function getVenue(venueId: string): Promise<TVenue> {
   }
 }
 
-/** Fetch a list of venues (default limit 100), including bookings. */
+/**
+ * Fetch a list of venues (default limit 100), including bookings.
+ *
+ * Behavior:
+ * - Calls `doFetch` (GET) with `limit` and `_bookings=true`.
+ * - Returns an empty array if the server responds with null.
+ *
+ * @param limit - Maximum number of venues to fetch (default 100).
+ * @returns Array of venues.
+ * @throws Error when the request fails.
+ */
 export async function listVenues(limit = 100): Promise<TVenue[]> {
   const url = `${API_VENUES}?limit=${encodeURIComponent(limit)}&_bookings=true`;
   try {
@@ -50,8 +70,19 @@ export async function listVenues(limit = 100): Promise<TVenue[]> {
 }
 
 /**
- * Fetch venues by owner profile name.
- * Use options to include bookings and handle pagination.
+ * Fetch venues owned by a given profile.
+ *
+ * Behavior:
+ * - Calls `doFetch` (GET) on `/profiles/:name/venues`.
+ * - Supports pagination and optional `_bookings`.
+ *
+ * @param profileName - Owner profile name.
+ * @param options - Optional query options.
+ * @param options.withBookings - Include `_bookings=true`.
+ * @param options.limit - Page size.
+ * @param options.page - Page number (1-based).
+ * @returns Array of venues for the owner.
+ * @throws Error when the request fails.
  */
 export async function getVenuesByOwner(
   profileName: string,
@@ -86,7 +117,17 @@ export async function getVenuesByOwner(
   }
 }
 
-/** Create a new venue and return it. */
+/**
+ * Create a new venue.
+ *
+ * Behavior:
+ * - Calls `doFetch` (POST) with JSON body.
+ * - Returns the created venue or throws when missing.
+ *
+ * @param input - New venue payload.
+ * @returns The created venue.
+ * @throws Error when the request fails or the server returns no venue.
+ */
 export async function createVenue(input: TCreateVenueInput): Promise<TVenue> {
   const body = JSON.stringify(input);
   try {
@@ -111,8 +152,20 @@ export async function createVenue(input: TCreateVenueInput): Promise<TVenue> {
 }
 
 /**
- * Fetch one page of venues with options for size, bookings and sorting.
- * Returns the page items only (no envelope).
+ * Fetch one page of venues with options for size, bookings, and sorting.
+ *
+ * Behavior:
+ * - Calls `doFetch` (GET) with page/limit and optional `_bookings`.
+ * - Returns items only (no pagination envelope).
+ *
+ * @param options - Optional paging and sorting options.
+ * @param options.page - Page number (default 1).
+ * @param options.limit - Page size (default 100).
+ * @param options.withBookings - Include `_bookings=true` (default true).
+ * @param options.sort - Sort field.
+ * @param options.sortOrder - Sort order.
+ * @returns Array of venues for the requested page.
+ * @throws Error when the request fails.
  */
 export async function listVenuesPaged(options?: {
   page?: number;
@@ -154,8 +207,20 @@ export async function listVenuesPaged(options?: {
 }
 
 /**
- * Fetch multiple pages and return a flattened array.
- * Stops early when a page returns fewer items than the page size.
+ * Fetch multiple pages of venues and return a flattened array.
+ *
+ * Behavior:
+ * - Iteratively calls `listVenuesPaged` until empty/short page or `maxPages`.
+ * - Returns a concatenated list of all fetched venues.
+ *
+ * @param options - Optional aggregation options.
+ * @param options.limitPerPage - Page size per request (default 100).
+ * @param options.maxPages - Maximum number of pages to fetch (default 10).
+ * @param options.withBookings - Include `_bookings=true` (default true).
+ * @param options.sort - Sort field (default 'created').
+ * @param options.sortOrder - Sort order (default 'desc').
+ * @returns All collected venues up to limits.
+ * @throws Error when an underlying request fails.
  */
 export async function listVenuesAll(options?: {
   limitPerPage?: number;
@@ -185,7 +250,18 @@ export async function listVenuesAll(options?: {
   return allVenues;
 }
 
-/** Update an existing venue and return it. */
+/**
+ * Update an existing venue.
+ *
+ * Behavior:
+ * - Calls `doFetch` (PUT) with JSON body.
+ * - Returns the updated venue or throws when missing.
+ *
+ * @param venueId - Id of the venue to update.
+ * @param input - Updated venue payload.
+ * @returns The updated venue.
+ * @throws Error when the request fails or the server returns no venue.
+ */
 export async function updateVenue(
   venueId: string,
   input: TCreateVenueInput
@@ -213,7 +289,17 @@ export async function updateVenue(
   }
 }
 
-/** Delete a venue by id. */
+/**
+ * Delete a venue by id.
+ *
+ * Behavior:
+ * - Calls `doFetch` (DELETE) with auth.
+ * - Throws an Error with user-friendly message on failure.
+ *
+ * @param venueId - Id of the venue to delete.
+ * @returns Resolves when deletion completes.
+ * @throws Error when the request fails.
+ */
 export async function deleteVenue(venueId: string): Promise<void> {
   const url = `${API_VENUES}/${encodeURIComponent(venueId)}`;
   try {
@@ -232,8 +318,15 @@ export async function deleteVenue(venueId: string): Promise<void> {
 }
 
 /**
- * Search venues on the server and filter client-side by name (case-insensitive).
- * Returns an empty array for blank queries.
+ * Search venues by query and filter client-side by name (case-insensitive).
+ *
+ * Behavior:
+ * - Returns `[]` for blank queries.
+ * - Calls `/venues/search?q=...`, then filters by `name` locally.
+ *
+ * @param query - Search text.
+ * @returns Matched venues by name.
+ * @throws Error when the request fails.
  */
 export async function searchVenuesByName(query: string): Promise<TVenue[]> {
   const trimmedQuery = query.trim();
