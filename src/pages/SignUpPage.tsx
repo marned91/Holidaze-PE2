@@ -2,9 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { registerAccount } from '../api/authApi';
-import type { TRegisterData, TRegisterFieldErrors } from '../types/authTypes';
+import type { TRegisterData } from '../types/authTypes';
 import type { TSignUpFormValues } from '../types/formTypes';
 import { signUpSchema } from '../components/Auth/signUpSchema';
+import { mapRegisterErrors } from '../components/Auth/errors/mapRegisterErrors';
 import { TextInput } from '../components/Common/forms/TextInput';
 import { PasswordInput } from '../components/Common/forms/PasswordInput';
 import { UrlInput } from '../components/Common/forms/UrlInput';
@@ -51,29 +52,33 @@ export function SignUpPage() {
       alert('Account created — welcome!');
       navigate('/login');
     } catch (unknownError: unknown) {
-      const fieldErrorsLoose = (unknownError as any)?.fieldErrors as
-        | TRegisterFieldErrors
-        | Record<string, string>
-        | undefined;
+      const fieldErrors = mapRegisterErrors(unknownError);
 
-      if (fieldErrorsLoose) {
-        const fieldErrors = fieldErrorsLoose as Record<string, string>;
-        if (fieldErrors.name)
-          setError('name', { type: 'server', message: fieldErrors.name });
-        if (fieldErrors.email)
-          setError('email', { type: 'server', message: fieldErrors.email });
-        if (fieldErrors.password)
-          setError('password', {
-            type: 'server',
-            message: fieldErrors.password,
-          });
-        if (fieldErrors.avatarUrl)
-          setError('avatarUrl', {
-            type: 'server',
-            message: fieldErrors.avatarUrl,
-          });
-      } else {
-        alert((unknownError as Error)?.message || 'Registration failed.');
+      if (fieldErrors?.name) {
+        setError('name', { type: 'server', message: fieldErrors.name });
+      }
+      if (fieldErrors?.email) {
+        setError('email', { type: 'server', message: fieldErrors.email });
+      }
+      if (fieldErrors?.password) {
+        setError('password', { type: 'server', message: fieldErrors.password });
+      }
+      if (fieldErrors?.avatarUrl) {
+        setError('avatarUrl', {
+          type: 'server',
+          message: fieldErrors.avatarUrl,
+        });
+      }
+
+      if (!fieldErrors) {
+        const message =
+          unknownError &&
+          typeof unknownError === 'object' &&
+          'message' in unknownError &&
+          typeof (unknownError as { message?: unknown }).message === 'string'
+            ? (unknownError as { message: string }).message
+            : 'Registration failed.';
+        alert(message);
       }
     }
   }
