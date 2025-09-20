@@ -26,7 +26,7 @@ export function SearchResults({ query }: SearchResultsProps) {
         <button
           type="button"
           onClick={clearSearch}
-          className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50 font-medium-buttons"
+          className="rounded-lg border border-gray-400 px-3 py-1.5 text-sm hover:bg-gray-50 font-medium-buttons"
         >
           Clear search
         </button>
