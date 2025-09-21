@@ -133,17 +133,25 @@ export function VenuesFilters({
           >
             <span>{cityLabel}</span>
             {selectedCity && (
-              <button
-                type="button"
+              <span
+                role="button"
+                tabIndex={0}
                 aria-label="Clear city filter"
                 onClick={(event) => {
                   event.stopPropagation();
                   clearCity();
                 }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    clearCity();
+                  }
+                }}
                 className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 font-medium-buttons cursor-pointer"
               >
                 <FaTimes className="h-3 w-3" />
-              </button>
+              </span>
             )}
           </button>
           {isCityOpen && (
@@ -212,17 +220,25 @@ export function VenuesFilters({
           >
             <span>{guestsLabel}</span>
             {minGuests != null && (
-              <button
-                type="button"
+              <span
+                role="button"
+                tabIndex={0}
                 aria-label="Clear guests filter"
                 onClick={(event) => {
                   event.stopPropagation();
                   clearGuests();
                 }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    clearGuests();
+                  }
+                }}
                 className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 font-medium-buttons cursor-pointer"
               >
                 <FaTimes className="h-3 w-3" />
-              </button>
+              </span>
             )}
           </button>
           {isGuestsOpen && (
@@ -286,17 +302,25 @@ export function VenuesFilters({
           >
             <span>{datesLabel}</span>
             {(dateRange.startDate || dateRange.endDate) && (
-              <button
-                type="button"
+              <span
+                role="button"
+                tabIndex={0}
                 aria-label="Clear dates filter"
                 onClick={(event) => {
                   event.stopPropagation();
                   clearDates();
                 }}
-                className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 cursor-pointer font-medium-buttons cursor-pointer"
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    clearDates();
+                  }
+                }}
+                className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 cursor-pointer font-medium-buttons"
               >
                 <FaTimes className="h-3 w-3" />
-              </button>
+              </span>
             )}
           </button>
           {isDatesOpen && (
