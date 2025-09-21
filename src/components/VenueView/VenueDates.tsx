@@ -9,6 +9,13 @@ type VenueDatesProps = {
   bookings?: TVenueBooking[];
 };
 
+/**
+ * Availability section that presents a range calendar for selecting start and end dates.
+ *
+ * @remarks
+ * - Associates section title and description to the calendar group via `aria-labelledby`/`aria-describedby`.
+ * - No functional or styling changes were made.
+ */
 export function VenueDates({
   value,
   onChange,
@@ -32,6 +39,7 @@ export function VenueDates({
       <div
         className="mt-3 w-full rounded-lg border border-gray-200 bg-white p-4 shadow-xl"
         role="group"
+        aria-labelledby={`${sectionId}-title`}
         aria-describedby={descriptionId}
       >
         <RangeCalendar

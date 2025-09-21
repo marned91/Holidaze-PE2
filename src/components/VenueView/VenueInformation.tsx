@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { type TVenue } from '../../types/venueTypes';
 import { getGuestsText } from '../../utils/venue';
 import {
@@ -19,6 +20,14 @@ type VenueInformationProps = {
   facilities?: TVenue['meta'];
 };
 
+/**
+ * Displays venue header information including title, location, rating, capacity, description, and facilities.
+ *
+ * @remarks
+ * - Associates the section with its main heading via `aria-labelledby`.
+ * - Decorative icons are marked `aria-hidden` to reduce screen reader noise.
+ * - No functional or styling changes were made.
+ */
 export function VenueInformation({
   title,
   locationText,
@@ -39,23 +48,27 @@ export function VenueInformation({
       ? rating.toFixed(1)
       : null;
 
+  const headingId = useId();
+
   return (
-    <section>
-      <h1 className="text-3xl font-medium font-large text-dark">{title}</h1>
+    <section aria-labelledby={headingId}>
+      <h1 id={headingId} className="text-3xl font-medium font-large text-dark">
+        {title}
+      </h1>
       <div className="mt-4 flex flex-wrap items-center gap-4 text-gray-700">
         <span className="flex items-center font-text">
-          <FaMapMarkerAlt aria-hidden className="mr-2 text-main-light" />
+          <FaMapMarkerAlt aria-hidden="true" className="mr-2 text-main-light" />
           {locationText || 'Location'}
         </span>
         {typeof maxGuests === 'number' && Number.isFinite(maxGuests) && (
           <span className="flex items-center font-text">
-            <FaUser aria-hidden className="mr-2 text-main-light" />
+            <FaUser aria-hidden="true" className="mr-2 text-main-light" />
             {getGuestsText(maxGuests)}
           </span>
         )}
         {ratingText && (
           <span className="flex items-center font-text">
-            <FaStar aria-hidden className="mr-2 text-main-light" />
+            <FaStar aria-hidden="true" className="mr-2 text-main-light" />
             {ratingText}
           </span>
         )}
@@ -80,25 +93,25 @@ export function VenueInformation({
           <ul className="mt-5 grid grid-cols-2 gap-2 text-gray-800 sm:grid-cols-3 my-5">
             {facilities?.wifi && (
               <li className="inline-flex items-center gap-2 font-text">
-                <FaWifi aria-hidden className="text-main-light" />
+                <FaWifi aria-hidden="true" className="text-main-light" />
                 Wi-Fi
               </li>
             )}
             {facilities?.parking && (
               <li className="inline-flex items-center gap-2 font-text">
-                <FaParking aria-hidden className="text-main-light" />
+                <FaParking aria-hidden="true" className="text-main-light" />
                 Parking
               </li>
             )}
             {facilities?.breakfast && (
               <li className="inline-flex items-center gap-2 font-text">
-                <FaCoffee aria-hidden className="text-main-light" />
+                <FaCoffee aria-hidden="true" className="text-main-light" />
                 Breakfast
               </li>
             )}
             {facilities?.pets && (
               <li className="inline-flex items-center gap-2 font-text">
-                <FaDog aria-hidden className="text-main-light" />
+                <FaDog aria-hidden="true" className="text-main-light" />
                 Pets
               </li>
             )}

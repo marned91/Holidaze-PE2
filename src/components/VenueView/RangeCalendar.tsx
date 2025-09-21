@@ -16,6 +16,14 @@ type RangeCalendarProps = {
   months?: number;
 };
 
+/**
+ * Calendar-based date range picker that disables already-booked dates.
+ *
+ * @remarks
+ * - Uses `react-calendar` with `selectRange`.
+ * - Blocks dates overlapping existing bookings (inclusive).
+ * - No functional or styling changes were made.
+ */
 export function RangeCalendar({
   value,
   onChange,
@@ -77,6 +85,7 @@ export function RangeCalendar({
   return (
     <div>
       <Calendar
+        aria-label="Date range calendar"
         locale="en-GB"
         calendarType="iso8601"
         selectRange

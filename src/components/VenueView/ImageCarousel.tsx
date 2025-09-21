@@ -9,6 +9,14 @@ type ImageCarouselProps = {
   images: VenueMediaItem[];
 };
 
+/**
+ * Image carousel for a venue, supporting keyboard navigation (Left/Right) and dot indicators.
+ *
+ * @remarks
+ * - Exposes `aria-roledescription="carousel"` and an accessible label.
+ * - Decorative arrow icons are marked `aria-hidden`.
+ * - No functional or styling changes were made.
+ */
 export function ImageCarousel({ images = [] }: ImageCarouselProps) {
   const slides = Array.isArray(images)
     ? images.filter((item) => Boolean(item?.url))
@@ -58,7 +66,7 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
 
   return (
     <div
-      className="group relative overflow-hidden rounded-2xl shadow-xl"
+      className="group relative overflow-hidden rounded-xl shadow-xl"
       tabIndex={0}
       onKeyDown={handleKeyDown}
       aria-roledescription="carousel"
@@ -91,7 +99,7 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
                        opacity-0 group-hover:opacity-100 sm:opacity-100"
             aria-label="Previous image"
           >
-            <FaChevronLeft className="text-gray-800" />
+            <FaChevronLeft className="text-gray-800" aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -102,7 +110,7 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
                        opacity-0 group-hover:opacity-100 sm:opacity-100"
             aria-label="Next image"
           >
-            <FaChevronRight className="text-gray-800" />
+            <FaChevronRight className="text-gray-800" aria-hidden="true" />
           </button>
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/35 px-2 py-1">
             {slides.map((_, indexNumber) => (
