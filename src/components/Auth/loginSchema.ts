@@ -1,6 +1,13 @@
 import * as yup from 'yup';
 import type { TLoginFormValues } from '../../types/formTypes';
 
+/**
+ * Validation schema for login form.
+ *
+ * Behavior:
+ * - Requires a valid email.
+ * - Requires a non-empty password.
+ */
 export const loginSchema: yup.ObjectSchema<TLoginFormValues> = yup.object({
   email: yup
     .string()

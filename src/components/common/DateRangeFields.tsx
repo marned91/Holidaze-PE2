@@ -35,6 +35,16 @@ type DateRangeFieldsProps = {
   months?: 1 | 2;
 };
 
+/**
+ * Lightweight portal that positions a popover anchored to an element.
+ *
+ * Behavior:
+ * - Positions relative to `anchor` with viewport-aware flipping and max-height.
+ * - Updates on resize/scroll, cleans up listeners on unmount.
+ *
+ * @param props - Anchor element, alignment, and popover content.
+ * @returns A fixed-position portal container wrapping the content.
+ */
 function PopoverPortal({
   anchor,
   align = 'left',
@@ -122,6 +132,17 @@ function PopoverPortal({
   );
 }
 
+/**
+ * Dual date fields with three variants: native, text (dd.mm.yyyy) and calendar popover.
+ *
+ * Behavior:
+ * - Disables past and booked dates.
+ * - Keeps end date ≥ start date; optionally shows two months.
+ * - Delegates selected range via `onChange`.
+ *
+ * @param props - Current value, change handler, labels, variant, bookings, and UI options.
+ * @returns A date range input component.
+ */
 export function DateRangeFields({
   value,
   onChange,

@@ -1,11 +1,30 @@
 import * as yup from 'yup';
 import type { TSignUpFormValues } from '../../types/formTypes';
 
+/**
+ * Returns true if the email is a Noroff student address.
+ *
+ * Behavior:
+ * - Trims input and checks `/^[^@]+@stud\.noroff\.no$/i`.
+ *
+ * @param email - Email to validate.
+ * @returns Whether the email matches the Noroff student domain.
+ */
 function isNoroffStudentEmail(email?: string): boolean {
   if (!email) return false;
   return /^[^@]+@stud\.noroff\.no$/i.test(email.trim());
 }
 
+/**
+ * Validation schema for the sign-up form.
+ *
+ * Behavior:
+ * - Requires name (<=20 chars, letters/numbers/spaces/underscore).
+ * - Requires a valid @stud.noroff.no email.
+ * - Requires password (>=8 chars).
+ * - `isVenueManager` defaults to false.
+ * - Requires a valid `avatarUrl`.
+ */
 export const signUpSchema: yup.ObjectSchema<TSignUpFormValues> = yup
   .object({
     name: yup

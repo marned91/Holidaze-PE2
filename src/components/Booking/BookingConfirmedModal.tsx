@@ -14,6 +14,17 @@ type BookingConfirmedModalProps = {
   totalText: string;
 };
 
+/**
+ * Confirmation modal shown after a successful booking.
+ *
+ * Behavior:
+ * - Controlled by `open` and wrapped in the shared `Modal`.
+ * - Purely presentational; close/navigation handled via callbacks.
+ * - Announces confirmation via an `aria-live` region for screen readers.
+ *
+ * @param props - Visibility, callbacks, and booking summary texts.
+ * @returns A controlled modal with booking summary and primary actions.
+ */
 export function BookingConfirmedModal({
   open,
   onClose,
@@ -87,7 +98,6 @@ export function BookingConfirmedModal({
           </div>
         </div>
       </div>
-
       <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <button
           type="button"
@@ -104,7 +114,6 @@ export function BookingConfirmedModal({
           View booking
         </button>
       </div>
-
       <div className="sr-only" aria-live="polite">
         Booking confirmed for {dateRangeText}. Total {totalText}.
       </div>

@@ -15,6 +15,17 @@ type BookingReviewProps = {
   error?: string | null;
 };
 
+/**
+ * Modal to review a booking before confirmation.
+ *
+ * Behavior:
+ * - Controlled by `open`; purely presentational.
+ * - Displays booking summary, optional error, and a confirm action.
+ * - Disables the confirm button while `submitting` is truthy.
+ *
+ * @param props - Visibility, callbacks, summary texts, and submit state.
+ * @returns A controlled modal with booking details and confirm action.
+ */
 export function BookingReviewModal({
   open,
   onClose,
@@ -33,7 +44,11 @@ export function BookingReviewModal({
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[280px_minmax(0,1fr)]">
         <div className="overflow-hidden rounded-xl bg-gray-100">
           {imageUrl ? (
-            <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+            <img
+              src={imageUrl}
+              alt={venueTitle}
+              className="h-full w-full object-cover"
+            />
           ) : (
             <div className="aspect-[4/3] w-full" />
           )}

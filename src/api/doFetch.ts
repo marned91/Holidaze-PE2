@@ -69,7 +69,6 @@ export async function doFetch<T>(
     error.details = parsedBody;
     throw error;
   } catch (error) {
-    console.error('Error fetching data:', error);
     throw error;
   }
 }

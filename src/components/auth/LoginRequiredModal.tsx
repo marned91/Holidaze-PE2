@@ -7,6 +7,16 @@ type LoginRequiredProps = {
   onGotoRegister: () => void;
 };
 
+/**
+ * Modal prompting unauthenticated users to sign in or create an account when trying to book a venue.
+ *
+ * Behavior:
+ * - Renders a non-destructive modal with two primary actions.
+ * - Delegates navigation and closing to parent via callbacks.
+ *
+ * @param props - Visibility and navigation handlers.
+ * @returns A controlled modal with sign-in and create-account actions.
+ */
 export function LoginRequiredModal({
   open,
   onClose,
@@ -18,7 +28,6 @@ export function LoginRequiredModal({
       <p className="text-gray-700 text-sm font-text">
         You need to be logged in to book venues.
       </p>
-
       <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 font-medium-buttons">
         <button
           type="button"
