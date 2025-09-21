@@ -35,12 +35,16 @@ type DateRangeFieldsProps = {
   months?: 1 | 2;
 };
 
+/** Isomorphic layout effect to avoid SSR warnings. */
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 /**
  * Lightweight portal that positions a popover anchored to an element.
  *
  * Behavior:
  * - Positions relative to `anchor` with viewport-aware flipping and max-height.
- * - Updates on resize/scroll, cleans up listeners on unmount.
+ * - Updates on resize/scroll; cleans up listeners on unmount.
  *
  * @param props - Anchor element, alignment, and popover content.
  * @returns A fixed-position portal container wrapping the content.
@@ -61,7 +65,7 @@ function PopoverPortal({
     opacity: 0,
   });
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     function updatePosition() {
       if (!anchor) return;
 
@@ -128,7 +132,272 @@ function PopoverPortal({
     <div ref={wrapperRef} style={style} className="rc-popover">
       {children}
     </div>,
-    document.body
+    typeof document !== 'undefined' ? document.body : (null as any)
+  );
+}
+
+/**
+ * Calendar variant for DateRangeFields.
+ *
+ * Behavior:
+ * - Disables past and booked dates.
+ * - Ensures end date ≥ start date; optionally shows two months.
+ * - Delegates selected range via `onChange`.
+ */
+function DateRangeFieldsCalendar({
+  value,
+  onChange,
+  labelFrom,
+  labelTo,
+  bookings = [],
+  months = 1,
+  className,
+}: Pick<
+  DateRangeFieldsProps,
+  | 'value'
+  | 'onChange'
+  | 'labelFrom'
+  | 'labelTo'
+  | 'bookings'
+  | 'months'
+  | 'className'
+>) {
+  const startInputId = useId();
+  const endInputId = useId();
+
+  const [isStartOpen, setIsStartOpen] = useState(false);
+  const [isEndOpen, setIsEndOpen] = useState(false);
+
+  const startButtonRef = useRef<HTMLButtonElement | null>(null);
+  const endButtonRef = useRef<HTMLButtonElement | null>(null);
+  const popoverContentRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function onDocumentMouseDown(event: MouseEvent) {
+      const targetNode = event.target as Node;
+      const inStart = startButtonRef.current?.contains(targetNode) ?? false;
+      const inEnd = endButtonRef.current?.contains(targetNode) ?? false;
+      const inPopover =
+        popoverContentRef.current?.contains(targetNode) ?? false;
+      const clickedAnchor = inStart || inEnd;
+      if (!clickedAnchor && !inPopover) {
+        setIsStartOpen(false);
+        setIsEndOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', onDocumentMouseDown);
+    return () => document.removeEventListener('mousedown', onDocumentMouseDown);
+  }, []);
+
+  const selectedStartDate = useMemo(
+    () => parseISOYmd(value.startDate) ?? null,
+    [value.startDate]
+  );
+  const selectedEndDate = useMemo(
+    () => parseISOYmd(value.endDate) ?? null,
+    [value.endDate]
+  );
+
+  const blockedRanges = useMemo(() => {
+    const ranges =
+      (bookings
+        ?.map((booking) => {
+          const start = parseISOYmd(booking.dateFrom?.split('T')[0]);
+          const end = parseISOYmd(booking.dateTo?.split('T')[0]);
+          return start && end ? { start, end } : null;
+        })
+        .filter(Boolean) as { start: Date; end: Date }[]) ?? [];
+    return ranges;
+  }, [bookings]);
+
+  function isBaseTileDisabled({ date, view }: TileDisabledArgs): boolean {
+    if (view !== 'month') return false;
+    if (date < startOfToday()) return true;
+    for (const range of blockedRanges) {
+      if (isWithinInclusiveDay(date, range.start, range.end)) return true;
+    }
+    return false;
+  }
+
+  function isEndTileDisabled(params: TileDisabledArgs): boolean {
+    if (isBaseTileDisabled(params)) return true;
+    if (params.view !== 'month') return false;
+    if (selectedStartDate && params.date < selectedStartDate) return true;
+    return false;
+  }
+
+  function handleStartChange(nextValue: Value): void {
+    if (nextValue instanceof Date) {
+      const nextStartISO = formatISOYmd(nextValue);
+      const currentEndISO = value.endDate;
+      const shouldClearEnd =
+        currentEndISO && parseISOYmd(currentEndISO)! < nextValue;
+      onChange({
+        startDate: nextStartISO,
+        endDate: shouldClearEnd ? undefined : currentEndISO,
+      });
+      setIsStartOpen(false);
+      setIsEndOpen(true);
+    } else {
+      onChange({ startDate: undefined, endDate: value.endDate });
+    }
+  }
+
+  function handleEndChange(nextValue: Value): void {
+    if (nextValue instanceof Date) {
+      onChange({
+        startDate: value.startDate,
+        endDate: formatISOYmd(nextValue),
+      });
+      setIsEndOpen(false);
+    } else {
+      onChange({ startDate: value.startDate, endDate: undefined });
+    }
+  }
+
+  const displayStartText = value.startDate
+    ? formatDotFromISO(value.startDate)
+    : 'dd.mm.yyyy';
+  const displayEndText = value.endDate
+    ? formatDotFromISO(value.endDate)
+    : 'dd.mm.yyyy';
+
+  return (
+    <div className={className ?? ''}>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div>
+          <label
+            htmlFor={startInputId}
+            className="mb-1 block text-sm text-gray-700 font-text"
+          >
+            {labelFrom}
+          </label>
+          <button
+            id={startInputId}
+            type="button"
+            ref={startButtonRef}
+            onClick={() => {
+              setIsEndOpen(false);
+              setIsStartOpen((prev) => !prev);
+            }}
+            className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-left outline-none focus:ring-2 focus:ring-highlight font-text"
+          >
+            {displayStartText}
+          </button>
+          {isStartOpen && (
+            <PopoverPortal anchor={startButtonRef.current} align="left">
+              <div
+                ref={popoverContentRef}
+                className="rounded-xl border border-gray-200 bg-white p-2 shadow-2xl font-text"
+              >
+                <Calendar
+                  selectRange={false}
+                  calendarType="iso8601"
+                  locale="en-GB"
+                  minDate={startOfToday()}
+                  showDoubleView={months === 2}
+                  prev2Label={null}
+                  next2Label={null}
+                  value={selectedStartDate}
+                  onChange={handleStartChange}
+                  tileDisabled={isBaseTileDisabled}
+                  className={`react-calendar ${
+                    months === 2 ? 'react-calendar--doubleView' : ''
+                  }`}
+                />
+                <div className="mt-2 flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onChange({
+                        startDate: undefined,
+                        endDate: value.endDate,
+                      })
+                    }
+                    className="rounded-md border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50 font-medium-buttons"
+                  >
+                    Clear
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsStartOpen(false)}
+                    className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight font-medium-buttons"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            </PopoverPortal>
+          )}
+        </div>
+        <div>
+          <label
+            htmlFor={endInputId}
+            className="mb-1 block text-sm text-gray-700 font-text"
+          >
+            {labelTo}
+          </label>
+          <button
+            id={endInputId}
+            type="button"
+            ref={endButtonRef}
+            onClick={() => {
+              setIsStartOpen(false);
+              setIsEndOpen((prev) => !prev);
+            }}
+            disabled={!value.startDate}
+            className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-left outline-none focus:ring-2 focus:ring-highlight font-text disabled:opacity-60 font-medium-buttons"
+          >
+            {displayEndText}
+          </button>
+          {isEndOpen && (
+            <PopoverPortal anchor={endButtonRef.current} align="left">
+              <div
+                ref={popoverContentRef}
+                className="rounded-xl border border-gray-200 bg-white p-2 shadow-2xl font-text"
+              >
+                <Calendar
+                  selectRange={false}
+                  calendarType="iso8601"
+                  locale="en-GB"
+                  minDate={startOfToday()}
+                  showDoubleView={months === 2}
+                  prev2Label={null}
+                  next2Label={null}
+                  value={selectedEndDate}
+                  onChange={handleEndChange}
+                  tileDisabled={isEndTileDisabled}
+                  className={`react-calendar ${
+                    months === 2 ? 'react-calendar--doubleView' : ''
+                  }`}
+                />
+                <div className="mt-2 flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onChange({
+                        startDate: value.startDate,
+                        endDate: undefined,
+                      })
+                    }
+                    className="rounded-md border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50 font-medium-buttons"
+                  >
+                    Clear
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsEndOpen(false)}
+                    className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight font-medium-buttons"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            </PopoverPortal>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -156,246 +425,27 @@ export function DateRangeFields({
   const startInputId = useId();
   const endInputId = useId();
 
+  // Common min/max for the non-calendar variants
   const todayISO = formatISOYmd(startOfToday());
   const startMin = todayISO;
   const endMin = value.startDate ?? todayISO;
   const startMax = value.endDate ?? undefined;
 
-  const blockedRanges = useMemo(() => {
-    const ranges =
-      (bookings
-        ?.map((b) => {
-          const s = parseISOYmd(b.dateFrom?.split('T')[0]);
-          const e = parseISOYmd(b.dateTo?.split('T')[0]);
-          return s && e ? { start: s, end: e } : null;
-        })
-        .filter(Boolean) as { start: Date; end: Date }[]) ?? [];
-    return ranges;
-  }, [bookings]);
-
-  function baseTileDisabled({ date, view }: TileDisabledArgs): boolean {
-    if (view !== 'month') return false;
-    if (date < startOfToday()) return true;
-    for (const r of blockedRanges) {
-      if (isWithinInclusiveDay(date, r.start, r.end)) return true;
-    }
-    return false;
-  }
-
   if (variant === 'calendar') {
-    const [openStart, setOpenStart] = useState(false);
-    const [openEnd, setOpenEnd] = useState(false);
-
-    const startButtonRef = useRef<HTMLButtonElement | null>(null);
-    const endButtonRef = useRef<HTMLButtonElement | null>(null);
-    const popoverContentRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-      function onDocMouseDown(event: MouseEvent) {
-        const target = event.target as Node;
-        const inStart = startButtonRef.current?.contains(target) ?? false;
-        const inEnd = endButtonRef.current?.contains(target) ?? false;
-        const inPopover = popoverContentRef.current?.contains(target) ?? false;
-        const clickedAnchor = inStart || inEnd;
-        if (!clickedAnchor && !inPopover) {
-          setOpenStart(false);
-          setOpenEnd(false);
-        }
-      }
-      document.addEventListener('mousedown', onDocMouseDown);
-      return () => document.removeEventListener('mousedown', onDocMouseDown);
-    }, []);
-
-    const selectedStart = useMemo(
-      () => parseISOYmd(value.startDate) ?? null,
-      [value.startDate]
-    );
-    const selectedEnd = useMemo(
-      () => parseISOYmd(value.endDate) ?? null,
-      [value.endDate]
-    );
-
-    function endTileDisabled(args: TileDisabledArgs): boolean {
-      if (baseTileDisabled(args)) return true;
-      if (args.view !== 'month') return false;
-      if (selectedStart && args.date < selectedStart) return true;
-      return false;
-    }
-
-    function handleStartChange(nextValue: Value): void {
-      if (nextValue instanceof Date) {
-        const nextStartISO = formatISOYmd(nextValue);
-        const currentEndISO = value.endDate;
-        const shouldClearEnd =
-          currentEndISO && parseISOYmd(currentEndISO)! < nextValue;
-        onChange({
-          startDate: nextStartISO,
-          endDate: shouldClearEnd ? undefined : currentEndISO,
-        });
-        setOpenStart(false);
-        setOpenEnd(true);
-      } else {
-        onChange({ startDate: undefined, endDate: value.endDate });
-      }
-    }
-
-    function handleEndChange(nextValue: Value): void {
-      if (nextValue instanceof Date) {
-        onChange({
-          startDate: value.startDate,
-          endDate: formatISOYmd(nextValue),
-        });
-        setOpenEnd(false);
-      } else {
-        onChange({ startDate: value.startDate, endDate: undefined });
-      }
-    }
-
-    const displayStart = value.startDate
-      ? formatDotFromISO(value.startDate)
-      : 'dd.mm.yyyy';
-    const displayEnd = value.endDate
-      ? formatDotFromISO(value.endDate)
-      : 'dd.mm.yyyy';
-
     return (
-      <div className={className ?? ''}>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <div>
-            <label
-              htmlFor={startInputId}
-              className="mb-1 block text-sm text-gray-700 font-text"
-            >
-              {labelFrom}
-            </label>
-            <button
-              id={startInputId}
-              type="button"
-              ref={startButtonRef}
-              onClick={() => {
-                setOpenEnd(false);
-                setOpenStart((s) => !s);
-              }}
-              className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-left outline-none focus:ring-2 focus:ring-highlight font-text"
-            >
-              {displayStart}
-            </button>
-            {openStart && (
-              <PopoverPortal anchor={startButtonRef.current} align="left">
-                <div
-                  ref={popoverContentRef}
-                  className="rounded-xl border border-gray-200 bg-white p-2 shadow-2xl font-text"
-                >
-                  <Calendar
-                    selectRange={false}
-                    calendarType="iso8601"
-                    locale="en-GB"
-                    minDate={startOfToday()}
-                    showDoubleView={months === 2}
-                    prev2Label={null}
-                    next2Label={null}
-                    value={selectedStart}
-                    onChange={handleStartChange}
-                    tileDisabled={baseTileDisabled}
-                    className={`react-calendar ${
-                      months === 2 ? 'react-calendar--doubleView' : ''
-                    }`}
-                  />
-                  <div className="mt-2 flex justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onChange({
-                          startDate: undefined,
-                          endDate: value.endDate,
-                        })
-                      }
-                      className="rounded-md border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50 font-medium-buttons"
-                    >
-                      Clear
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setOpenStart(false)}
-                      className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight font-medium-buttons"
-                    >
-                      Done
-                    </button>
-                  </div>
-                </div>
-              </PopoverPortal>
-            )}
-          </div>
-          <div>
-            <label
-              htmlFor={endInputId}
-              className="mb-1 block text-sm text-gray-700 font-text"
-            >
-              {labelTo}
-            </label>
-            <button
-              id={endInputId}
-              type="button"
-              ref={endButtonRef}
-              onClick={() => {
-                setOpenStart(false);
-                setOpenEnd((s) => !s);
-              }}
-              disabled={!value.startDate}
-              className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-left outline-none focus:ring-2 focus:ring-highlight font-text disabled:opacity-60 font-medium-buttons"
-            >
-              {displayEnd}
-            </button>
-            {openEnd && (
-              <PopoverPortal anchor={endButtonRef.current} align="left">
-                <div
-                  ref={popoverContentRef}
-                  className="rounded-xl border border-gray-200 bg-white p-2 shadow-2xl font-text"
-                >
-                  <Calendar
-                    selectRange={false}
-                    calendarType="iso8601"
-                    locale="en-GB"
-                    minDate={startOfToday()}
-                    showDoubleView={months === 2}
-                    prev2Label={null}
-                    next2Label={null}
-                    value={selectedEnd}
-                    onChange={handleEndChange}
-                    tileDisabled={endTileDisabled}
-                    className={`react-calendar ${
-                      months === 2 ? 'react-calendar--doubleView' : ''
-                    }`}
-                  />
-                  <div className="mt-2 flex justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onChange({
-                          startDate: value.startDate,
-                          endDate: undefined,
-                        })
-                      }
-                      className="rounded-md border border-gray-300 px-3 py-1 text-sm hover:bg-gray-50 font-medium-buttons"
-                    >
-                      Clear
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setOpenEnd(false)}
-                      className="rounded-md bg-main-dark px-3 py-1 text-sm text-white hover:bg-dark-highlight font-medium-buttons"
-                    >
-                      Done
-                    </button>
-                  </div>
-                </div>
-              </PopoverPortal>
-            )}
-          </div>
-        </div>
-      </div>
+      <DateRangeFieldsCalendar
+        value={value}
+        onChange={onChange}
+        labelFrom={labelFrom}
+        labelTo={labelTo}
+        bookings={bookings}
+        months={months}
+        className={className}
+      />
     );
   }
+
+  // Native / Text variants (no hooks conditionals here)
   return (
     <div className={className ?? ''}>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
