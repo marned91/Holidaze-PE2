@@ -2,8 +2,8 @@ import { ProfileTabs, type ProfileTab } from './VenueManagerProfileTabs';
 import { DisplayAndAddVenues } from './MyVenuesSection';
 import { UpcomingVenueBookings } from './UpcomingVenueBookingsSection';
 import type { TVenue } from '../../../types/venueTypes';
-import type { TBooking } from '../../../types/bookingType';
-import type { TBookingWithVenue } from '../../../types/bookingType';
+import type { TBooking } from '../../../types/bookingTypes';
+import type { TBookingWithVenue } from '../../../types/bookingTypes';
 import { MyBookingsSection } from '../MyBookingsSection';
 
 type VenueManagerProps = {

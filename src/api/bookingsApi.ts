@@ -6,7 +6,7 @@ import {
   type TCreateBookingResponse,
   type TUpdateBookingPayload,
   type TBooking,
-} from '../types/bookingType';
+} from '../types/bookingTypes';
 
 /**
  * Creates a booking for the authenticated user.

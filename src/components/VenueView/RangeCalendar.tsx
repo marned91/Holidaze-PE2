@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Calendar from 'react-calendar';
 import type { TVenueBooking } from '../../types/venueTypes';
-import type { TDateRange } from '../../types/dateType';
+import type { TDateRange } from '../../types/dateTypes';
 import {
   parseISOYmd,
   formatISOYmd,

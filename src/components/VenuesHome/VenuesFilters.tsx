@@ -2,7 +2,7 @@ import { useMemo, useState, useId } from 'react';
 import { DateRangeFields } from '../Common/DateRangeFields';
 import { FaTimes } from 'react-icons/fa';
 import { formatDotFromISO } from '../../utils/date';
-import type { TDateRange } from '../../types/dateType';
+import type { TDateRange } from '../../types/dateTypes';
 
 type VenuesFiltersProps = {
   cities: string[];

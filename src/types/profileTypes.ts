@@ -1,5 +1,5 @@
 import type { TVenue } from './venueTypes';
-import type { TBooking } from './bookingType';
+import type { TBooking } from './bookingTypes';
 
 /**
  * Types for the Profiles domain.

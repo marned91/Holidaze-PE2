@@ -9,7 +9,7 @@ import React, {
   useLayoutEffect,
 } from 'react';
 import { createPortal } from 'react-dom';
-import type { TDateRange } from '../../types/dateType';
+import type { TDateRange } from '../../types/dateTypes';
 import {
   parseISOYmd,
   formatISOYmd,

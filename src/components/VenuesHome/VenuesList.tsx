@@ -4,7 +4,7 @@ import { type TVenue } from '../../types/venueTypes';
 import { VenueSort } from './VenueSort';
 import { VenueCard } from './VenueCard';
 import { VenuesFilters } from './VenuesFilters';
-import type { TDateRange } from '../../types/dateType';
+import type { TDateRange } from '../../types/dateTypes';
 import { useVenues } from './hooks/useVenues';
 import { Pagination } from './Pagination';
 import {

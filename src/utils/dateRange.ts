@@ -1,4 +1,4 @@
-import type { TDateRange } from '../types/dateType';
+import type { TDateRange } from '../types/dateTypes';
 import type { TVenue } from '../types/venueTypes';
 
 export type DateRangeNormalized = { from: Date; to: Date };

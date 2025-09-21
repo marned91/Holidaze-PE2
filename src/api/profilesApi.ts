@@ -1,6 +1,6 @@
 import { API_PROFILES } from './endpoints';
 import { doFetch } from './doFetch';
-import type { TProfile } from '../types/profileType';
+import type { TProfile } from '../types/profileTypes';
 
 /**
  * Fetches a profile by username.

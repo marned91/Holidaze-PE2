@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import type { TProfile } from '../types/profileType';
+import type { TProfile } from '../types/profileTypes';
 import { getProfile } from '../api/profilesApi';
 import { UpdateProfilePicture } from '../components/Profile/UpdateProfilePictureModal';
 import { ProfileHeader } from '../components/Profile/ProfileHeader';
@@ -11,8 +11,8 @@ import type { ProfileTab } from '../components/Profile/VenueManager/VenueManager
 import { VenueManager } from '../components/Profile/VenueManager/VenueManagerSection';
 import { MyBookingsSection } from '../components/Profile/MyBookingsSection';
 import { getBookingsByProfile, cancelBooking } from '../api/bookingsApi';
-import type { TBooking } from '../types/bookingType';
-import type { TBookingWithVenue } from '../types/bookingType';
+import type { TBooking } from '../types/bookingTypes';
+import type { TBookingWithVenue } from '../types/bookingTypes';
 import { AddVenueModal } from '../components/Profile/VenueManager/AddVenueModal';
 import { EditVenueModal } from '../components/Profile/VenueManager/EditVenueModal';
 

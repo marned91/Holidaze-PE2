@@ -1,5 +1,5 @@
 import type { TVenue } from '../../types/venueTypes';
-import type { TBooking } from '../../types/bookingType';
+import type { TBooking } from '../../types/bookingTypes';
 import { getVenueImage } from '../../utils/venue';
 import { formatCurrencyNOK } from '../../utils/currency';
 import { parseISOYmd, nightsBetween } from '../../utils/date';

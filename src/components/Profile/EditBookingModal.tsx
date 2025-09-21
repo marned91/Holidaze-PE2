@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Modal } from '../Common/Modal';
-import type { TBooking, TUpdateBookingPayload } from '../../types/bookingType';
+import type { TBooking, TUpdateBookingPayload } from '../../types/bookingTypes';
 import type { TVenue } from '../../types/venueTypes';
-import type { TDateRange } from '../../types/dateType';
+import type { TDateRange } from '../../types/dateTypes';
 import { getVenue } from '../../api/venuesApi';
 import { updateBooking } from '../../api/bookingsApi';
 import { DateRangeFields } from '../Common/DateRangeFields';

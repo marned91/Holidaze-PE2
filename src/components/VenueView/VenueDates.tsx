@@ -1,6 +1,6 @@
 import { useId } from 'react';
 import type { TVenueBooking } from '../../types/venueTypes';
-import type { TDateRange } from '../../types/dateType';
+import type { TDateRange } from '../../types/dateTypes';
 import { RangeCalendar } from './RangeCalendar';
 
 type VenueDatesProps = {

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { TVenue } from '../../types/venueTypes';
-import type { TBooking, TBookingWithVenue } from '../../types/bookingType';
+import type { TBooking, TBookingWithVenue } from '../../types/bookingTypes';
 import { MyBookingCard } from './MyBookingCard';
 import { EditBookingModal } from './EditBookingModal';
 import { todayYmd } from '../../utils/date';

@@ -1,4 +1,4 @@
-import type { TProfile } from '../../types/profileType';
+import type { TProfile } from '../../types/profileTypes';
 
 type ProfileHeaderProps = {
   profile: TProfile;
