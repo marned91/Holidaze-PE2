@@ -155,7 +155,7 @@ export function BookingSidebar({
               {priceText} <span className="text-gray-500">/ night</span>
             </span>
           </div>
-          <div className="mt-1 flex items-center justify-between font-semibold font-text">
+          <div className="mt-1 flex items-center justify-between font-semibold font-text text-lg">
             <span>Total</span>
             <span>{totalText}</span>
           </div>

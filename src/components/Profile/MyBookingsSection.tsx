@@ -96,6 +96,11 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
 
   const todayIso = todayYmd();
 
+  const emptyMessage =
+    filter === 'past'
+      ? 'You do not have any past bookings yet.'
+      : 'You do not have any bookings yet.';
+
   const counts = useMemo(() => {
     let upcoming = 0;
     let past = 0;
@@ -187,9 +192,7 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
       {errorMessage && <p className="text-red-600">{errorMessage}</p>}
       {!isLoading && !errorMessage && sorted.length === 0 && (
         <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center font-text">
-          <p className="text-gray-700">
-            You do not have any past bookings yet.
-          </p>
+          <p className="text-gray-700">{emptyMessage}</p>
         </div>
       )}
       {!isLoading && !errorMessage && sorted.length > 0 && (
