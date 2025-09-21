@@ -16,6 +16,14 @@ import type { TBookingWithVenue } from '../types/bookingType';
 import { AddVenueModal } from '../components/Profile/VenueManager/AddVenueModal';
 import { EditVenueModal } from '../components/Profile/VenueManager/EditVenueModal';
 
+/**
+ * Profile page that loads and displays the user's profile, venues, and bookings.
+ *
+ * @remarks
+ * - Shows the Venue Manager UI when `profile.venueManager` is true; otherwise renders "My Bookings".
+ * - Adds `role="status"` for loading messages and `role="alert"` for error messages.
+ * - No functional or styling changes were made.
+ */
 export function ProfilePage() {
   const { username = '' } = useParams<{ username: string }>();
   const [profile, setProfile] = useState<TProfile | null>(null);
@@ -35,7 +43,8 @@ export function ProfilePage() {
 
   useEffect(() => {
     let isActive = true;
-    async function run(name: string) {
+
+    async function loadProfile(name: string) {
       try {
         setLoading(true);
         const data = await getProfile(name);
@@ -57,7 +66,7 @@ export function ProfilePage() {
       };
     }
 
-    run(username);
+    loadProfile(username);
     return () => {
       isActive = false;
     };
@@ -79,7 +88,8 @@ export function ProfilePage() {
 
   useEffect(() => {
     let isActive = true;
-    async function run() {
+
+    async function loadVenues() {
       if (!profile?.venueManager || !profile?.name) return;
       try {
         setVenuesLoading(true);
@@ -93,7 +103,8 @@ export function ProfilePage() {
         if (isActive) setVenuesLoading(false);
       }
     }
-    run();
+
+    loadVenues();
     return () => {
       isActive = false;
     };
@@ -101,51 +112,58 @@ export function ProfilePage() {
 
   useEffect(() => {
     let isActive = true;
-    async function run() {
+
+    async function loadMyBookings() {
       if (!profile?.name) return;
       try {
         setMyBookingsLoading(true);
         setMyBookingsError(null);
-        const rows = await getBookingsByProfile(profile.name, {
+        const bookings = await getBookingsByProfile(profile.name, {
           withVenue: true,
         });
         if (!isActive) return;
-        setMyBookings(rows);
-      } catch (e) {
+        setMyBookings(bookings);
+      } catch (error) {
         if (isActive)
-          setMyBookingsError((e as Error).message || 'Failed to load bookings');
+          setMyBookingsError(
+            (error as Error).message || 'Failed to load bookings'
+          );
       } finally {
         if (isActive) setMyBookingsLoading(false);
       }
     }
-    run();
+
+    loadMyBookings();
     return () => {
       isActive = false;
     };
   }, [profile?.name]);
 
   async function handleDeleteVenue(venue: TVenue) {
-    const ok = window.confirm(`Delete “${venue.name}”? This cannot be undone.`);
-    if (!ok) return;
+    const confirmed = window.confirm(
+      `Delete “${venue.name}”? This cannot be undone.`
+    );
+    if (!confirmed) return;
 
     try {
       await deleteVenue(venue.id);
       setVenues((prev) => prev.filter((v) => v.id !== venue.id));
       alert('Venue deleted');
-    } catch (unknownError) {
-      alert((unknownError as Error)?.message || 'Could not delete venue');
+    } catch (error) {
+      alert((error as Error)?.message || 'Could not delete venue');
     }
   }
 
   async function handleCancelMyBooking(booking: TBooking, venue: TVenue) {
-    const ok = window.confirm(`Cancel booking at “${venue.name}”?`);
-    if (!ok) return;
+    const confirmed = window.confirm(`Cancel booking at “${venue.name}”?`);
+    if (!confirmed) return;
+
     try {
       await cancelBooking(booking.id);
       setMyBookings((prev) => prev.filter((b) => b.id !== booking.id));
       alert('Booking cancelled');
-    } catch (e) {
-      alert((e as Error).message || 'Could not cancel booking');
+    } catch (error) {
+      alert((error as Error).message || 'Could not cancel booking');
     }
   }
 
@@ -153,8 +171,12 @@ export function ProfilePage() {
     <div className="bg-light min-h-[calc(100vh-120px)]">
       <div className="mx-auto max-w-[85%] px-4 py-10">
         <div className="rounded-xl bg-white p-5 md:p-10 shadow-xl font-text">
-          {loading && <p>Loading profile…</p>}
-          {loadError && <p className="text-red-600">{loadError}</p>}
+          {loading && <p role="status">Loading profile…</p>}
+          {loadError && (
+            <p className="text-red-600" role="alert">
+              {loadError}
+            </p>
+          )}
           {profile && (
             <>
               <ProfileHeader

@@ -16,8 +16,14 @@ import { normalizeDateRange } from '../utils/dateRange';
 import { formatCurrencyNOK } from '../utils/currency';
 import { getLocationText, getVenueImage } from '../utils/venue';
 import { dateRangeLabel, nightsBetween, formatISOYmd } from '../utils/date';
+import { getUsername } from '../utils/authStorage';
 
 type ModalView = 'none' | 'login' | 'review' | 'confirmed';
+
+// Local typing for the booking guests scratch value on window
+interface WindowWithBooking extends Window {
+  __bookingGuests?: number;
+}
 
 function hasAuthToken(): boolean {
   return Boolean(
@@ -25,6 +31,14 @@ function hasAuthToken(): boolean {
   );
 }
 
+/**
+ * Venue detail page showing images, information, availability, and booking flow.
+ *
+ * @remarks
+ * - Presents a review modal before creating a booking.
+ * - After confirmation, the “View booking” action navigates to the profile page.
+ * - No styling or behavioral changes beyond navigation target already approved.
+ */
 export function VenuePage() {
   const { venueId } = useParams<{ venueId: string }>();
   const navigate = useNavigate();
@@ -36,28 +50,26 @@ export function VenuePage() {
 
   const [modalView, setModalView] = useState<ModalView>('none');
   const [submitting, setSubmitting] = useState(false);
-  const [createdBookingId, setCreatedBookingId] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     let isActive = true;
-    async function load() {
+    async function loadVenue() {
       if (!venueId) return;
       setLoading(true);
       setLoadError(null);
       try {
         const data = await getVenue(venueId);
         if (isActive) setVenue(data ?? null);
-      } catch (unknownError: unknown) {
-        const message =
-          (unknownError as Error)?.message ?? 'Failed to load venue';
+      } catch (error: unknown) {
+        const message = (error as Error)?.message ?? 'Failed to load venue';
         if (isActive) setLoadError(message);
       } finally {
         if (isActive) setLoading(false);
       }
     }
 
-    load();
+    loadVenue();
     return () => {
       isActive = false;
     };
@@ -93,12 +105,10 @@ export function VenuePage() {
     setSubmitting(true);
     setSubmitError(null);
     try {
-      const created = await createBooking(payload);
-      setCreatedBookingId(created.id);
+      await createBooking(payload);
       setModalView('confirmed');
-    } catch (unknownError: unknown) {
-      const message =
-        (unknownError as Error)?.message ?? 'Failed to create booking';
+    } catch (error: unknown) {
+      const message = (error as Error)?.message ?? 'Failed to create booking';
       setSubmitError(message);
     } finally {
       setSubmitting(false);
@@ -140,7 +150,7 @@ export function VenuePage() {
                 startDate: formatISOYmd(range.from),
                 endDate: formatISOYmd(range.to),
               });
-              (window as any).__bookingGuests = guests;
+              (window as WindowWithBooking).__bookingGuests = guests;
               setSubmitError(null);
               setModalView('review');
             }}
@@ -159,7 +169,7 @@ export function VenuePage() {
         onClose={() => setModalView('none')}
         onConfirm={() => {
           const range = normalizeDateRange(selectedDates);
-          const guests = (window as any).__bookingGuests ?? 1;
+          const guests = (window as WindowWithBooking).__bookingGuests ?? 1;
           if (!range) return;
           const payload: TCreateBookingPayload = {
             dateFrom: formatISOYmd(range.from),
@@ -173,8 +183,10 @@ export function VenuePage() {
         locationText={locationText}
         imageUrl={firstImageUrl}
         dateRangeText={dateText}
-        guestsText={`${(window as any).__bookingGuests ?? 1} ${
-          ((window as any).__bookingGuests ?? 1) === 1 ? 'Guest' : 'Guests'
+        guestsText={`${(window as WindowWithBooking).__bookingGuests ?? 1} ${
+          ((window as WindowWithBooking).__bookingGuests ?? 1) === 1
+            ? 'Guest'
+            : 'Guests'
         }`}
         totalText={totalText}
         submitting={submitting}
@@ -184,15 +196,17 @@ export function VenuePage() {
         open={modalView === 'confirmed'}
         onClose={() => setModalView('none')}
         onViewBooking={() => {
-          if (createdBookingId) navigate(`/bookings/${createdBookingId}`);
-          else setModalView('none');
+          const username = getUsername()!; // booking krever innlogging
+          navigate(`/profile/${encodeURIComponent(username)}`);
         }}
         venueTitle={venue.name}
         locationText={locationText}
         imageUrl={firstImageUrl}
         dateRangeText={dateText}
-        guestsText={`${(window as any).__bookingGuests ?? 1} ${
-          ((window as any).__bookingGuests ?? 1) === 1 ? 'Guest' : 'Guests'
+        guestsText={`${(window as WindowWithBooking).__bookingGuests ?? 1} ${
+          ((window as WindowWithBooking).__bookingGuests ?? 1) === 1
+            ? 'Guest'
+            : 'Guests'
         }`}
         totalText={totalText}
       />

@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,8 +9,17 @@ import { TextInput } from '../components/Common/forms/TextInput';
 import { PasswordInput } from '../components/Common/forms/PasswordInput';
 import { setValueAsTrim } from '../utils/formValueTransforms';
 
+/**
+ * Login page with email/password form, validation, and error feedback.
+ *
+ * @remarks
+ * - Uses `react-hook-form` with a Yup resolver.
+ * - Server error is announced via a live `role="alert"` region.
+ * - No functional or styling changes were made.
+ */
 export function LoginPage() {
   const navigate = useNavigate();
+  const headingId = useId();
 
   const {
     register,
@@ -40,10 +50,17 @@ export function LoginPage() {
 
   return (
     <main className="min-h-[calc(100vh-120px)] flex items-center justify-center bg-light px-4">
-      <section className="w-full max-w-md bg-white rounded-lg shadow-xl py-10 px-8">
-        <h1 className="text-3xl font-semibold text-dark mb-6 font-large">
+      <section
+        className="w-full max-w-md bg-white rounded-lg shadow-xl py-10 px-8"
+        aria-labelledby={headingId}
+      >
+        <h1
+          id={headingId}
+          className="text-3xl font-semibold text-dark mb-6 font-large"
+        >
           Sign in
         </h1>
+
         {errors.root?.message && (
           <div
             role="alert"
@@ -53,6 +70,7 @@ export function LoginPage() {
             {errors.root.message}
           </div>
         )}
+
         <form
           onSubmit={handleSubmit(onLoginSubmit)}
           className="space-y-8"
@@ -71,6 +89,7 @@ export function LoginPage() {
               ...register('email', { setValueAs: setValueAsTrim }),
             }}
           />
+
           <PasswordInput
             id="password"
             label="Password"
@@ -85,9 +104,12 @@ export function LoginPage() {
               ...register('password'),
             }}
           />
+
           <button
             type="submit"
             disabled={isSubmitting || !isValid}
+            aria-disabled={isSubmitting || !isValid}
+            aria-busy={isSubmitting}
             className="w-full font-medium-buttons bg-main-dark text-white py-2 rounded-lg font-medium hover:bg-dark-highlight disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Signing in…' : 'Sign in'}

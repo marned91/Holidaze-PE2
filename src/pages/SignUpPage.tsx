@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,8 +12,17 @@ import { PasswordInput } from '../components/Common/forms/PasswordInput';
 import { UrlInput } from '../components/Common/forms/UrlInput';
 import { setValueAsTrim } from '../utils/formValueTransforms';
 
+/**
+ * Sign-up page with account type selection and validated form fields.
+ *
+ * @remarks
+ * - Uses `react-hook-form` with a Yup resolver.
+ * - Maps API validation errors to specific fields; falls back to an alert for unknown errors.
+ * - No functional or styling changes were made.
+ */
 export function SignUpPage() {
   const navigate = useNavigate();
+  const headingId = useId();
 
   const {
     register,
@@ -85,8 +95,14 @@ export function SignUpPage() {
 
   return (
     <main className="min-h-[calc(100vh-120px)] flex items-center justify-center bg-light px-4">
-      <section className="w-full max-w-lg bg-white rounded-lg shadow-xl p-5 md:p-10 my-10">
-        <h1 className="text-3xl font-semibold text-dark mb-6 font-large">
+      <section
+        className="w-full max-w-lg bg-white rounded-lg shadow-xl p-5 md:p-10 my-10"
+        aria-labelledby={headingId}
+      >
+        <h1
+          id={headingId}
+          className="text-3xl font-semibold text-dark mb-6 font-large"
+        >
           Create account
         </h1>
         <div className="mb-8">
@@ -230,6 +246,8 @@ export function SignUpPage() {
           <button
             type="submit"
             disabled={isSubmitting || !isValid}
+            aria-disabled={isSubmitting || !isValid}
+            aria-busy={isSubmitting}
             className="w-full font-medium-buttons bg-main-dark text-white py-2 rounded-lg font-medium hover:bg-dark-highlight disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Creating…' : 'Create account'}

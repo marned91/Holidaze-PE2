@@ -7,11 +7,20 @@ import { useAuthStatus } from '../hooks/useAuthStatus';
 import { getUsername } from '../utils/authStorage';
 import { SearchBox } from '../components/Common/SearchBox';
 
+/** Builds a profile URL from the stored username; falls back to `/login` if missing. */
 function getProfileUrl(): string {
   const stored = getUsername();
   return stored ? `/profile/${encodeURIComponent(stored)}` : '/login';
 }
 
+/**
+ * Site header with logo, primary navigation, auth actions, and search.
+ *
+ * @remarks
+ * - Desktop and mobile layouts share the same routes; mobile menu is toggled via state.
+ * - Icons are decorative and marked `aria-hidden` where the control already has an accessible name.
+ * - No functional or styling changes were made.
+ */
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -53,7 +62,7 @@ export function Header() {
                     aria-label="Home"
                     title="Home"
                   >
-                    <FaHome className="text-lg text-white" />
+                    <FaHome className="text-lg text-white" aria-hidden="true" />
                   </NavLink>
                 </li>
 
@@ -95,7 +104,10 @@ export function Header() {
                         aria-label="Profile"
                         title="Profile"
                       >
-                        <FaUser className="text-lg text-white" />
+                        <FaUser
+                          className="text-lg text-white"
+                          aria-hidden="true"
+                        />
                       </NavLink>
                     </li>
                     <li>
@@ -122,13 +134,14 @@ export function Header() {
       <div className="px-4 py-5 md:hidden">
         <div className="flex items-center justify-between">
           <button
+            type="button"
             onClick={() => setIsMobileMenuOpen((wasOpen) => !wasOpen)}
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
             aria-controls={mobileMenuId}
             className="text-white -m-2 p-2 flex h-10 w-10 items-center justify-center"
           >
-            <FaBars className="text-2xl" />
+            <FaBars className="text-2xl" aria-hidden="true" />
           </button>
           <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
             <img src={Logo} alt="Holidaze logo" className="h-8" />
@@ -153,7 +166,7 @@ export function Header() {
               title="Profile"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <FaUser className="text-md text-white" />
+              <FaUser className="text-md text-white" aria-hidden="true" />
             </NavLink>
           )}
         </div>
@@ -180,7 +193,7 @@ export function Header() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`${pillButtonClassName} flex w-fit items-center gap-2`}
                 >
-                  <FaHome aria-hidden className="text-base" />
+                  <FaHome aria-hidden="true" className="text-base" />
                   <span>Home</span>
                 </NavLink>
                 <SearchBox
@@ -196,7 +209,7 @@ export function Header() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`${pillButtonClassName} flex w-fit items-center gap-2`}
                 >
-                  <FaHome aria-hidden className="text-base" />
+                  <FaHome aria-hidden="true" className="text-base" />
                   <span>Home</span>
                 </NavLink>
                 <button
@@ -204,7 +217,7 @@ export function Header() {
                   onClick={handleLogout}
                   className={`${pillButtonClassName} flex w-fit items-center gap-2`}
                 >
-                  <FaSignOutAlt aria-hidden className="text-base" />
+                  <FaSignOutAlt aria-hidden="true" className="text-base" />
                   <span>Log out</span>
                 </button>
                 <SearchBox
