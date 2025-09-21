@@ -3,7 +3,22 @@ import { searchVenuesByName } from '../api/venuesApi';
 import type { TVenue } from '../types/venueTypes';
 import { isInNorway } from '../components/VenuesHome/sortAndFilter';
 
-export function useVenueSearch(searchQuery: string) {
+/**
+ * React hook that searches venues by name and returns Norwegian results only.
+ *
+ * @remarks
+ * - Trims the incoming query; empty queries clear results and errors.
+ * - Exposes loading and error states.
+ * - No functional changes were made.
+ *
+ * @param searchQuery - Raw user-entered query string.
+ * @returns Object with `isSearching`, `searchError`, and `searchResults`.
+ */
+export function useVenueSearch(searchQuery: string): {
+  isSearching: boolean;
+  searchError: string | null;
+  searchResults: TVenue[];
+} {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<TVenue[]>([]);
