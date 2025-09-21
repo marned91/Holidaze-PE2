@@ -13,7 +13,7 @@ import {
 } from '../../../utils/venueFormMapping';
 import { TitleField } from '../forms/VenueFormFields/TitleField';
 import { DescriptionField } from '../forms/VenueFormFields/DescriptionField';
-import { ImagesField } from '../forms/VenueFormFields/ImageField';
+import { ImagesField } from '../forms/VenueFormFields/ImagesField';
 import { PriceGuestsRow } from '../forms/VenueFormFields/PriceGuestsRow';
 import { CityField } from '../forms/VenueFormFields/CityField';
 import { FacilitiesField } from '../forms/VenueFormFields/FacilitiesField';

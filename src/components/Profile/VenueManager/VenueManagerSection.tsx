@@ -1,5 +1,5 @@
 import { ProfileTabs, type ProfileTab } from './VenueManagerProfileTabs';
-import { AddVenues } from './AddVenuesSection';
+import { DisplayAndAddVenues } from './MyVenuesSection';
 import { UpcomingVenueBookings } from './UpcomingVenueBookingsSection';
 import type { TVenue } from '../../../types/venueTypes';
 import type { TBooking } from '../../../types/bookingType';
@@ -44,7 +44,7 @@ export function VenueManager({
       <hr className="my-6 border-gray-400" />
 
       {activeTab === 'addVenue' && (
-        <AddVenues
+        <DisplayAndAddVenues
           venues={venues}
           isLoading={isLoadingVenues}
           errorMessage={venuesError}

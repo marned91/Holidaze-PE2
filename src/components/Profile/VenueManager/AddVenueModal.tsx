@@ -7,7 +7,7 @@ import type { TCreateVenueInput, TVenue } from '../../../types/venueTypes';
 import type { TVenueFormValues } from '../../../types/formTypes';
 import { venueSchema } from '../forms/validateCreateAndEditVenueSchema';
 import { TitleField } from '../forms/VenueFormFields/TitleField';
-import { ImagesField } from '../forms/VenueFormFields/ImageField';
+import { ImagesField } from '../forms/VenueFormFields/ImagesField';
 import { DescriptionField } from '../forms/VenueFormFields/DescriptionField';
 import { PriceGuestsRow } from '../forms/VenueFormFields/PriceGuestsRow';
 import { CityField } from '../forms/VenueFormFields/CityField';
@@ -20,6 +20,17 @@ type AddVenueModalProps = {
   onCreated: (venue: TVenue) => void;
 };
 
+/**
+ * Modal dialog with a form for creating a new venue.
+ *
+ * @param open - Whether the modal is visible.
+ * @param onClose - Callback to close the modal.
+ * @param onCreated - Callback invoked with the created venue.
+ * @remarks
+ * - Uses `react-hook-form` with a Yup resolver (`venueSchema`).
+ * - Initializes with two empty image rows and Norway as the country (via payload mapping).
+ * - UI/behavior unchanged; this file only adds JSDoc.
+ */
 export function AddVenueModal({
   open,
   onClose,
@@ -61,13 +72,19 @@ export function AddVenueModal({
     }
   }, [open, reset]);
 
+  /**
+   * Submit handler mapping form values to the create-venue API payload.
+   *
+   * @param values - Current form values.
+   * @returns Promise that resolves after the venue is created and callbacks are fired.
+   */
   async function onSubmit(values: TVenueFormValues) {
     const media = values.images
-      .map((item, index) => ({
-        url: item.url.trim(),
+      .map((image, index) => ({
+        url: image.url.trim(),
         alt: `${values.name} photo ${index + 1}`,
       }))
-      .filter((m) => m.url.length > 0);
+      .filter((image) => image.url.length > 0);
 
     const payload: TCreateVenueInput = {
       name: values.name.trim(),

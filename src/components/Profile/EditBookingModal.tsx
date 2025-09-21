@@ -13,7 +13,6 @@ import {
 } from '../../utils/dateRange';
 import { nightsBetween } from '../../utils/date';
 
-/** Returns only YYYY-MM-DD part of an ISO datetime string. */
 function toDateOnly(input?: string) {
   return (input || '').slice(0, 10);
 }

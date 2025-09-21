@@ -39,8 +39,6 @@ export function MyBookingCard({
 }: MyBookingCardProps) {
   const fromYmd = toIsoDateOnly(booking.dateFrom);
   const toYmd = toIsoDateOnly(booking.dateTo);
-
-  // Safe date math (no `new Date('YYYY-MM-DD')`)
   const fromDate = parseISOYmd(fromYmd);
   const toDate = parseISOYmd(toYmd);
   const nights =
@@ -76,19 +74,19 @@ export function MyBookingCard({
         <h4 className="text-lg font-small-nav-footer font-medium">
           {venue.name}
         </h4>
-        <ul className="mt-2 space-y-1 text-sm text-gray-700 font-text">
+        <ul className="mt-2 space-y-1 text-sm text-gray-600 font-text">
           <li>
-            <span className="text-gray-500">Dates: </span>
+            <span className="font-semibold">Dates: </span>
             <span className="font-medium">
               {fromYmd} – {toYmd}
             </span>
           </li>
           <li>
-            <span className="text-gray-500">Guests: </span>
+            <span className="font-semibold">Guests: </span>
             <span className="font-medium">{booking.guests}</span>
           </li>
           <li>
-            <span className="text-gray-500">Price: </span>
+            <span className="font-semibold">Price: </span>
             <span className="font-semibold">{formatCurrencyNOK(total)}</span>
           </li>
         </ul>

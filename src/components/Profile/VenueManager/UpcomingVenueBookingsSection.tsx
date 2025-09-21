@@ -12,12 +12,16 @@ function toIsoDateOnly(input?: string): string {
   return (input || '').slice(0, 10);
 }
 
+/**
+ * Count nights between two ISO date-only strings.
+ * Returns 0 if either input is missing; never negative.
+ */
 function nightsBetween(from?: string, to?: string): number {
   if (!from || !to) return 0;
-  const a = new Date(from);
-  const b = new Date(to);
-  const ms = b.getTime() - a.getTime();
-  return Math.max(0, Math.round(ms / (1000 * 60 * 60 * 24)));
+  const fromDate = new Date(from);
+  const toDate = new Date(to);
+  const diffMs = toDate.getTime() - fromDate.getTime();
+  return Math.max(0, Math.round(diffMs / (1000 * 60 * 60 * 24)));
 }
 
 function monthKey(isoDate: string) {
@@ -33,6 +37,14 @@ function monthHeading(key: string) {
   });
 }
 
+/**
+ * Lists upcoming bookings for the user's venues, grouped by month.
+ *
+ * @remarks
+ * - Shows loading, error, empty states, and grouped results.
+ * - Adds ARIA semantics: `aria-labelledby` on sections, `role="status"` for loading,
+ *   and `role="alert"` for errors.
+ */
 export function UpcomingVenueBookings({
   venues,
   isLoading,
@@ -40,12 +52,21 @@ export function UpcomingVenueBookings({
 }: UpcomingVenueBookingsProps) {
   const today = new Date().toISOString().slice(0, 10);
 
-  const upcoming = venues
+  type VenueWithExtendedBookings = TVenue & {
+    bookings?: TVenueBookingExtended[];
+  };
+  type UpcomingItem = { venue: TVenue; booking: TVenueBookingExtended };
+
+  const upcoming: UpcomingItem[] = venues
     .flatMap((venue) => {
-      const bookings: TVenueBookingExtended[] = (venue as any)?.bookings ?? [];
+      const bookings = ((venue as VenueWithExtendedBookings).bookings ??
+        []) as TVenueBookingExtended[];
       return bookings
-        .filter((b) => toIsoDateOnly(b.dateFrom) >= today)
-        .map((b) => ({ venue, booking: b }));
+        .filter(
+          (booking: TVenueBookingExtended) =>
+            toIsoDateOnly(booking.dateFrom) >= today
+        )
+        .map((booking: TVenueBookingExtended) => ({ venue, booking }));
     })
     .sort((a, b) =>
       toIsoDateOnly(a.booking.dateFrom).localeCompare(
@@ -53,27 +74,37 @@ export function UpcomingVenueBookings({
       )
     );
 
-  const grouped = upcoming.reduce<Record<string, typeof upcoming>>(
-    (acc, item) => {
+  const grouped = upcoming.reduce<Record<string, UpcomingItem[]>>(
+    (accumulator, item) => {
       const key = monthKey(toIsoDateOnly(item.booking.dateFrom));
-      (acc[key] ||= []).push(item);
-      return acc;
+      (accumulator[key] ||= []).push(item);
+      return accumulator;
     },
     {}
   );
 
+  const sectionTitleId = 'upcoming-venue-bookings-title';
+
   return (
-    <section>
-      <h2 className="mb-4 text-2xl font-medium font-medium-buttons">
+    <section aria-labelledby={sectionTitleId}>
+      <h2
+        id={sectionTitleId}
+        className="mb-4 text-2xl font-medium font-medium-buttons"
+      >
         Upcoming bookings for your venues
       </h2>
+
       {isLoading && (
         <ul
           role="list"
           className="divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-white"
         >
-          {Array.from({ length: 5 }).map((_, i) => (
-            <li key={i} className="flex items-start gap-4 p-5 font-text">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <li
+              key={index}
+              className="flex items-start gap-4 p-5 font-text"
+              aria-busy="true"
+            >
               <div className="h-24 w-32 rounded-lg bg-gray-100 animate-pulse" />
               <div className="flex-1">
                 <div className="h-5 w-1/3 rounded bg-gray-100 animate-pulse" />
@@ -83,9 +114,19 @@ export function UpcomingVenueBookings({
               <div className="ml-auto h-6 w-24 rounded bg-gray-100 animate-pulse" />
             </li>
           ))}
+          {/* Screen-reader announcement for loading */}
+          <li className="sr-only" role="status">
+            Loading upcoming bookings…
+          </li>
         </ul>
       )}
-      {errorMessage && <p className="text-red-600">{errorMessage}</p>}
+
+      {errorMessage && (
+        <p role="alert" className="text-red-600">
+          {errorMessage}
+        </p>
+      )}
+
       {!isLoading && !errorMessage && upcoming.length === 0 && (
         <div className="rounded-xl border border-dashed border-gray-300 px-8 py-15 text-center font-text">
           <p className="text-gray-700 mb-2">No upcoming bookings.</p>
@@ -94,80 +135,89 @@ export function UpcomingVenueBookings({
           </p>
         </div>
       )}
+
       {!isLoading &&
         !errorMessage &&
-        Object.entries(grouped).map(([key, items]) => (
-          <section key={key} className="mb-8">
-            <h3 className="mb-3 text-xl italic font-small-nav-footer">
-              {monthHeading(key)}
-            </h3>
-            <ul
-              role="list"
-              className="divide-y divide-gray-200 overflow-hidden rounded-2xl border border-gray-200 bg-white"
-            >
-              {items.map(({ venue, booking }) => {
-                const { url, alt } = getVenueImage(venue);
-                const from = toIsoDateOnly(booking.dateFrom);
-                const to = toIsoDateOnly(booking.dateTo);
-                const nights = Math.max(nightsBetween(from, to), 1);
-                const guests = booking.guests ?? 0;
-                const bookedBy =
-                  booking.customer?.name ||
-                  booking.customer?.username ||
-                  'Unknown';
-                const total =
-                  booking.totalPrice ??
-                  (nights > 0 ? venue.price * nights : venue.price);
+        Object.entries(grouped).map(([key, items]) => {
+          const monthTitleId = `month-${key}-title`;
+          return (
+            <section key={key} className="mb-8" aria-labelledby={monthTitleId}>
+              <h3
+                id={monthTitleId}
+                className="mb-3 text-xl italic font-small-nav-footer"
+              >
+                {monthHeading(key)}
+              </h3>
+              <ul
+                role="list"
+                className="divide-y divide-gray-200 overflow-hidden rounded-2xl border border-gray-200 bg-white"
+              >
+                {items.map(({ venue, booking }) => {
+                  const { url, alt } = getVenueImage(venue);
+                  const from = toIsoDateOnly(booking.dateFrom);
+                  const to = toIsoDateOnly(booking.dateTo);
+                  const nights = Math.max(nightsBetween(from, to), 1);
+                  const guests = booking.guests ?? 0;
+                  const bookedBy =
+                    booking.customer?.name ||
+                    booking.customer?.username ||
+                    'Unknown';
+                  const total =
+                    booking.totalPrice ??
+                    (nights > 0 ? venue.price * nights : venue.price);
 
-                return (
-                  <li
-                    key={`${venue.id}-${booking.id}`}
-                    className="flex flex-col gap-4 p-5 md:flex-row sm:items-start sm:gap-5"
-                    aria-label={`Booking for ${venue.name} from ${from} to ${to}`}
-                  >
-                    <div className="shrink-0">
-                      <div className="h-24 w-32 overflow-hidden rounded-lg bg-gray-100">
-                        <img
-                          src={url}
-                          alt={alt}
-                          className="h-full w-full object-cover"
-                          loading="lazy"
-                        />
+                  return (
+                    <li
+                      key={`${venue.id}-${booking.id}`}
+                      className="flex flex-col gap-4 p-5 md:flex-row sm:items-start sm:gap-5"
+                      aria-label={`Booking for ${venue.name} from ${from} to ${to}`}
+                    >
+                      <div className="shrink-0">
+                        <div className="h-24 w-32 overflow-hidden rounded-lg bg-gray-100">
+                          <img
+                            src={url}
+                            alt={alt}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="truncate text-lg font-semibold font-text">
-                        {venue.name}
-                      </h4>
 
-                      <div className="mt-1 grid grid-cols-1 gap-1 text-sm text-gray-700 sm:grid-cols-2 font-text">
-                        <div>
-                          <span className="text-gray-500">Dates: </span>
-                          <span className="font-medium">
-                            {from} – {to}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-gray-500">Guests: </span>
-                          <span className="font-medium">{guests}</span>
-                        </div>
-                        <div className="sm:col-span-2">
-                          <span className="text-gray-500">Booked by: </span>
-                          <span className="font-medium">{bookedBy}</span>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="truncate text-lg font-semibold font-text">
+                          {venue.name}
+                        </h4>
+
+                        <div className="mt-1 grid grid-cols-1 gap-1 text-sm text-gray-700 sm:grid-cols-2 font-text">
+                          <div>
+                            <span className="text-gray-500">Dates: </span>
+                            <span className="font-medium">
+                              {from} – {to}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">Guests: </span>
+                            <span className="font-medium">{guests}</span>
+                          </div>
+                          <div className="sm:col-span-2">
+                            <span className="text-gray-500">Booked by: </span>
+                            <span className="font-medium">{bookedBy}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="sm:ml-auto sm:mt-0">
-                      <div className="inline-flex items-center rounded-lg bg-dark px-3 py-1 text-sm font-semibold text-white font-text">
-                        {formatCurrencyNOK(Number(total))}
+
+                      <div className="sm:ml-auto sm:mt-0">
+                        <div className="inline-flex items-center rounded-lg bg-dark px-3 py-1 text-sm font-semibold text-white font-text">
+                          {formatCurrencyNOK(Number(total))}
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        ))}
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          );
+        })}
     </section>
   );
 }

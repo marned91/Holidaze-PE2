@@ -1,6 +1,6 @@
 import type { TVenue } from '../../../types/venueTypes';
 import { ManageVenues } from './ManageVenues';
-import { AddVenueCard } from './AddVenueButton';
+import { AddVenueCard } from './AddVenueCard';
 
 type AddVenuesProps = {
   venues: TVenue[];
@@ -11,7 +11,16 @@ type AddVenuesProps = {
   onDeleteVenue?: (venue: TVenue) => void;
 };
 
-export function AddVenues({
+/**
+ * Section for listing and managing the user's venues.
+ *
+ * @remarks
+ * - Shows loading/error states, an empty state with call-to-action, and a grid of venues.
+ * - Adds basic ARIA semantics: `aria-labelledby` for the section title,
+ *   `role="status"` for loading, and `role="alert"` for errors.
+ * - No functional changes to rendering logic or handlers.
+ */
+export function DisplayAndAddVenues({
   venues,
   isLoading,
   errorMessage,
@@ -19,13 +28,24 @@ export function AddVenues({
   onEditVenue,
   onDeleteVenue,
 }: AddVenuesProps) {
+  const titleId = 'add-venues-title';
+
   return (
-    <section id="tab-addVenue">
+    <section id="tab-addVenue" aria-labelledby={titleId}>
       <div className="mb-4">
-        <h1 className="text-3xl font-large font-dark">My Venues</h1>
+        <h1 id={titleId} className="text-3xl font-large font-dark">
+          My Venues
+        </h1>
       </div>
-      {isLoading && <p>Loading venues…</p>}
-      {errorMessage && <p className="text-red-600">{errorMessage}</p>}
+
+      {isLoading && <p role="status">Loading venues…</p>}
+
+      {errorMessage && (
+        <p role="alert" className="text-red-600">
+          {errorMessage}
+        </p>
+      )}
+
       {!isLoading && !errorMessage && venues.length === 0 && (
         <div className="rounded-xl border border-dashed border-gray-300 p-8 text-center">
           <p className="mb-4 text-gray-700 font-text">
@@ -36,6 +56,7 @@ export function AddVenues({
           </div>
         </div>
       )}
+
       {!errorMessage && !isLoading && venues.length > 0 && (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 font-text">
           <AddVenueCard onClick={onCreateVenue} />

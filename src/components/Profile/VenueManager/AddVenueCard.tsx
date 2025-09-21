@@ -4,6 +4,14 @@ type AddVenueCardProps = {
   onClick?: () => void;
 };
 
+/**
+ * Card-style button for creating a new venue.
+ *
+ * @param onClick - Optional click handler invoked when the card is activated.
+ * @remarks
+ * - Renders an accessible `<button>` with icon and label inside an `<article>` wrapper.
+ * - Keeps existing visual classes and focus styles unchanged.
+ */
 export function AddVenueCard({ onClick }: AddVenueCardProps) {
   return (
     <article className=" rounded-xl bg-white">
