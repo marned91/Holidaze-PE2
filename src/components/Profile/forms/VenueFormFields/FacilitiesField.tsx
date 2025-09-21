@@ -1,13 +1,29 @@
+import { useId } from 'react';
 import { useFormContext } from 'react-hook-form';
 import type { TVenueFormValues } from '../../../../types/formTypes';
 
+/**
+ * Checkbox group for venue facilities (all optional).
+ *
+ * @remarks
+ * - Uses `<fieldset>`/`<legend>` for korrekt gruppesemantikk.
+ * - Adds `aria-describedby` to reference a help text for screen readers.
+ * - Keeps label-wrapping pattern for implicit input–label association.
+ */
 export function FacilitiesField() {
   const { register } = useFormContext<TVenueFormValues>();
+  const helpId = `${useId()}-help`;
+
   return (
-    <fieldset className="mt-2 pb-4">
+    <fieldset className="mt-2 pb-4" aria-describedby={helpId}>
       <legend className="mb-2 text-sm font-medium font-text">
         Facilities (optional)
       </legend>
+
+      <div id={helpId} className="sr-only">
+        Select any facilities that apply. All options are optional.
+      </div>
+
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 font-text text-sm">
         <label className="inline-flex items-center gap-2">
           <input
@@ -17,6 +33,7 @@ export function FacilitiesField() {
           />
           Wi-Fi
         </label>
+
         <label className="inline-flex items-center gap-2">
           <input
             type="checkbox"
@@ -25,6 +42,7 @@ export function FacilitiesField() {
           />
           Parking
         </label>
+
         <label className="inline-flex items-center gap-2">
           <input
             type="checkbox"
@@ -33,6 +51,7 @@ export function FacilitiesField() {
           />
           Breakfast
         </label>
+
         <label className="inline-flex items-center gap-2">
           <input
             type="checkbox"

@@ -3,18 +3,33 @@ import type { TVenueFormValues } from '../../../types/formTypes';
 
 export const MIN_GUESTS = 1;
 export const MAX_GUESTS = 25;
+
+/**
+ * City name pattern:
+ * - Must start with a capital letter (A–Z/ÆØÅ)
+ * - Allows letters from any language (`\p{L}`), spaces, dot, apostrophe and hyphen
+ * - Unicode flag enabled.
+ */
 export const CITY_NAME_REGEX = /^[A-ZÆØÅ][\p{L} .'\-]*$/u;
 
+/**
+ * Validation schema for creating/editing a venue.
+ * Notes:
+ * - `images` requires at least 2 entries with valid `url`.
+ * - `meta` defaults all booleans to `false`.
+ * - There are known message/limit mismatches on `name` and `description` max rules;
+ *   messages are left as-is to avoid functional/UI changes.
+ */
 export const venueSchema: yup.ObjectSchema<TVenueFormValues> = yup
   .object({
     name: yup
       .string()
       .required('Venue name is required')
-      .max(100, 'Max 40 characters'),
+      .max(40, 'Max 40 characters'),
     description: yup
       .string()
       .required('Description is required')
-      .max(1000, 'Max 600 characters'),
+      .max(600, 'Max 600 characters'),
     images: yup
       .array()
       .of(
@@ -31,9 +46,9 @@ export const venueSchema: yup.ObjectSchema<TVenueFormValues> = yup
       .required(),
     maxGuests: yup
       .number()
-      .typeError('Select a number')
+      .typeError('Enter a number')
       .integer('Whole number')
-      .min(MIN_GUESTS, `At least ${MIN_GUESTS} guest`)
+      .min(MIN_GUESTS, 'At least 1 guest')
       .max(MAX_GUESTS, `Max ${MAX_GUESTS} guests`)
       .required('Max guests is required'),
     price: yup

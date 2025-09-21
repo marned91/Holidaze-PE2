@@ -2,17 +2,11 @@ import type { TVenue } from '../../types/venueTypes';
 import type { TBooking } from '../../types/bookingType';
 import { getVenueImage } from '../../utils/venue';
 import { formatCurrencyNOK } from '../../utils/currency';
+import { parseISOYmd, nightsBetween } from '../../utils/date';
 
+/** Returns only YYYY-MM-DD part of an ISO datetime string. */
 function toIsoDateOnly(input?: string) {
   return (input || '').slice(0, 10);
-}
-
-function nightsBetween(from?: string, to?: string): number {
-  if (!from || !to) return 0;
-  const a = new Date(from);
-  const b = new Date(to);
-  const ms = b.getTime() - a.getTime();
-  return Math.max(0, Math.round(ms / (1000 * 60 * 60 * 24)));
 }
 
 type MyBookingCardProps = {
@@ -26,6 +20,13 @@ type MyBookingCardProps = {
   hideActions?: boolean;
 };
 
+/**
+ * Card showing a user's booking with dates, guests and total price.
+ *
+ * Behavior:
+ * - Computes nights using `parseISOYmd` + `nightsBetween` to avoid TZ issues.
+ * - Falls back to 1 night when dates are missing/invalid.
+ */
 export function MyBookingCard({
   booking,
   venue,
@@ -36,9 +37,15 @@ export function MyBookingCard({
   isCancelling,
   hideActions,
 }: MyBookingCardProps) {
-  const from = toIsoDateOnly(booking.dateFrom);
-  const to = toIsoDateOnly(booking.dateTo);
-  const nights = Math.max(nightsBetween(from, to), 1);
+  const fromYmd = toIsoDateOnly(booking.dateFrom);
+  const toYmd = toIsoDateOnly(booking.dateTo);
+
+  // Safe date math (no `new Date('YYYY-MM-DD')`)
+  const fromDate = parseISOYmd(fromYmd);
+  const toDate = parseISOYmd(toYmd);
+  const nights =
+    fromDate && toDate ? Math.max(1, nightsBetween(fromDate, toDate)) : 1;
+
   const total =
     typeof totalPriceOverride === 'number'
       ? totalPriceOverride
@@ -49,7 +56,7 @@ export function MyBookingCard({
   return (
     <article
       className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl p-2 md:p-4"
-      aria-label={`Booking at ${venue.name} from ${from} to ${to}`}
+      aria-label={`Booking at ${venue.name} from ${fromYmd} to ${toYmd}`}
     >
       <div className="aspect-[16/10] w-full overflow-hidden bg-gray-100">
         {url ? (
@@ -73,7 +80,7 @@ export function MyBookingCard({
           <li>
             <span className="text-gray-500">Dates: </span>
             <span className="font-medium">
-              {from} – {to}
+              {fromYmd} – {toYmd}
             </span>
           </li>
           <li>

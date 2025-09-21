@@ -10,6 +10,18 @@ type TextInputProps = {
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 };
 
+/**
+ * Reusable text input field with label and optional error message.
+ *
+ * @param id - Unique input id, linked to the label.
+ * @param label - Visible label text.
+ * @param type - Input type (defaults to `"text"`).
+ * @param disabled - Whether the field is disabled.
+ * @param ariaInvalid - Marks the field as invalid for accessibility.
+ * @param errorMessage - Optional error text displayed below the input.
+ * @param inputProps - Additional props forwarded to the underlying <input>.
+ * @returns A labeled input element with accessible error feedback.
+ */
 export function TextInput({
   id,
   label,

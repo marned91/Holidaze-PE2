@@ -8,6 +8,14 @@ type ImageUrlRowProps = {
   onRemove?: () => void;
 };
 
+/**
+ * Renders a single “image URL” row with a live preview on the left
+ * and a URL input (with optional “Remove” button) on the right.
+ *
+ * Accessibility:
+ * - Sets `aria-invalid` when there’s an error message.
+ * - Links the input to the error text via `aria-describedby`.
+ */
 export function ImageUrlRow({
   inputProps,
   value,
@@ -16,6 +24,7 @@ export function ImageUrlRow({
   onRemove,
 }: ImageUrlRowProps) {
   const url = (value || '').trim();
+  const errorId = errorMessage ? `${inputProps.name}-error` : undefined;
 
   return (
     <div className="flex flex-col items-start gap-3 sm:flex-row">
@@ -23,13 +32,13 @@ export function ImageUrlRow({
         {url ? (
           <img
             src={url}
-            alt="Preview"
+            alt="Image preview"
             className="h-full w-full object-cover"
             loading="lazy"
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="flex h-full w-full items-center font-text justify-center text-xs text-gray-500">
+          <div className="flex h-full w-full items-center justify-center text-xs text-gray-500 font-text">
             No preview
           </div>
         )}
@@ -40,13 +49,14 @@ export function ImageUrlRow({
             type="url"
             placeholder="https://…"
             inputMode="url"
-            {...inputProps}
+            aria-invalid={!!errorMessage || undefined}
+            aria-describedby={errorId}
             className={`w-full rounded-lg border px-3 py-2 outline-none font-text ${
               errorMessage
                 ? 'border-red-400 focus:ring-2 focus:ring-red-300'
                 : 'border-gray-300 focus:ring-2 focus:ring-highlight'
             }`}
-            aria-invalid={!!errorMessage}
+            {...inputProps}
           />
           {canRemove && (
             <button
@@ -58,8 +68,11 @@ export function ImageUrlRow({
             </button>
           )}
         </div>
+
         {errorMessage && (
-          <p className="mt-1 text-sm text-red-600 font-text">{errorMessage}</p>
+          <p id={errorId} className="mt-1 text-sm text-red-600 font-text">
+            {errorMessage}
+          </p>
         )}
       </div>
     </div>

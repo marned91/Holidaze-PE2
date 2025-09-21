@@ -16,6 +16,19 @@ type UpdateProfilePictureProps = {
   initialAlt?: string;
 };
 
+/**
+ * Modal for updating a profile picture (URL + optional alt text).
+ *
+ * Validation: handled by the Yup schema (`profilePictureSchema`) together with react-hook-form.
+ *
+ * @param username - The profile's username (used for the API call).
+ * @param open - Whether the modal is open.
+ * @param onClose - Callback to close the modal.
+ * @param onUpdated - Invoked after a successful save with the final URL/alt.
+ * @param initialUrl - Prefilled image URL.
+ * @param initialAlt - Prefilled alt text.
+ */
+
 export function UpdateProfilePicture({
   username,
   open,
@@ -63,13 +76,19 @@ export function UpdateProfilePicture({
       onUpdated(nextUrl, nextAlt);
       alert('Profile picture updated');
       onClose();
-    } catch (unknownError) {
+    } catch (error: unknown) {
       const message =
-        (unknownError as Error)?.message ||
-        'Could not update profile picture, please try again';
+        error instanceof Error
+          ? error.message
+          : 'Could not update profile picture, please try again';
       alert(message);
     }
   }
+
+  const urlInputId = 'update-avatar-url';
+  const urlErrorId = 'update-avatar-url-error';
+  const altInputId = 'update-avatar-alt';
+  const altErrorId = 'update-avatar-alt-error';
 
   return (
     <Modal
@@ -80,14 +99,19 @@ export function UpdateProfilePicture({
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <div>
-          <label className="mb-1 block text-sm font-medium font-text">
+          <label
+            htmlFor={urlInputId}
+            className="mb-1 block text-sm font-medium font-text"
+          >
             Image URL
           </label>
           <input
+            id={urlInputId}
             type="url"
             inputMode="url"
             placeholder="https://…"
-            aria-invalid={!!errors.avatarUrl}
+            aria-invalid={!!errors.avatarUrl || undefined}
+            aria-describedby={errors.avatarUrl ? urlErrorId : undefined}
             className={`w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 font-text ${
               errors.avatarUrl
                 ? 'border-red-400 focus:ring-red-300'
@@ -96,18 +120,24 @@ export function UpdateProfilePicture({
             {...register('avatarUrl', { setValueAs: setValueAsTrim })}
           />
           {errors.avatarUrl?.message && (
-            <p className="mt-1 text-sm text-red-600 font-text">
+            <p id={urlErrorId} className="mt-1 text-sm text-red-600 font-text">
               {errors.avatarUrl.message}
             </p>
           )}
         </div>
+
         <div>
-          <label className="mb-1 block text-sm font-medium font-text">
+          <label
+            htmlFor={altInputId}
+            className="mb-1 block text-sm font-medium font-text"
+          >
             Alt text (optional)
           </label>
           <input
+            id={altInputId}
             type="text"
-            aria-invalid={!!errors.avatarAlt}
+            aria-invalid={!!errors.avatarAlt || undefined}
+            aria-describedby={errors.avatarAlt ? altErrorId : undefined}
             className={`w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 font-text ${
               errors.avatarAlt
                 ? 'border-red-400 focus:ring-red-300'
@@ -116,11 +146,12 @@ export function UpdateProfilePicture({
             {...register('avatarAlt', { setValueAs: setValueAsTrim })}
           />
           {errors.avatarAlt?.message && (
-            <p className="mt-1 text-sm text-red-600 font-text">
+            <p id={altErrorId} className="mt-1 text-sm text-red-600 font-text">
               {errors.avatarAlt.message}
             </p>
           )}
         </div>
+
         <div className="mt-6 flex items-center justify-end gap-3">
           <button
             type="button"

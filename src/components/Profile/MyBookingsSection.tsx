@@ -3,6 +3,7 @@ import type { TVenue } from '../../types/venueTypes';
 import type { TBooking, TBookingWithVenue } from '../../types/bookingType';
 import { MyBookingCard } from './MyBookingCard';
 import { EditBookingModal } from './EditBookingModal';
+import { todayYmd } from '../../utils/date';
 
 type Item = {
   booking: TBooking;
@@ -32,6 +33,18 @@ function isUpcoming(booking: TBooking, todayIso: string) {
   return (booking.dateTo || '').slice(0, 10) >= todayIso;
 }
 
+/**
+ * Section listing a user's bookings with filter (all/upcoming/past),
+ * edit modal wiring, and loading/empty/error states.
+ *
+ * Behavior:
+ * - Accepts either `items` or `bookings` (with venue) and normalizes to a common shape.
+ * - Keeps local edits reflected in the list until refresh.
+ * - Uses date-only comparisons; today derived via `todayYmd()` for TZ safety.
+ *
+ * @param props - Data/load state and optional callbacks for edit/cancel.
+ * @returns A section element with filters and booking cards.
+ */
 export function MyBookingsSection(props: WithItems | WithBookings) {
   const {
     isLoading,
@@ -46,21 +59,23 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
       ? props.items
       : 'bookings' in props && props.bookings
       ? props.bookings
-          .filter((b) => !!b.venue)
-          .map((b) => ({
-            booking: b,
-            venue: b.venue,
+          .filter((bookingWithVenue) => !!bookingWithVenue.venue)
+          .map((bookingWithVenue) => ({
+            booking: bookingWithVenue,
+            venue: bookingWithVenue.venue,
             totalPriceOverride:
-              typeof b.totalPrice === 'number' ? b.totalPrice : undefined,
+              typeof bookingWithVenue.totalPrice === 'number'
+                ? bookingWithVenue.totalPrice
+                : undefined,
           }))
       : [];
 
   const [editedById, setEditedById] = useState<Record<string, TBooking>>({});
   const displayed: Item[] = useMemo(
     () =>
-      normalized.map((it) => ({
-        ...it,
-        booking: editedById[it.booking.id] ?? it.booking,
+      normalized.map((item) => ({
+        ...item,
+        booking: editedById[item.booking.id] ?? item.booking,
       })),
     [normalized, editedById]
   );
@@ -78,7 +93,8 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
   }
 
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'past'>('all');
-  const todayIso = new Date().toISOString().slice(0, 10);
+
+  const todayIso = todayYmd();
 
   const counts = useMemo(() => {
     let upcoming = 0;
@@ -92,15 +108,15 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
 
   const filtered = displayed.filter(({ booking }) => {
     if (filter === 'all') return true;
-    const u = isUpcoming(booking, todayIso);
-    return filter === 'upcoming' ? u : !u;
+    const upcoming = isUpcoming(booking, todayIso);
+    return filter === 'upcoming' ? upcoming : !upcoming;
   });
 
   const sorted = [...filtered].sort((a, b) => {
     if (filter === 'all') {
-      const aU = isUpcoming(a.booking, todayIso);
-      const bU = isUpcoming(b.booking, todayIso);
-      if (aU !== bU) return aU ? -1 : 1;
+      const aUpcoming = isUpcoming(a.booking, todayIso);
+      const bUpcoming = isUpcoming(b.booking, todayIso);
+      if (aUpcoming !== bUpcoming) return aUpcoming ? -1 : 1;
     }
     return a.booking.dateFrom.localeCompare(b.booking.dateFrom);
   });
@@ -198,7 +214,10 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
           booking={selected.booking}
           venue={selected.venue}
           onUpdated={(updated) => {
-            setEditedById((prev) => ({ ...prev, [updated.id]: updated }));
+            setEditedById((previous) => ({
+              ...previous,
+              [updated.id]: updated,
+            }));
             setIsEditOpen(false);
           }}
         />

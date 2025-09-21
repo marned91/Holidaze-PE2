@@ -1,6 +1,12 @@
 import * as yup from 'yup';
 import type { TUpdateProfilePictureFormValues } from '../../../types/formTypes';
 
+/**
+ * Yup schema for validating profile picture updates.
+ * Keeps existing behavior unchanged:
+ * - `avatarUrl`: required valid URL
+ * - `avatarAlt`: optional, max 120 characters
+ */
 export const profilePictureSchema: yup.ObjectSchema<TUpdateProfilePictureFormValues> =
   yup
     .object({

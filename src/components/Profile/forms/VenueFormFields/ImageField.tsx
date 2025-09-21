@@ -2,6 +2,14 @@ import { useFieldArray, useFormContext } from 'react-hook-form';
 import type { TVenueFormValues } from '../../../../types/formTypes';
 import { ImageUrlRow } from '../ImageUrlRow';
 
+/**
+ * Dynamic list of image URL fields for a venue.
+ *
+ * @remarks
+ * - Renders one `ImageUrlRow` per item in `images`.
+ * - Allows appending/removing rows (min 2 kept visually via `canRemove`).
+ * - Displays an array-level error message when present.
+ */
 export function ImagesField() {
   const {
     control,
@@ -9,8 +17,12 @@ export function ImagesField() {
     watch,
     formState: { errors },
   } = useFormContext<TVenueFormValues>();
+
   const { fields, append, remove } = useFieldArray({ control, name: 'images' });
   const imagesWatch = watch('images') || [];
+
+  type ImagesArrayError = { message?: string } | undefined;
+  const imagesArrayError = (errors.images as ImagesArrayError)?.message;
 
   return (
     <div>
@@ -47,9 +59,9 @@ export function ImagesField() {
         </button>
       </div>
 
-      {typeof (errors.images as any)?.message === 'string' && (
-        <p className="mt-1 text-sm text-red-600 font-text">
-          {(errors.images as any).message}
+      {typeof imagesArrayError === 'string' && (
+        <p role="alert" className="mt-1 text-sm text-red-600 font-text">
+          {imagesArrayError}
         </p>
       )}
     </div>

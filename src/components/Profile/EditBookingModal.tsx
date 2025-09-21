@@ -13,6 +13,7 @@ import {
 } from '../../utils/dateRange';
 import { nightsBetween } from '../../utils/date';
 
+/** Returns only YYYY-MM-DD part of an ISO datetime string. */
 function toDateOnly(input?: string) {
   return (input || '').slice(0, 10);
 }
@@ -33,6 +34,8 @@ function dateRangesOverlap(
   return startTimeA < endTimeB && endTimeA > startTimeB;
 }
 
+type BookingLike = { id?: string; dateFrom: string; dateTo: string };
+
 type EditBookingModalProps = {
   open: boolean;
   onClose: () => void;
@@ -47,6 +50,15 @@ type FormValues = {
   guests: number;
 };
 
+/**
+ * Edit booking modal with form for updating dates and guests.
+ *
+ * @param open - Whether modal is visible.
+ * @param onClose - Callback when modal should close.
+ * @param booking - The booking being edited.
+ * @param venue - Venue data for availability.
+ * @param onUpdated - Callback with updated booking after save.
+ */
 export function EditBookingModal({
   open,
   onClose,
@@ -106,15 +118,12 @@ export function EditBookingModal({
     [dateRangeValue]
   );
 
-  const unavailableRaw = (loadedVenue?.bookings ?? []) as Array<{
-    dateFrom: string;
-    dateTo: string;
-    id?: string;
-  }>;
+  const unavailableRaw: BookingLike[] = (loadedVenue?.bookings ??
+    []) as unknown as BookingLike[];
 
   const unavailableFiltered = useMemo(() => {
     return unavailableRaw.filter((existing) => {
-      const sameId = (existing as any)?.id === booking.id;
+      const sameId = existing.id === booking.id;
       const sameRange =
         toDateOnly(existing.dateFrom) === toDateOnly(booking.dateFrom) &&
         toDateOnly(existing.dateTo) === toDateOnly(booking.dateTo);
@@ -130,7 +139,7 @@ export function EditBookingModal({
     const src = (loadedVenue || venue) as TVenue;
     return {
       ...src,
-      bookings: unavailableFiltered as any,
+      bookings: unavailableFiltered as unknown as TVenue['bookings'],
     };
   }, [loadedVenue, venue, unavailableFiltered]);
 
