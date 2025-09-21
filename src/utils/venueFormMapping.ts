@@ -1,6 +1,7 @@
 import type { TVenue, TCreateVenueInput } from '../types/venueTypes';
 import type { TVenueFormValues } from '../types/formTypes';
 
+/** Map a `TVenue` (API shape) to `TVenueFormValues` (form shape). */
 export function venueToFormValues(venue: TVenue): TVenueFormValues {
   return {
     name: venue.name ?? '',
@@ -20,6 +21,7 @@ export function venueToFormValues(venue: TVenue): TVenueFormValues {
   };
 }
 
+/** Map `TVenueFormValues` back to a `TCreateVenueInput` payload for the API. */
 export function formValuesToCreatePayload(
   values: TVenueFormValues
 ): TCreateVenueInput {

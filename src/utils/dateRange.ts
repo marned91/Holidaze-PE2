@@ -3,6 +3,7 @@ import type { TVenue } from '../types/venueTypes';
 
 export type DateRangeNormalized = { from: Date; to: Date };
 
+/** Return today's local date as `YYYY-MM-DD`. */
 export function todayYmd(): string {
   const now = new Date();
   const year = now.getFullYear();
@@ -11,6 +12,7 @@ export function todayYmd(): string {
   return `${year}-${month}-${day}`;
 }
 
+/** Parse a local `YYYY-MM-DD` string into a `Date` at local midnight; returns `null` if invalid. */
 export function parseLocal(ymd?: string): Date | null {
   if (!ymd) return null;
   const [year, month, day] = ymd.split('-').map(Number);
@@ -20,6 +22,10 @@ export function parseLocal(ymd?: string): Date | null {
   return Number.isNaN(dateObject.getTime()) ? null : dateObject;
 }
 
+/**
+ * Normalize a `TDateRange` (string inputs) to concrete `Date` objects.
+ * Returns `null` if start/end is missing or if start is after end.
+ */
 export function normalizeDateRange(
   range: TDateRange
 ): DateRangeNormalized | null {
@@ -30,6 +36,10 @@ export function normalizeDateRange(
   return { from, to };
 }
 
+/**
+ * Check if two date ranges (inclusive) overlap using local time.
+ * Returns `true` when any overlap occurs, otherwise `false`.
+ */
 export function rangesOverlapInclusive(
   rangeAStart: Date,
   rangeAEnd: Date,
@@ -42,6 +52,10 @@ export function rangesOverlapInclusive(
   );
 }
 
+/**
+ * Determine if a venue is available for the given normalized range.
+ * Treats missing/invalid booking dates as available.
+ */
 export function isVenueAvailableForRange(
   venue: Pick<TVenue, 'bookings'>,
   wanted: DateRangeNormalized
