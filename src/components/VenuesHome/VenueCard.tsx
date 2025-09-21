@@ -13,6 +13,14 @@ type VenueCardProps = {
   venue: TVenue;
 };
 
+/**
+ * Card displaying a single venue with image, location, capacity, and price.
+ *
+ * @remarks
+ * - Uses a link wrapper for navigation to the venue details page.
+ * - Decorative icons are marked `aria-hidden` to reduce screen reader noise.
+ * - No functional or styling changes were made.
+ */
 export function VenueCard({ venue }: VenueCardProps) {
   const { url, alt } = getVenueImage(venue);
   const imageUrl = url || PlaceholderImage;
@@ -41,11 +49,14 @@ export function VenueCard({ venue }: VenueCardProps) {
               {venue.name || 'Untitled venue'}
             </h4>
             <div className="flex items-center text-sm text-gray-600 font-text">
-              <FaMapMarkerAlt className="mr-1 text-main-light" />
+              <FaMapMarkerAlt
+                className="mr-1 text-main-light"
+                aria-hidden="true"
+              />
               <span>{locationText}</span>
             </div>
             <div className="flex items-center text-sm text-gray-600 font-text">
-              <FaUser className="mr-1 text-main-light" />
+              <FaUser className="mr-1 text-main-light" aria-hidden="true" />
               <span>{guestText}</span>
             </div>
           </div>

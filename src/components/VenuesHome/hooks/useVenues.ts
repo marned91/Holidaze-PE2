@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { type TVenue } from '../../../types/venueTypes';
 import { listVenuesAll } from '../../../api/venuesApi';
+import { isInNorway } from '../sortAndFilter';
 
 export type UseVenuesResult = {
   venues: TVenue[];
@@ -9,11 +10,17 @@ export type UseVenuesResult = {
   reload: () => void;
 };
 
-function isNorwegianVenue(venue: TVenue): boolean {
-  const country = (venue.location?.country || '').trim().toLowerCase();
-  return country === 'norway' || country === 'norge';
-}
-
+/**
+ * Fetches venues with built-in loading/error state, filters to Norwegian venues
+ * using the shared `isInNorway` helper, and sorts them by newest first.
+ *
+ * @remarks
+ * - Uses `limit` for `limitPerPage` in the API call (was previously hardcoded to 100).
+ * - `reload()` triggers a refetch via an internal `reloadKey`.
+ *
+ * @param limit - Page size to request from the API (passed to `limitPerPage`).
+ * @returns Reactive result object with `venues`, `loading`, `error`, and `reload()`.
+ */
 export function useVenues(limit = 100): UseVenuesResult {
   const [venues, setVenues] = useState<TVenue[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,7 +37,7 @@ export function useVenues(limit = 100): UseVenuesResult {
 
         try {
           const apiVenues = await listVenuesAll({
-            limitPerPage: 100,
+            limitPerPage: limit,
             maxPages: 10,
             withBookings: true,
             sort: 'created',
@@ -38,7 +45,7 @@ export function useVenues(limit = 100): UseVenuesResult {
           });
           if (!isComponentActive) return;
 
-          const norwegianOnly = (apiVenues ?? []).filter(isNorwegianVenue);
+          const norwegianOnly = (apiVenues ?? []).filter(isInNorway);
 
           const venuesSortedByNewest = [...norwegianOnly].sort(
             (venueA, venueB) => {

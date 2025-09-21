@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useId } from 'react';
 import { DateRangeFields } from '../Common/DateRangeFields';
 import { FaTimes } from 'react-icons/fa';
 import { formatDotFromISO } from '../../utils/date';
@@ -16,6 +16,14 @@ type VenuesFiltersProps = {
   onDateRangeChange: (nextDateRange: TDateRange) => void;
 };
 
+/**
+ * Filter controls for venues (city, minimum guests, and date range).
+ *
+ * @remarks
+ * - Each trigger button is linked to its popover via `aria-controls`, and popovers are labeled by their trigger (`aria-labelledby`).
+ * - Decorative clear icons are marked `aria-hidden` to reduce screen reader noise.
+ * - No functional or styling changes were made.
+ */
 export function VenuesFilters({
   cities,
   selectedCity,
@@ -40,6 +48,13 @@ export function VenuesFilters({
   const [endDraft, setEndDraft] = useState<string>(dateRange.endDate ?? '');
 
   const cityList = useMemo(() => cities.filter(Boolean), [cities]);
+
+  const cityBtnId = useId();
+  const cityPanelId = useId();
+  const guestsBtnId = useId();
+  const guestsPanelId = useId();
+  const datesBtnId = useId();
+  const datesPanelId = useId();
 
   function openOnly(which: 'city' | 'guests' | 'dates') {
     setIsCityOpen(which === 'city');
@@ -120,6 +135,7 @@ export function VenuesFilters({
           className={`relative inline-block ${isCityOpen ? 'z-[80]' : 'z-10'}`}
         >
           <button
+            id={cityBtnId}
             type="button"
             onClick={() => {
               const willOpen = !isCityOpen;
@@ -130,6 +146,7 @@ export function VenuesFilters({
             className={selectedCity ? activeButton : inactiveButton}
             aria-haspopup="dialog"
             aria-expanded={isCityOpen}
+            aria-controls={cityPanelId}
           >
             <span>{cityLabel}</span>
             {selectedCity && (
@@ -150,12 +167,17 @@ export function VenuesFilters({
                 }}
                 className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 font-medium-buttons cursor-pointer"
               >
-                <FaTimes className="h-3 w-3" />
+                <FaTimes className="h-3 w-3" aria-hidden="true" />
               </span>
             )}
           </button>
           {isCityOpen && (
-            <div className={popoverPanelClass}>
+            <div
+              id={cityPanelId}
+              role="dialog"
+              aria-labelledby={cityBtnId}
+              className={popoverPanelClass}
+            >
               <div className="max-h-60 overflow-auto">
                 <button
                   type="button"
@@ -200,12 +222,14 @@ export function VenuesFilters({
             </div>
           )}
         </div>
+
         <div
           className={`relative inline-block ${
             isGuestsOpen ? 'z-[80]' : 'z-10'
           }`}
         >
           <button
+            id={guestsBtnId}
             type="button"
             onClick={() => {
               const willOpen = !isGuestsOpen;
@@ -217,6 +241,7 @@ export function VenuesFilters({
             className={minGuests != null ? activeButton : inactiveButton}
             aria-haspopup="dialog"
             aria-expanded={isGuestsOpen}
+            aria-controls={guestsPanelId}
           >
             <span>{guestsLabel}</span>
             {minGuests != null && (
@@ -237,12 +262,17 @@ export function VenuesFilters({
                 }}
                 className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 font-medium-buttons cursor-pointer"
               >
-                <FaTimes className="h-3 w-3" />
+                <FaTimes className="h-3 w-3" aria-hidden="true" />
               </span>
             )}
           </button>
           {isGuestsOpen && (
-            <div className={popoverPanelClass}>
+            <div
+              id={guestsPanelId}
+              role="dialog"
+              aria-labelledby={guestsBtnId}
+              className={popoverPanelClass}
+            >
               <label
                 htmlFor="guests-input"
                 className="mb-1 block text-sm text-gray-700 font-text"
@@ -278,10 +308,12 @@ export function VenuesFilters({
             </div>
           )}
         </div>
+
         <div
           className={`relative inline-block ${isDatesOpen ? 'z-[80]' : 'z-10'}`}
         >
           <button
+            id={datesBtnId}
             type="button"
             onClick={() => {
               const willOpen = !isDatesOpen;
@@ -299,6 +331,7 @@ export function VenuesFilters({
             }
             aria-haspopup="dialog"
             aria-expanded={isDatesOpen}
+            aria-controls={datesPanelId}
           >
             <span>{datesLabel}</span>
             {(dateRange.startDate || dateRange.endDate) && (
@@ -319,12 +352,17 @@ export function VenuesFilters({
                 }}
                 className="ml-1 grid h-5 w-5 place-items-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 cursor-pointer font-medium-buttons"
               >
-                <FaTimes className="h-3 w-3" />
+                <FaTimes className="h-3 w-3" aria-hidden="true" />
               </span>
             )}
           </button>
           {isDatesOpen && (
-            <div className={popoverPanelClass}>
+            <div
+              id={datesPanelId}
+              role="dialog"
+              aria-labelledby={datesBtnId}
+              className={popoverPanelClass}
+            >
               <div className="mt-1">
                 <DateRangeFields
                   value={{

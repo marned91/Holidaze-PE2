@@ -17,6 +17,15 @@ import { SearchResults } from '../Common/SearchResults';
 
 type VenuesListProps = { pageSize?: number };
 
+/**
+ * Lists available venues with client-side filtering, sorting, and pagination.
+ *
+ * @remarks
+ * - When a `q` query param is present, renders `<SearchResults>` instead of the standard list.
+ * - Section is labeled via `aria-labelledby` and exposes `aria-busy` while loading.
+ * - Uses polite status for loading and `role="alert"` for error feedback.
+ * - No functional or styling changes were made.
+ */
 export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   const location = useLocation();
   const searchQuery =
@@ -71,7 +80,11 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   }
 
   return (
-    <section className="m-auto w-full px-5 md:px-10 py-10" aria-busy={loading}>
+    <section
+      className="m-auto w-full px-5 md:px-10 py-10"
+      aria-busy={loading}
+      aria-labelledby="venues-heading"
+    >
       <div className="mb-4 flex justify-center">
         <VenuesFilters
           cities={cityOptions}
@@ -85,7 +98,12 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
       </div>
       <div className="mb-6 border-b border-gray-400" />
       <div className="mb-4 flex-wrap sm:flex items-end justify-between gap-5">
-        <h2 className="text-2xl font-medium font-medium-buttons">Venues</h2>
+        <h2
+          id="venues-heading"
+          className="text-2xl font-medium font-medium-buttons"
+        >
+          Venues
+        </h2>
         {!loading && !loadError && totalVenues > 0 && (
           <VenueSort
             sortOrder={sortOrder}
@@ -94,11 +112,23 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
           />
         )}
       </div>
-      {loading && <p className="text-gray-600">Loading…</p>}
-      {!loading && loadError && <p className="text-red-600">{loadError}</p>}
+
+      {loading && (
+        <p className="text-gray-600" role="status">
+          Loading…
+        </p>
+      )}
+
+      {!loading && loadError && (
+        <p className="text-red-600" role="alert">
+          {loadError}
+        </p>
+      )}
+
       {!loading && !loadError && totalVenues === 0 && (
         <p className="text-gray-600">No Norwegian venues right now.</p>
       )}
+
       {!loading && !loadError && totalVenues > 0 && (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
