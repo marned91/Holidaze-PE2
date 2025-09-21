@@ -8,6 +8,20 @@ type SearchBoxProps = {
   placeholder?: string;
 };
 
+/**
+ * SearchBox component that syncs its input value with the `q` query parameter in the URL.
+ *
+ * Behavior:
+ * - Reads the initial search term from the URL on mount.
+ * - Keeps the input value and URL in sync on change.
+ * - Prevents form submission reload.
+ *
+ * @param inputId - Optional custom id for the input (default: "site-search").
+ * @param wrapperClassName - Optional CSS classes applied to the form element.
+ * @param inputClassName - Optional CSS classes applied to the input element.
+ * @param placeholder - Input placeholder text (default: "Search venues...").
+ * @returns A controlled search input field bound to the URL query.
+ */
 export function SearchBox({
   inputId = 'site-search',
   wrapperClassName,
@@ -19,7 +33,7 @@ export function SearchBox({
 
   const initialValue = useMemo(
     () => new URLSearchParams(location.search).get('q') ?? '',
-    []
+    [location.search]
   );
 
   const [searchTerm, setSearchTerm] = useState<string>(initialValue);
@@ -53,6 +67,7 @@ export function SearchBox({
   return (
     <form
       role="search"
+      action="#"
       onSubmit={(event) => event.preventDefault()}
       className={wrapperClassName}
     >

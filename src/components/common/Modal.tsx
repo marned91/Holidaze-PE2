@@ -1,13 +1,31 @@
 import { type ReactNode, useEffect, useId, useRef } from 'react';
 
-type ModalProps = {
+type LabelProps =
+  | { title: string; ariaLabel?: string }
+  | { title?: string; ariaLabel: string };
+type BaseProps = {
   open: boolean;
-  title?: string;
-  ariaLabel?: string;
   onClose: () => void;
   children: ReactNode;
 };
+type ModalProps = BaseProps & LabelProps;
 
+/**
+ * Accessible modal dialog with focus trapping and Escape/overlay close.
+ *
+ * Behavior:
+ * - Locks page scroll while open.
+ * - Traps focus inside the dialog and restores previous focus on close.
+ * - Closes on Escape and when clicking the backdrop.
+ *
+ * @param open - Whether the modal is visible.
+ * @param title - Visible heading text; used for `aria-labelledby` when provided.
+ * @param ariaLabel - Accessible label when no `title` is provided.
+ * @param onClose - Invoked when the user requests to close (Esc/backdrop/close button).
+ * @param children - Modal content.
+ * @returns The modal or `null` when closed.
+ * @throws Error when something unexpected occurs (not expected in normal operation).
+ */
 export function Modal({
   open,
   title,
@@ -140,6 +158,16 @@ export function Modal({
   );
 }
 
+/**
+ * Get tabbable/focusable elements within a container, filtering out hidden ones.
+ *
+ * Behavior:
+ * - Uses a conservative CSS selector for common focusable controls.
+ * - Filters out elements not currently rendered (no offset parent), except the active element.
+ *
+ * @param container - The root element to search in.
+ * @returns Ordered list of focusable HTMLElements; empty array when none or container is null.
+ */
 function getFocusableElements(container: HTMLElement | null): HTMLElement[] {
   if (!container) return [];
   const selector =
@@ -148,6 +176,7 @@ function getFocusableElements(container: HTMLElement | null): HTMLElement[] {
     container.querySelectorAll<HTMLElement>(selector)
   );
   return elements.filter(
-    (el) => el.offsetParent !== null || el === document.activeElement
+    (element) =>
+      element.offsetParent !== null || element === document.activeElement
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { searchVenuesByName } from '../api/venuesApi';
 import type { TVenue } from '../types/venueTypes';
+import { isInNorway } from '../components/VenuesHome/sortAndFilter';
 
 export function useVenueSearch(searchQuery: string) {
   const [isSearching, setIsSearching] = useState(false);
@@ -25,7 +26,7 @@ export function useVenueSearch(searchQuery: string) {
 
       try {
         const items = await searchVenuesByName(trimmed);
-        if (isActive) setSearchResults(items);
+        if (isActive) setSearchResults(items.filter(isInNorway));
       } catch (error: unknown) {
         if (isActive) {
           const message =

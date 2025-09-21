@@ -6,6 +6,12 @@ type SearchResultsProps = {
   query: string;
 };
 
+/**
+ * Displays venue search results with loading, error, and empty states.
+ *
+ * @param query - The current search query string from URL or input.
+ * @returns A section with results, feedback, or empty/error messages.
+ */
 export function SearchResults({ query }: SearchResultsProps) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -20,9 +26,8 @@ export function SearchResults({ query }: SearchResultsProps) {
   return (
     <section className="m-auto w-full px-10 py-10">
       <div className="mb-4 flex items-center gap-3">
-        <h2 className="text-2xl font-medium font-medium-buttons">
-          Results <span className="text-gray-500">for “{query}”</span>
-        </h2>
+        <h2 className="text-2xl font-medium font-medium-buttons">Results</h2>
+        <span className="text-gray-500">for “{query}”</span>
         <button
           type="button"
           onClick={clearSearch}
@@ -34,10 +39,10 @@ export function SearchResults({ query }: SearchResultsProps) {
 
       {isSearching && <p className="text-gray-600 font-text">Searching…</p>}
       {!isSearching && searchError && (
-        <p className="text-red-600">{searchError}</p>
+        <p className="text-red-600 font-text">{searchError}</p>
       )}
       {!isSearching && !searchError && searchResults.length === 0 && (
-        <p className="text-gray-600">No venues found.</p>
+        <p className="text-gray-600 font-text">No venues found.</p>
       )}
       {!isSearching && !searchError && searchResults.length > 0 && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
