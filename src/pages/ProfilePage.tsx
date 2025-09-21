@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import type { TProfile } from '../types/profilesType';
+import type { TProfile } from '../types/profileType';
 import { getProfile } from '../api/profilesApi';
 import { UpdateProfilePicture } from '../components/Profile/UpdateProfilePictureModal';
 import { ProfileHeader } from '../components/Profile/ProfileHeader';
