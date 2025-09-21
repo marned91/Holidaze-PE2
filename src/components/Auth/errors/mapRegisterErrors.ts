@@ -48,5 +48,31 @@ export function mapRegisterErrors(
       fieldErrors.avatarUrl = avatarUrlMessage;
   }
 
-  return Object.keys(fieldErrors).length ? fieldErrors : undefined;
+  if (Object.keys(fieldErrors).length) return fieldErrors;
+
+  const status =
+    typeof (errorObject as any)?.status === 'number'
+      ? ((errorObject as any).status as number)
+      : undefined;
+
+  const topMessage =
+    typeof (errorObject as any)?.message === 'string'
+      ? ((errorObject as any).message as string)
+      : undefined;
+
+  const messageL = (topMessage || '').toLowerCase();
+  const looksLikeExistingUser =
+    status === 409 ||
+    messageL.includes('already exists') ||
+    messageL.includes('exists') ||
+    messageL.includes('duplicate') ||
+    messageL.includes('registered');
+
+  if (looksLikeExistingUser) {
+    return {
+      email: topMessage || 'An account with this email already exists.',
+    };
+  }
+
+  return undefined;
 }
