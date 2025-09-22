@@ -11,18 +11,20 @@ import { TextInput } from '../components/Common/forms/TextInput';
 import { PasswordInput } from '../components/Common/forms/PasswordInput';
 import { UrlInput } from '../components/Common/forms/UrlInput';
 import { setValueAsTrim } from '../utils/formValueTransforms';
+import { useAlerts } from '../hooks/useAlerts';
 
 /**
  * Sign-up page with account type selection and validated form fields.
  *
  * @remarks
  * - Uses `react-hook-form` with a Yup resolver.
- * - Maps API validation errors to specific fields; falls back to an alert for unknown errors.
+ * - Maps API validation errors to specific fields; uses the AlertsProvider for user feedback.
  * - No functional or styling changes were made.
  */
 export function SignUpPage() {
   const navigate = useNavigate();
   const headingId = useId();
+  const { showSuccessAlert, showErrorAlert } = useAlerts();
 
   const {
     register,
@@ -59,7 +61,7 @@ export function SignUpPage() {
 
     try {
       await registerAccount(payload);
-      alert('Account created — welcome!');
+      showSuccessAlert('Account created — welcome!');
       navigate('/login');
     } catch (unknownError: unknown) {
       const fieldErrors = mapRegisterErrors(unknownError);
@@ -88,7 +90,7 @@ export function SignUpPage() {
           typeof (unknownError as { message?: unknown }).message === 'string'
             ? (unknownError as { message: string }).message
             : 'Registration failed.';
-        alert(message);
+        showErrorAlert(message);
       }
     }
   }

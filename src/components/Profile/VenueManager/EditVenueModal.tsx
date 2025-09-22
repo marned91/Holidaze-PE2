@@ -18,6 +18,7 @@ import { PriceGuestsRow } from '../forms/VenueFormFields/PriceGuestsRow';
 import { CityField } from '../forms/VenueFormFields/CityField';
 import { FacilitiesField } from '../forms/VenueFormFields/FacilitiesField';
 import { FormActions } from '../forms/VenueFormFields/FormActions';
+import { useAlerts } from '../../../hooks/useAlerts';
 
 type EditVenueModalProps = {
   open: boolean;
@@ -35,6 +36,7 @@ export function EditVenueModal({
   onUpdated,
 }: EditVenueModalProps) {
   const navigate = useNavigate();
+  const { showSuccessAlert, showErrorAlert } = useAlerts();
 
   const methods = useForm<TVenueFormValues>({
     resolver: yupResolver(venueSchema),
@@ -59,11 +61,13 @@ export function EditVenueModal({
     try {
       const updated = await updateVenue(venue.id, payload);
       onUpdated?.(updated);
-      alert('Venue updated!');
+      showSuccessAlert('Venue updated!');
       onClose();
       navigate(`/profile/${encodeURIComponent(profileName)}`);
     } catch (unknownError) {
-      alert((unknownError as Error)?.message || 'Could not update venue');
+      const message =
+        (unknownError as Error)?.message || 'Could not update venue';
+      showErrorAlert(message);
     }
   }
 

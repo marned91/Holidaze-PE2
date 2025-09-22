@@ -13,6 +13,7 @@ import { PriceGuestsRow } from '../forms/VenueFormFields/PriceGuestsRow';
 import { CityField } from '../forms/VenueFormFields/CityField';
 import { FacilitiesField } from '../forms/VenueFormFields/FacilitiesField';
 import { FormActions } from '../forms/VenueFormFields/FormActions';
+import { useAlerts } from '../../../hooks/useAlerts';
 
 type AddVenueModalProps = {
   open: boolean;
@@ -57,6 +58,8 @@ export function AddVenueModal({
     reset,
     formState: { isSubmitting },
   } = methods;
+
+  const { showSuccessAlert, showErrorAlert } = useAlerts();
 
   useEffect(() => {
     if (open) {
@@ -104,10 +107,11 @@ export function AddVenueModal({
     try {
       const created = await createVenue(payload);
       onCreated(created);
-      alert('Venue created!');
+      showSuccessAlert('New venue created!');
       onClose();
     } catch (error) {
-      alert((error as Error)?.message || 'Could not create venue');
+      const message = (error as Error)?.message || 'Could not create venue';
+      showErrorAlert(message);
     }
   }
 

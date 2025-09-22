@@ -35,7 +35,6 @@ export function LoginPage() {
     try {
       const account = await login(values.email.trim(), values.password);
       const username = account?.name || '';
-      alert('Login success!');
       navigate(username ? `/profile/${encodeURIComponent(username)}` : '/');
     } catch (unknownError: unknown) {
       const message = (unknownError as Error)?.message?.toLowerCase() ?? '';
@@ -64,7 +63,6 @@ export function LoginPage() {
         {errors.root?.message && (
           <div
             role="alert"
-            aria-live="polite"
             className="mb-6 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm font-text text-red-700"
           >
             {errors.root.message}

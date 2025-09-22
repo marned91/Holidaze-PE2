@@ -6,6 +6,7 @@ import { logout } from '../api/authApi';
 import { useAuthStatus } from '../hooks/useAuthStatus';
 import { getUsername } from '../utils/authStorage';
 import { SearchBox } from '../components/Common/SearchBox';
+import { useAlerts } from '../hooks/useAlerts';
 
 /** Builds a profile URL from the stored username; falls back to `/login` if missing. */
 function getProfileUrl(): string {
@@ -25,10 +26,11 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { isLoggedIn } = useAuthStatus();
+  const { showInformationAlert } = useAlerts();
 
   function handleLogout() {
     logout();
-    alert('You have been logged out.');
+    showInformationAlert('You have been logged out.');
     setIsMobileMenuOpen(false);
     navigate('/');
   }

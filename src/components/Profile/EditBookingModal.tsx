@@ -12,6 +12,7 @@ import {
   isVenueAvailableForRange,
 } from '../../utils/dateRange';
 import { nightsBetween } from '../../utils/date';
+import { useAlerts } from '../../hooks/useAlerts';
 
 function toDateOnly(input?: string) {
   return (input || '').slice(0, 10);
@@ -69,6 +70,7 @@ export function EditBookingModal({
   const [venueLoadError, setVenueLoadError] = useState<string | null>(null);
   const [loadedVenue, setLoadedVenue] = useState<TVenue | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { showSuccessAlert, showErrorAlert } = useAlerts();
 
   const { register, handleSubmit, watch, setValue } = useForm<FormValues>({
     mode: 'onChange',
@@ -198,9 +200,11 @@ export function EditBookingModal({
       setIsSubmitting(true);
       const updatedBooking = await updateBooking(booking.id, payload);
       onUpdated?.(updatedBooking);
+      showSuccessAlert('Booking updated!');
       onClose();
     } catch (error) {
-      alert((error as Error)?.message || 'Could not update booking');
+      const message = (error as Error)?.message || 'Could not update booking';
+      showErrorAlert(message);
     } finally {
       setIsSubmitting(false);
     }
