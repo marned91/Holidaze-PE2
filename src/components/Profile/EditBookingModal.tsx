@@ -182,10 +182,13 @@ export function EditBookingModal({
     return toDateOnly(dateFrom) <= todayYmd();
   }, [dateFrom, isSameAsOriginal]);
 
+  const hasEmptyRange = !dateFrom || !dateTo;
+
   const isSaveDisabled =
     isSubmitting ||
     isVenueLoading ||
     !!venueLoadError ||
+    hasEmptyRange ||
     hasDateOrderError ||
     hasOverlapWithUnavailableDates ||
     !!guestsValidationMessage ||
@@ -193,6 +196,7 @@ export function EditBookingModal({
 
   async function onSubmit(formValues: FormValues) {
     if (
+      hasEmptyRange ||
       hasDateOrderError ||
       hasOverlapWithUnavailableDates ||
       guestsValidationMessage ||
@@ -283,8 +287,14 @@ export function EditBookingModal({
           <DateRangeFields
             value={dateRangeValue}
             onChange={(next) => {
-              setValue('dateFrom', next.startDate || '');
-              setValue('dateTo', next.endDate || '');
+              setValue('dateFrom', next.startDate || '', {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+              setValue('dateTo', next.endDate || '', {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
             }}
             variant="calendar"
             labelFrom="Start"
@@ -295,33 +305,34 @@ export function EditBookingModal({
 
           {normalizedRange &&
             availability === true &&
-            !startIsBeforeTomorrow && (
+            !startIsBeforeTomorrow &&
+            !hasEmptyRange && (
               <p className="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
                 Available for the selected dates!
               </p>
             )}
 
-          {normalizedRange && availability === false && (
-            <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-              Not available for the selected dates.
-            </p>
-          )}
+          {normalizedRange &&
+            availability === false &&
+            !hasEmptyRange &&
+            !hasDateOrderError &&
+            !startIsBeforeTomorrow && (
+              <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+                Not available for the selected dates.
+              </p>
+            )}
         </div>
 
         {!!dateFrom &&
           !!dateTo &&
-          (hasDateOrderError ||
-            hasOverlapWithUnavailableDates ||
-            startIsBeforeTomorrow) && (
+          (hasDateOrderError || startIsBeforeTomorrow) && (
             <div
               className="rounded-md border border-red-200 font-text bg-red-50 px-3 py-2 text-sm text-red-700"
               role="alert"
             >
               {startIsBeforeTomorrow
                 ? 'Start date must be in the future (tomorrow or later).'
-                : hasDateOrderError
-                ? 'The end date must be after the start date.'
-                : 'Those dates are not available. Please choose another range.'}
+                : 'The end date must be after the start date.'}
             </div>
           )}
 
