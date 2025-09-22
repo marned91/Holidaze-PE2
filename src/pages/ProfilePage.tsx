@@ -59,7 +59,6 @@ function ProfilePageInner() {
     error: myBookingsError,
     reload: reloadMyBookings,
     removeBookingLocally,
-    replaceBookingLocally,
   } = useMyBookings(profile?.name);
 
   const [avatarOpen, setAvatarOpen] = useState(false);

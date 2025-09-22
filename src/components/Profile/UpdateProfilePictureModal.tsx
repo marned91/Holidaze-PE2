@@ -6,6 +6,7 @@ import { setProfilePicture } from '../../api/profilesApi';
 import type { TUpdateProfilePictureFormValues } from '../../types/formTypes';
 import { profilePictureSchema } from './forms/profilePictureSchema';
 import { setValueAsTrim } from '../../utils/formValueTransforms';
+import { useAlerts } from '../../hooks/useAlerts';
 
 type UpdateProfilePictureProps = {
   username: string;
@@ -18,17 +19,8 @@ type UpdateProfilePictureProps = {
 
 /**
  * Modal for updating a profile picture (URL + optional alt text).
- *
- * Validation: handled by the Yup schema (`profilePictureSchema`) together with react-hook-form.
- *
- * @param username - The profile's username (used for the API call).
- * @param open - Whether the modal is open.
- * @param onClose - Callback to close the modal.
- * @param onUpdated - Invoked after a successful save with the final URL/alt.
- * @param initialUrl - Prefilled image URL.
- * @param initialAlt - Prefilled alt text.
+ * Validation is handled by the Yup schema together with react-hook-form.
  */
-
 export function UpdateProfilePicture({
   username,
   open,
@@ -41,7 +33,8 @@ export function UpdateProfilePicture({
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    watch,
+    formState: { errors, isSubmitting, isValid },
   } = useForm<TUpdateProfilePictureFormValues>({
     resolver: yupResolver(profilePictureSchema),
     mode: 'onChange',
@@ -52,6 +45,8 @@ export function UpdateProfilePicture({
       avatarAlt: initialAlt ?? '',
     },
   });
+
+  const { showSuccessAlert, showErrorAlert } = useAlerts();
 
   useEffect(() => {
     if (open) {
@@ -69,19 +64,17 @@ export function UpdateProfilePicture({
         values.avatarUrl.trim(),
         values.avatarAlt?.trim() || undefined
       );
-
       const nextUrl = data.avatar?.url || values.avatarUrl.trim();
       const nextAlt = data.avatar?.alt || values.avatarAlt?.trim() || undefined;
-
       onUpdated(nextUrl, nextAlt);
-      alert('Profile picture updated');
+      showSuccessAlert('Profile picture updated');
       onClose();
     } catch (error: unknown) {
       const message =
         error instanceof Error
           ? error.message
           : 'Could not update profile picture, please try again';
-      alert(message);
+      showErrorAlert(message);
     }
   }
 
@@ -89,6 +82,18 @@ export function UpdateProfilePicture({
   const urlErrorId = 'update-avatar-url-error';
   const altInputId = 'update-avatar-alt';
   const altErrorId = 'update-avatar-alt-error';
+
+  const watchedUrl = watch('avatarUrl') ?? '';
+  const watchedAlt = watch('avatarAlt') ?? '';
+  const trimmedWatchedUrl = watchedUrl.trim();
+  const trimmedWatchedAlt = watchedAlt.trim();
+  const initialUrlTrimmed = (initialUrl ?? '').trim();
+  const initialAltTrimmed = (initialAlt ?? '').trim();
+  const isUnchanged =
+    trimmedWatchedUrl === initialUrlTrimmed &&
+    trimmedWatchedAlt === initialAltTrimmed;
+
+  const isSaveDisabled = isSubmitting || !isValid || isUnchanged;
 
   return (
     <Modal
@@ -162,7 +167,7 @@ export function UpdateProfilePicture({
           </button>
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSaveDisabled}
             className="rounded-lg bg-main-dark px-5 py-2 text-white disabled:opacity-60 hover:bg-dark-highlight cursor-pointer font-medium-buttons"
           >
             {isSubmitting ? 'Saving…' : 'Save'}

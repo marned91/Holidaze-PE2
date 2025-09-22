@@ -95,21 +95,24 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
           >
             <div className="p-6">
               {pendingRequest.options.title ? (
-                <h2
+                <h3
                   id="confirm-dialog-title"
-                  className="mb-2 text-lg font-semibold"
+                  className="mb-2 text-xl font-semibold font-small-nav-footer"
                 >
                   {pendingRequest.options.title}
-                </h2>
+                </h3>
               ) : (
-                <h2 id="confirm-dialog-title" className="sr-only">
+                <h3
+                  id="confirm-dialog-title"
+                  className="sr-only text-xl font-semibold font-small-nav-footer"
+                >
                   Confirm action
-                </h2>
+                </h3>
               )}
               {pendingRequest.options.message && (
                 <p
                   id="confirm-dialog-message"
-                  className="text-sm text-neutral-700"
+                  className="text-sm text-neutral-700 font-text"
                 >
                   {pendingRequest.options.message}
                 </p>
@@ -121,7 +124,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
                 ref={cancelButtonRef}
                 type="button"
                 onClick={() => resolveAndClose(false)}
-                className="rounded-xl border border-neutral-300 px-4 py-2 text-sm font-medium hover:bg-neutral-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight"
+                className="rounded-lg font-medium-buttons border border-grey-300 px-4 py-2 text-sm font-medium hover:bg-neutral-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight"
               >
                 {pendingRequest.options.cancelLabel ?? 'Cancel'}
               </button>
@@ -129,7 +132,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
                 type="button"
                 onClick={() => resolveAndClose(true)}
                 className={[
-                  'rounded-xl px-4 py-2 text-sm font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight',
+                  'rounded-lg font-medium-buttons px-4 py-2 text-sm font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight',
                   pendingRequest.options.variant === 'danger'
                     ? 'bg-red-600 hover:bg-red-700'
                     : 'bg-neutral-900 hover:bg-neutral-800',
