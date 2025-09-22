@@ -11,7 +11,7 @@ import {
   normalizeDateRange,
   isVenueAvailableForRange,
 } from '../../utils/dateRange';
-import { nightsBetween } from '../../utils/date';
+import { todayYmd } from '../../utils/date';
 import { useAlerts } from '../../hooks/useAlerts';
 
 function toDateOnly(input?: string) {
@@ -150,11 +150,6 @@ export function EditBookingModal({
     return isVenueAvailableForRange(venueForAvailability, normalizedRange);
   }, [normalizedRange, isSameAsOriginal, venueForAvailability]);
 
-  const numberOfNights = useMemo(() => {
-    if (!normalizedRange) return 0;
-    return nightsBetween(normalizedRange.from, normalizedRange.to);
-  }, [normalizedRange]);
-
   const maxGuests = loadedVenue?.maxGuests ?? venue.maxGuests;
 
   const hasDateOrderError =
@@ -181,11 +176,27 @@ export function EditBookingModal({
       ? `Max ${maxGuests} guests for this venue`
       : '';
 
+  const startIsBeforeTomorrow = useMemo(() => {
+    if (!dateFrom) return false;
+    if (isSameAsOriginal) return false;
+    return toDateOnly(dateFrom) <= todayYmd();
+  }, [dateFrom, isSameAsOriginal]);
+
+  const isSaveDisabled =
+    isSubmitting ||
+    isVenueLoading ||
+    !!venueLoadError ||
+    hasDateOrderError ||
+    hasOverlapWithUnavailableDates ||
+    !!guestsValidationMessage ||
+    startIsBeforeTomorrow;
+
   async function onSubmit(formValues: FormValues) {
     if (
       hasDateOrderError ||
       hasOverlapWithUnavailableDates ||
-      guestsValidationMessage
+      guestsValidationMessage ||
+      startIsBeforeTomorrow
     ) {
       return;
     }
@@ -202,8 +213,14 @@ export function EditBookingModal({
       onUpdated?.(updatedBooking);
       showSuccessAlert('Booking updated!');
       onClose();
-    } catch (error) {
-      const message = (error as Error)?.message || 'Could not update booking';
+    } catch (unknownError) {
+      const message =
+        unknownError &&
+        typeof unknownError === 'object' &&
+        'message' in unknownError &&
+        typeof (unknownError as { message?: unknown }).message === 'string'
+          ? (unknownError as { message: string }).message
+          : 'Could not update booking';
       showErrorAlert(message);
     } finally {
       setIsSubmitting(false);
@@ -228,8 +245,11 @@ export function EditBookingModal({
           <p className="text-sm text-gray-600">Loading availability…</p>
         )}
         {venueLoadError && (
-          <p className="text-sm text-red-600 font-text">{venueLoadError}</p>
+          <p className="text-sm text-red-600 font-text" role="alert">
+            {venueLoadError}
+          </p>
         )}
+
         <div>
           <label className="mb-1 block text-sm font-medium font-text">
             Guests
@@ -258,6 +278,7 @@ export function EditBookingModal({
             </p>
           )}
         </div>
+
         <div className="font-text">
           <DateRangeFields
             value={dateRangeValue}
@@ -271,58 +292,55 @@ export function EditBookingModal({
             bookings={unavailableFiltered}
             months={1}
           />
-          {normalizedRange && availability === true && (
-            <p className="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
-              Available for the selected dates!
-            </p>
-          )}
+
+          {normalizedRange &&
+            availability === true &&
+            !startIsBeforeTomorrow && (
+              <p className="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
+                Available for the selected dates!
+              </p>
+            )}
+
           {normalizedRange && availability === false && (
             <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
               Not available for the selected dates.
             </p>
           )}
         </div>
+
         {!!dateFrom &&
           !!dateTo &&
-          (hasDateOrderError || hasOverlapWithUnavailableDates) && (
-            <div className="rounded-md border border-red-200 font-text bg-red-50 px-3 py-2 text-sm text-red-700">
-              {hasDateOrderError
+          (hasDateOrderError ||
+            hasOverlapWithUnavailableDates ||
+            startIsBeforeTomorrow) && (
+            <div
+              className="rounded-md border border-red-200 font-text bg-red-50 px-3 py-2 text-sm text-red-700"
+              role="alert"
+            >
+              {startIsBeforeTomorrow
+                ? 'Start date must be in the future (tomorrow or later).'
+                : hasDateOrderError
                 ? 'The end date must be after the start date.'
                 : 'Those dates are not available. Please choose another range.'}
             </div>
           )}
-        {normalizedRange && availability === true && (
-          <div className="mt-2 rounded-md bg-gray-50 px-3 py-2 font-text text-sm text-gray-800">
-            <div className="flex items-center justify-between">
-              <span>
-                {numberOfNights} {numberOfNights === 1 ? 'night' : 'nights'}
-              </span>
-              <span>
-                {venue.price.toLocaleString('no-NO')}{' '}
-                <span className="text-gray-500">/ night</span>
-              </span>
-            </div>
-          </div>
-        )}
+
         <div className="mt-6 flex items-center justify-end gap-3">
           <button
             type="button"
             onClick={onClose}
-            className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-100 font-medium-buttons"
+            disabled={isSubmitting}
+            aria-disabled={isSubmitting}
+            className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-100 font-medium-buttons disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-white"
           >
             Cancel
           </button>
           <button
             type="submit"
-            disabled={
-              isSubmitting ||
-              isVenueLoading ||
-              !!venueLoadError ||
-              hasDateOrderError ||
-              hasOverlapWithUnavailableDates ||
-              !!guestsValidationMessage
-            }
-            className="cursor-pointer rounded-lg bg-main-dark px-5 py-2 text-white hover:bg-dark-highlight disabled:opacity-70 font-medium-buttons"
+            disabled={isSaveDisabled}
+            aria-disabled={isSaveDisabled}
+            aria-busy={isSubmitting}
+            className="cursor-pointer rounded-lg bg-main-dark px-5 py-2 text-white hover:bg-dark-highlight disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-main-dark font-medium-buttons"
           >
             {isSubmitting ? 'Saving…' : 'Save changes'}
           </button>

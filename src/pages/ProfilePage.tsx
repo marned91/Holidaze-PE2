@@ -15,6 +15,20 @@ import type { TBooking } from '../types/bookingTypes';
 import type { TBookingWithVenue } from '../types/bookingTypes';
 import { AddVenueModal } from '../components/Profile/VenueManager/AddVenueModal';
 import { EditVenueModal } from '../components/Profile/VenueManager/EditVenueModal';
+import { ConfirmProvider } from '../components/Common/ConfirmProvider';
+import { useAlerts } from '../hooks/useAlerts';
+import { useConfirm } from '../hooks/useConfirm';
+
+/**
+ * Route-level wrapper that provides confirm dialog context only for this page.
+ */
+export function ProfilePage() {
+  return (
+    <ConfirmProvider>
+      <ProfilePageInner />
+    </ConfirmProvider>
+  );
+}
 
 /**
  * Profile page that loads and displays the user's profile, venues, and bookings.
@@ -24,7 +38,7 @@ import { EditVenueModal } from '../components/Profile/VenueManager/EditVenueModa
  * - Adds `role="status"` for loading messages and `role="alert"` for error messages.
  * - No functional or styling changes were made.
  */
-export function ProfilePage() {
+function ProfilePageInner() {
   const { username = '' } = useParams<{ username: string }>();
   const [profile, setProfile] = useState<TProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,6 +54,9 @@ export function ProfilePage() {
   const [addVenueOpen, setAddVenueOpen] = useState(false);
   const [editVenueOpen, setEditVenueOpen] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<TVenue | null>(null);
+  const { showSuccessAlert, showErrorAlert, showInformationAlert } =
+    useAlerts();
+  const confirm = useConfirm();
 
   useEffect(() => {
     let isActive = true;
@@ -139,31 +156,57 @@ export function ProfilePage() {
     };
   }, [profile?.name]);
 
+  /**
+   * Asks for confirmation and deletes a venue. Shows success or error alerts and updates local state.
+   */
   async function handleDeleteVenue(venue: TVenue) {
-    const confirmed = window.confirm(
-      `Delete “${venue.name}”? This cannot be undone.`
-    );
-    if (!confirmed) return;
+    const userAccepted = await confirm({
+      title: 'Delete venue?',
+      message: `Delete “${venue.name}”? This action cannot be undone.`,
+      confirmLabel: 'Delete venue',
+      cancelLabel: 'Cancel',
+      variant: 'danger',
+    });
+    if (!userAccepted) {
+      showInformationAlert('Cancelled');
+      return;
+    }
 
     try {
       await deleteVenue(venue.id);
-      setVenues((prev) => prev.filter((v) => v.id !== venue.id));
-      alert('Venue deleted');
+      setVenues((previous) => previous.filter((item) => item.id !== venue.id));
+      showSuccessAlert('Venue deleted');
     } catch (error) {
-      alert((error as Error)?.message || 'Could not delete venue');
+      const message = (error as Error)?.message || 'Could not delete venue';
+      showErrorAlert(message);
     }
   }
 
+  /**
+   * Asks for confirmation and cancels a booking. Shows success or error alerts and updates local state.
+   */
   async function handleCancelMyBooking(booking: TBooking, venue: TVenue) {
-    const confirmed = window.confirm(`Cancel booking at “${venue.name}”?`);
-    if (!confirmed) return;
+    const userAccepted = await confirm({
+      title: 'Cancel booking?',
+      message: `Cancel your booking at “${venue.name}”?`,
+      confirmLabel: 'Cancel booking',
+      cancelLabel: 'Keep booking',
+      variant: 'danger',
+    });
+    if (!userAccepted) {
+      showInformationAlert('Cancelled');
+      return;
+    }
 
     try {
       await cancelBooking(booking.id);
-      setMyBookings((prev) => prev.filter((b) => b.id !== booking.id));
-      alert('Booking cancelled');
+      setMyBookings((previous) =>
+        previous.filter((item) => item.id !== booking.id)
+      );
+      showSuccessAlert('Booking cancelled');
     } catch (error) {
-      alert((error as Error).message || 'Could not cancel booking');
+      const message = (error as Error)?.message || 'Could not cancel booking';
+      showErrorAlert(message);
     }
   }
 
