@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import type { TProfile } from '../types/profileTypes';
-import { getProfile } from '../api/profilesApi';
+import { useProfile } from '../components/Profile/hooks/useProfile';
+import { useVenueManagerVenues } from '../components/Profile/hooks/useVenueManagerVenues';
+import { useMyBookings } from '../components/Profile/hooks/useMyBookings';
 import { UpdateProfilePicture } from '../components/Profile/UpdateProfilePictureModal';
 import { ProfileHeader } from '../components/Profile/ProfileHeader';
 import AvatarPlaceholder from '../assets/avatar-placeholder.png';
 import type { TVenue } from '../types/venueTypes';
-import { getVenuesByOwner, deleteVenue } from '../api/venuesApi';
+import { deleteVenue } from '../api/venuesApi';
 import type { ProfileTab } from '../components/Profile/VenueManager/VenueManagerProfileTabs';
 import { VenueManager } from '../components/Profile/VenueManager/VenueManagerSection';
 import { MyBookingsSection } from '../components/Profile/MyBookingsSection';
-import { getBookingsByProfile, cancelBooking } from '../api/bookingsApi';
+import { cancelBooking } from '../api/bookingsApi';
 import type { TBooking } from '../types/bookingTypes';
-import type { TBookingWithVenue } from '../types/bookingTypes';
 import { AddVenueModal } from '../components/Profile/VenueManager/AddVenueModal';
 import { EditVenueModal } from '../components/Profile/VenueManager/EditVenueModal';
 import { ConfirmProvider } from '../components/Common/ConfirmProvider';
@@ -32,62 +32,58 @@ export function ProfilePage() {
 
 /**
  * Profile page that loads and displays the user's profile, venues, and bookings.
- *
- * @remarks
- * - Shows the Venue Manager UI when `profile.venueManager` is true; otherwise renders "My Bookings".
- * - Adds `role="status"` for loading messages and `role="alert"` for error messages.
- * - No functional or styling changes were made.
+ * Shows the Venue Manager UI when profile.venueManager is true; otherwise renders "My Bookings".
  */
 function ProfilePageInner() {
   const { username = '' } = useParams<{ username: string }>();
-  const [profile, setProfile] = useState<TProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const {
+    profile,
+    loading,
+    error,
+    reload: reloadProfile,
+  } = useProfile(username);
+
+  const {
+    venues,
+    loading: venuesLoading,
+    error: venuesError,
+    reload: reloadVenues,
+    removeVenueLocally,
+    replaceVenueLocally,
+  } = useVenueManagerVenues(profile?.name, profile?.venueManager === true);
+
+  const {
+    bookings: myBookings,
+    loading: myBookingsLoading,
+    error: myBookingsError,
+    reload: reloadMyBookings,
+    removeBookingLocally,
+    replaceBookingLocally,
+  } = useMyBookings(profile?.name);
+
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<ProfileTab>('myBookings');
-  const [venues, setVenues] = useState<TVenue[]>([]);
-  const [venuesLoading, setVenuesLoading] = useState(false);
-  const [venuesError, setVenuesError] = useState<string | null>(null);
-  const [myBookings, setMyBookings] = useState<TBookingWithVenue[]>([]);
-  const [myBookingsLoading, setMyBookingsLoading] = useState(false);
-  const [myBookingsError, setMyBookingsError] = useState<string | null>(null);
   const [addVenueOpen, setAddVenueOpen] = useState(false);
   const [editVenueOpen, setEditVenueOpen] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<TVenue | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<{
+    url: string;
+    alt?: string;
+  } | null>(null);
+
+  const displayProfile = profile
+    ? avatarPreview
+      ? {
+          ...profile,
+          avatar: { url: avatarPreview.url, alt: avatarPreview.alt },
+        }
+      : profile
+    : null;
+
   const { showSuccessAlert, showErrorAlert, showInformationAlert } =
     useAlerts();
   const confirm = useConfirm();
-
-  useEffect(() => {
-    let isActive = true;
-
-    async function loadProfile(name: string) {
-      try {
-        setLoading(true);
-        const data = await getProfile(name);
-        if (!isActive) return;
-        setProfile(data);
-      } catch (error) {
-        const message = (error as Error).message || 'Failed to load profile';
-        setLoadError(message);
-      } finally {
-        if (isActive) setLoading(false);
-      }
-    }
-
-    if (!username) {
-      setLoadError('Missing username in URL. Go to /profile/:username');
-      setLoading(false);
-      return () => {
-        isActive = false;
-      };
-    }
-
-    loadProfile(username);
-    return () => {
-      isActive = false;
-    };
-  }, [username]);
 
   useEffect(() => {
     if (!profile) return;
@@ -95,69 +91,19 @@ function ProfilePageInner() {
   }, [profile]);
 
   function handleAvatarUpdated(url: string, alt?: string) {
-    setProfile((prev) => (prev ? { ...prev, avatar: { url, alt } } : prev));
+    setAvatarOpen(false);
+    setAvatarPreview({ url, alt });
+    reloadProfile();
   }
 
-  function handleVenueCreated(newVenue: TVenue) {
-    setVenues((prev) => [newVenue, ...prev]);
+  function handleVenueCreated(_newVenue: TVenue) {
     setAddVenueOpen(false);
+    reloadVenues();
   }
-
-  useEffect(() => {
-    let isActive = true;
-
-    async function loadVenues() {
-      if (!profile?.venueManager || !profile?.name) return;
-      try {
-        setVenuesLoading(true);
-        setVenuesError(null);
-        const list = await getVenuesByOwner(username, { withBookings: true });
-        if (isActive) setVenues(list);
-      } catch (error) {
-        if (isActive)
-          setVenuesError((error as Error)?.message || 'Failed to load venues');
-      } finally {
-        if (isActive) setVenuesLoading(false);
-      }
-    }
-
-    loadVenues();
-    return () => {
-      isActive = false;
-    };
-  }, [profile, username]);
-
-  useEffect(() => {
-    let isActive = true;
-
-    async function loadMyBookings() {
-      if (!profile?.name) return;
-      try {
-        setMyBookingsLoading(true);
-        setMyBookingsError(null);
-        const bookings = await getBookingsByProfile(profile.name, {
-          withVenue: true,
-        });
-        if (!isActive) return;
-        setMyBookings(bookings);
-      } catch (error) {
-        if (isActive)
-          setMyBookingsError(
-            (error as Error).message || 'Failed to load bookings'
-          );
-      } finally {
-        if (isActive) setMyBookingsLoading(false);
-      }
-    }
-
-    loadMyBookings();
-    return () => {
-      isActive = false;
-    };
-  }, [profile?.name]);
 
   /**
-   * Asks for confirmation and deletes a venue. Shows success or error alerts and updates local state.
+   * Asks for confirmation and deletes a venue. Shows success or error alerts.
+   * Applies an optimistic local update and then refreshes from the server.
    */
   async function handleDeleteVenue(venue: TVenue) {
     const userAccepted = await confirm({
@@ -171,19 +117,21 @@ function ProfilePageInner() {
       showInformationAlert('Cancelled');
       return;
     }
-
     try {
+      removeVenueLocally(venue.id);
       await deleteVenue(venue.id);
-      setVenues((previous) => previous.filter((item) => item.id !== venue.id));
       showSuccessAlert('Venue deleted');
+      reloadVenues();
     } catch (error) {
+      reloadVenues();
       const message = (error as Error)?.message || 'Could not delete venue';
       showErrorAlert(message);
     }
   }
 
   /**
-   * Asks for confirmation and cancels a booking. Shows success or error alerts and updates local state.
+   * Asks for confirmation and cancels a booking. Shows success or error alerts.
+   * Applies an optimistic local update and then refreshes from the server.
    */
   async function handleCancelMyBooking(booking: TBooking, venue: TVenue) {
     const userAccepted = await confirm({
@@ -197,14 +145,13 @@ function ProfilePageInner() {
       showInformationAlert('Cancelled');
       return;
     }
-
     try {
+      removeBookingLocally(booking.id);
       await cancelBooking(booking.id);
-      setMyBookings((previous) =>
-        previous.filter((item) => item.id !== booking.id)
-      );
       showSuccessAlert('Booking cancelled');
+      reloadMyBookings();
     } catch (error) {
+      reloadMyBookings();
       const message = (error as Error)?.message || 'Could not cancel booking';
       showErrorAlert(message);
     }
@@ -215,20 +162,20 @@ function ProfilePageInner() {
       <div className="mx-auto max-w-[85%] px-4 py-10">
         <div className="rounded-xl bg-white p-5 md:p-10 shadow-xl font-text">
           {loading && <p role="status">Loading profile…</p>}
-          {loadError && (
+          {error && (
             <p className="text-red-600" role="alert">
-              {loadError}
+              {error}
             </p>
           )}
-          {profile && (
+          {displayProfile && (
             <>
               <ProfileHeader
-                profile={profile}
+                profile={displayProfile}
                 onEditAvatar={() => setAvatarOpen(true)}
                 placeholderSrc={AvatarPlaceholder}
               />
               <hr className="my-6 border-gray-400" />
-              {profile.venueManager ? (
+              {displayProfile.venueManager ? (
                 <VenueManager
                   activeTab={activeTab}
                   onChangeTab={setActiveTab}
@@ -259,6 +206,7 @@ function ProfilePageInner() {
             </>
           )}
         </div>
+
         <UpdateProfilePicture
           username={username}
           open={avatarOpen}
@@ -267,11 +215,13 @@ function ProfilePageInner() {
           initialUrl={profile?.avatar?.url}
           initialAlt={profile?.avatar?.alt}
         />
+
         <AddVenueModal
           open={addVenueOpen}
           onClose={() => setAddVenueOpen(false)}
           onCreated={handleVenueCreated}
         />
+
         {selectedVenue && (
           <EditVenueModal
             open={editVenueOpen}
@@ -281,10 +231,9 @@ function ProfilePageInner() {
             }}
             venue={selectedVenue}
             profileName={profile?.name || username}
-            onUpdated={(updated) => {
-              setVenues((prev) =>
-                prev.map((v) => (v.id === updated.id ? updated : v))
-              );
+            onUpdated={(updatedVenue) => {
+              replaceVenueLocally(updatedVenue);
+              reloadVenues();
               setEditVenueOpen(false);
               setSelectedVenue(null);
             }}
