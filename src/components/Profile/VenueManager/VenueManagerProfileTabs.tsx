@@ -53,7 +53,7 @@ export function ProfileTabs({ active, onChange, isManager }: ProfileTabsProps) {
           active === 'managerBookings' ? tabActiveClass : tabIdleClass
         }`}
       >
-        Bookings for your venues
+        Bookings for my venues
       </button>
 
       <button
