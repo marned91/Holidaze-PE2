@@ -83,7 +83,6 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   return (
     <section
       className="m-auto w-full px-5 md:px-10 py-10"
-      aria-busy={loading}
       aria-labelledby="venues-heading"
     >
       <div className="mb-4 flex justify-center">
@@ -114,7 +113,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
         )}
       </div>
 
-      {loading && <SkeletonCardGrid count={12} />}
+      {loading && <SkeletonCardGrid count={pageSize} />}
 
       {!loading && loadError && (
         <p className="text-red-600" role="alert">
@@ -124,12 +123,11 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
 
       {!loading && !loadError && totalVenues === 0 && (
         <div
-          role="status"
           aria-live="polite"
           className="rounded-xl border border-dashed border-gray-300 px-8 py-16 text-center font-text"
         >
           <p className="mb-2 text-gray-700 font-text">
-            No Norwegian to show right now.
+            Oh no! No venues to venues to show right now.
           </p>
         </div>
       )}

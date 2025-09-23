@@ -1,3 +1,4 @@
+import { SkeletonVenueView } from '../components/Common/skeleton/SkeletonVenueView';
 import { useMemo, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getVenue } from '../api/venuesApi';
@@ -80,7 +81,8 @@ export function VenuePage() {
     [venue]
   );
 
-  if (loading) return <div className="mx-auto max-w-7xl p-6">Loading…</div>;
+  if (loading) return <SkeletonVenueView />;
+
   if (loadError)
     return (
       <div className="mx-auto max-w-2xl p-6 text-red-600">{loadError}</div>
