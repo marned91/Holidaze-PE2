@@ -11,7 +11,7 @@ export function SkeletonVenueView() {
       className="mx-auto w-full max-w-[85%] px-4 py-8 md:py-10"
     >
       <div
-        className={`overflow-hidden rounded-2xl shadow animate-pulse ${block}`}
+        className={`overflow-hidden rounded-xl shadow animate-pulse ${block}`}
       >
         <div className={`aspect-[16/7] w-full ${block}`} />
       </div>

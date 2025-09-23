@@ -53,9 +53,9 @@ export function BookingConfirmedModal({
         </p>
       </div>
 
-      <div className="mt-6 grid w-full gap-4 rounded-xl border border-gray-200 bg-white p-4">
+      <div className="mt-6 grid w-full gap-4 rounded-lg border border-gray-200 bg-white p-4">
         <div className="grid gap-4 sm:grid-cols-[160px,1fr] sm:items-start">
-          <div className="overflow-hidden rounded-lg bg-gray-100">
+          <div className="overflow-hidden rounded-md bg-gray-100">
             {imageUrl ? (
               <img
                 src={imageUrl}

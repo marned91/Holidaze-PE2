@@ -91,7 +91,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
             aria-modal="true"
             aria-labelledby="confirm-dialog-title"
             aria-describedby="confirm-dialog-message"
-            className="w-full max-w-md rounded-2xl bg-white shadow-xl outline-none"
+            className="w-full max-w-md rounded-xl bg-white shadow-xl outline-none"
           >
             <div className="p-6">
               {pendingRequest.options.title ? (

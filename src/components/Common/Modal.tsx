@@ -152,7 +152,7 @@ export function Modal({
           </button>
         </div>
 
-        <div className="px-6 py-10">{children}</div>
+        <div className="px-6 py-8">{children}</div>
       </div>
     </div>
   );

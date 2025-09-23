@@ -166,7 +166,7 @@ export function BookingSidebar({
         disabled={!canRequest}
         aria-disabled={!canRequest}
         onClick={() => normalized && onRequest?.(normalized, guests)}
-        className={`mt-6 w-full rounded-2xl py-3 text-white text-lg font-medium font-medium-buttons ${
+        className={`mt-6 w-full rounded-lg py-2 text-white text-lg font-medium font-medium-buttons ${
           canRequest
             ? 'bg-main-dark hover:bg-dark-highlight'
             : 'bg-gray-300 cursor-not-allowed'

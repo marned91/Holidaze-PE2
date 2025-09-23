@@ -41,16 +41,19 @@ export function BookingReviewModal({
 }: BookingReviewProps) {
   return (
     <Modal open={open} title="Review your stay" onClose={onClose}>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-[280px_minmax(0,1fr)]">
-        <div className="overflow-hidden rounded-xl bg-gray-100">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="relative overflow-hidden rounded-md bg-gray-100 h-[300px] md:h-[340px]">
           {imageUrl ? (
             <img
               src={imageUrl}
               alt={venueTitle}
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+              sizes="(min-width: 768px) 280px, 100vw"
             />
           ) : (
-            <div className="aspect-[4/3] w-full" />
+            <div className="absolute inset-0" />
           )}
         </div>
         <div>
@@ -71,7 +74,7 @@ export function BookingReviewModal({
             type="button"
             onClick={onConfirm}
             disabled={!!submitting}
-            className="mt-6 w-full rounded-2xl bg-main-dark px-4 py-3 text-lg font-medium font-medium-buttons text-white hover:bg-dark-highlight disabled:opacity-60"
+            className="mt-6 w-full rounded-lg bg-main-dark px-4 py-2 text-lg font-medium font-medium-buttons text-white hover:bg-dark-highlight disabled:opacity-60"
           >
             {submitting ? 'Confirming…' : 'Confirm booking'}
           </button>
