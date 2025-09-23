@@ -14,6 +14,7 @@ import {
   type SortOrder,
 } from './sortAndFilter';
 import { SearchResults } from '../Common/SearchResults';
+import { SkeletonCardGrid } from '../Common/skeleton/SkeletonCardGrid';
 
 type VenuesListProps = { pageSize?: number };
 
@@ -113,11 +114,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
         )}
       </div>
 
-      {loading && (
-        <p className="text-gray-600" role="status">
-          Loading…
-        </p>
-      )}
+      {loading && <SkeletonCardGrid count={12} />}
 
       {!loading && loadError && (
         <p className="text-red-600" role="alert">
@@ -126,7 +123,15 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
       )}
 
       {!loading && !loadError && totalVenues === 0 && (
-        <p className="text-gray-600">No Norwegian venues right now.</p>
+        <div
+          role="status"
+          aria-live="polite"
+          className="rounded-xl border border-dashed border-gray-300 px-8 py-16 text-center font-text"
+        >
+          <p className="mb-2 text-gray-700 font-text">
+            No Norwegian to show right now.
+          </p>
+        </div>
       )}
 
       {!loading && !loadError && totalVenues > 0 && (
