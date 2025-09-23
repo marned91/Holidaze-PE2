@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import { AlertsContext } from '../components/Common/alertsContext';
-import type { AlertsContextValue } from '../components/Common/AlertsProvider';
+import { AlertsContext } from '../components/Common/alerts/alertsContext';
+import type { AlertsContextValue } from '../components/Common/alerts/AlertsProvider';
 
 /** Returns the alerts context API. Must be used within <AlertsProvider>. */
 export function useAlerts(): AlertsContextValue {

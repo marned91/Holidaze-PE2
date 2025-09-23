@@ -1,3 +1,5 @@
+import { SkeletonProfileHeader } from '../components/Profile/SkeletonProfileHeader';
+import { SkeletonCardGrid } from '../components/Common/skeleton/SkeletonCardGrid';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useProfile } from '../components/Profile/hooks/useProfile';
@@ -15,7 +17,7 @@ import { cancelBooking } from '../api/bookingsApi';
 import type { TBooking } from '../types/bookingTypes';
 import { AddVenueModal } from '../components/Profile/VenueManager/AddVenueModal';
 import { EditVenueModal } from '../components/Profile/VenueManager/EditVenueModal';
-import { ConfirmProvider } from '../components/Common/ConfirmProvider';
+import { ConfirmProvider } from '../components/Common/alerts/ConfirmProvider';
 import { useAlerts } from '../hooks/useAlerts';
 import { useConfirm } from '../hooks/useConfirm';
 
@@ -160,13 +162,13 @@ function ProfilePageInner() {
     <div className="bg-light min-h-[calc(100vh-120px)]">
       <div className="mx-auto max-w-[85%] px-4 py-10">
         <div className="rounded-xl bg-white p-5 md:p-10 shadow-xl font-text">
-          {loading && <p role="status">Loading profile…</p>}
-          {error && (
+          {loading && <SkeletonProfileHeader />}
+          {!loading && error && (
             <p className="text-red-600" role="alert">
               {error}
             </p>
           )}
-          {displayProfile && (
+          {!loading && displayProfile && (
             <>
               <ProfileHeader
                 profile={displayProfile}
@@ -175,23 +177,27 @@ function ProfilePageInner() {
               />
               <hr className="my-6 border-gray-400" />
               {displayProfile.venueManager ? (
-                <VenueManager
-                  activeTab={activeTab}
-                  onChangeTab={setActiveTab}
-                  venues={venues}
-                  isLoadingVenues={venuesLoading}
-                  venuesError={venuesError}
-                  onCreateVenue={() => setAddVenueOpen(true)}
-                  onEditVenue={(venue) => {
-                    setSelectedVenue(venue);
-                    setEditVenueOpen(true);
-                  }}
-                  onDeleteVenue={handleDeleteVenue}
-                  myBookings={myBookings}
-                  isLoadingMyBookings={myBookingsLoading}
-                  myBookingsError={myBookingsError}
-                  onCancelMyBooking={handleCancelMyBooking}
-                />
+                venuesLoading ? (
+                  <SkeletonCardGrid count={6} />
+                ) : (
+                  <VenueManager
+                    activeTab={activeTab}
+                    onChangeTab={setActiveTab}
+                    venues={venues}
+                    isLoadingVenues={venuesLoading}
+                    venuesError={venuesError}
+                    onCreateVenue={() => setAddVenueOpen(true)}
+                    onEditVenue={(venue) => {
+                      setSelectedVenue(venue);
+                      setEditVenueOpen(true);
+                    }}
+                    onDeleteVenue={handleDeleteVenue}
+                    myBookings={myBookings}
+                    isLoadingMyBookings={myBookingsLoading}
+                    myBookingsError={myBookingsError}
+                    onCancelMyBooking={handleCancelMyBooking}
+                  />
+                )
               ) : (
                 <section className="mt-6" id="tab-myBookings">
                   <MyBookingsSection

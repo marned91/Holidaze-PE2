@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import {
   ConfirmContext,
   type ConfirmFunction,
-} from '../components/Common/confirmContext';
+} from '../components/Common/alerts/confirmContext';
 
 /**
  * Returns a function that opens a confirm dialog and resolves to true when the

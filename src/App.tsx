@@ -6,7 +6,7 @@ import { LoginPage } from './pages/LoginPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { SignUpPage } from './pages/SignUpPage';
 import { VenuePage } from './pages/VenuePage';
-import { AlertsProvider } from './components/Common/AlertsProvider';
+import { AlertsProvider } from './components/Common/alerts/AlertsProvider';
 
 function App() {
   return (
