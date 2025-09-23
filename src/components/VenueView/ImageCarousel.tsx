@@ -66,7 +66,7 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
 
   return (
     <div
-      className="group relative overflow-hidden rounded-xl shadow-xl"
+      className="group relative overflow-hidden rounded-lg shadow-xl"
       tabIndex={0}
       onKeyDown={handleKeyDown}
       aria-roledescription="carousel"
