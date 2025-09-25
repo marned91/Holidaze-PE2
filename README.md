@@ -89,7 +89,8 @@ Start the development server with Vite:
 ```npm run preview```
 
 # Deployment
-The project is hosted on Netlify for live demo purposes. You can view the live version [here](https://holidaze-pe2-mn.netlify.app/).
+The project is hosted on Netlify for live demo purposes. 
+You can view the live version [here](https://holidaze-pe2-mn.netlify.app/).
 
 
 # Contributing
