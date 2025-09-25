@@ -34,9 +34,7 @@ export function Pagination({
 
   return (
     <div
-      className={`mt-6 flex items-center justify-center gap-3 ${
-        className ?? ''
-      }`}
+      className={`mt-6 flex items-center justify-center gap-3 ${className ?? ''}`}
       role="navigation"
       aria-label="Pagination"
     >

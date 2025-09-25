@@ -26,8 +26,8 @@ export function getUsername(): string | null {
 }
 
 export function clearAuthSession() {
-  [TOKEN_KEY, USERNAME_KEY, OLD_AUTH_STORAGE_KEY, OLD_USER_STORAGE_KEY].forEach(
-    (key) => localStorage.removeItem(key)
+  [TOKEN_KEY, USERNAME_KEY, OLD_AUTH_STORAGE_KEY, OLD_USER_STORAGE_KEY].forEach((key) =>
+    localStorage.removeItem(key)
   );
 }
 

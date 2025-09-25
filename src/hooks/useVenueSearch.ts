@@ -43,8 +43,7 @@ export function useVenueSearch(searchQuery: string): {
         if (isActive) setSearchResults(items.filter(isInNorway));
       } catch (error: unknown) {
         if (isActive) {
-          const message =
-            error instanceof Error ? error.message : 'Search failed';
+          const message = error instanceof Error ? error.message : 'Search failed';
           setSearchError(message);
         }
       } finally {

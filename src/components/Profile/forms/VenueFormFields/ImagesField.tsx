@@ -37,11 +37,7 @@ export function ImagesField() {
             inputProps={register(`images.${index}.url` as const)}
             value={imagesWatch?.[index]?.url || ''}
             errorMessage={
-              (
-                errors.images?.[index] as
-                  | { url?: { message?: string } }
-                  | undefined
-              )?.url?.message
+              (errors.images?.[index] as { url?: { message?: string } } | undefined)?.url?.message
             }
             canRemove={fields.length > 2}
             onRemove={() => remove(index)}

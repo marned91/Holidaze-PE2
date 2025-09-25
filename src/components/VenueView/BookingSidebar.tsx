@@ -2,10 +2,7 @@ import { useMemo, useState, useId } from 'react';
 import type { TVenue, TVenueBooking } from '../../types/venueTypes';
 import type { TDateRange } from '../../types/dateTypes';
 import { DateRangeFields } from '../Common/DateRangeFields';
-import {
-  normalizeDateRange,
-  isVenueAvailableForRange,
-} from '../../utils/dateRange';
+import { normalizeDateRange, isVenueAvailableForRange } from '../../utils/dateRange';
 import { nightsBetween } from '../../utils/date';
 import { FaUser } from 'react-icons/fa';
 import { formatCurrencyNOK } from '../../utils/currency';
@@ -50,8 +47,7 @@ export function BookingSidebar({
   const [localGuests, setLocalGuests] = useState<number>(1);
 
   const guests = guestCount ?? localGuests;
-  const setGuests = (n: number) =>
-    onGuestCountChange ? onGuestCountChange(n) : setLocalGuests(n);
+  const setGuests = (n: number) => (onGuestCountChange ? onGuestCountChange(n) : setLocalGuests(n));
 
   const normalized = useMemo(() => normalizeDateRange(value), [value]);
 
@@ -69,9 +65,7 @@ export function BookingSidebar({
   const total = nights * nightly;
 
   const priceText = useMemo(() => {
-    return typeof venue.price === 'number'
-      ? formatCurrencyNOK(venue.price)
-      : '—';
+    return typeof venue.price === 'number' ? formatCurrencyNOK(venue.price) : '—';
   }, [venue.price]);
 
   const totalText = useMemo(() => formatCurrencyNOK(total), [total]);
@@ -82,14 +76,8 @@ export function BookingSidebar({
     guests >= 1 &&
     (typeof venue.maxGuests === 'number' ? guests <= venue.maxGuests : true);
 
-  const maxGuests = Math.max(
-    1,
-    typeof venue.maxGuests === 'number' ? venue.maxGuests : 10
-  );
-  const guestOptions = Array.from(
-    { length: maxGuests },
-    (_, indexNumber) => indexNumber + 1
-  );
+  const maxGuests = Math.max(1, typeof venue.maxGuests === 'number' ? venue.maxGuests : 10);
+  const guestOptions = Array.from({ length: maxGuests }, (_, indexNumber) => indexNumber + 1);
 
   const guestsSelectId = useId();
 
@@ -116,10 +104,7 @@ export function BookingSidebar({
         />
       </div>
       <div className="mt-4">
-        <label
-          htmlFor={guestsSelectId}
-          className="mb-1 block text-sm text-gray-700 font-text"
-        >
+        <label htmlFor={guestsSelectId} className="mb-1 block text-sm text-gray-700 font-text">
           Guests
         </label>
         <select

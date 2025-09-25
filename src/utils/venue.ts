@@ -26,8 +26,7 @@ export function getVenueImage(
     (mediaItem) => (mediaItem?.url ?? '').trim().length > 0
   );
 
-  const url =
-    firstValidMedia?.url?.trim() || options?.fallback || PlaceholderImage;
+  const url = firstValidMedia?.url?.trim() || options?.fallback || PlaceholderImage;
   const alt = (firstValidMedia?.alt || venue.name || 'Venue image').trim();
 
   return { url, alt };
@@ -37,11 +36,7 @@ export function getVenueImage(
  * Create a label for maximum guests (e.g., "4 guests" or "1 guest").
  * Returns "Guests" when `maxGuests` is not a finite number.
  */
-export function getGuestsText(
-  maxGuests?: number,
-  singular = 'guest',
-  plural = 'guests'
-): string {
+export function getGuestsText(maxGuests?: number, singular = 'guest', plural = 'guests'): string {
   if (typeof maxGuests !== 'number' || !Number.isFinite(maxGuests)) {
     return 'Guests';
   }

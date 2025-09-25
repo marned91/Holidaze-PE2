@@ -23,9 +23,7 @@ export function useMyBookings(profileName?: string) {
   }, []);
 
   const replaceBookingLocally = useCallback((updated: TBookingWithVenue) => {
-    setBookings((previous) =>
-      previous.map((item) => (item.id === updated.id ? updated : item))
-    );
+    setBookings((previous) => previous.map((item) => (item.id === updated.id ? updated : item)));
   }, []);
 
   useEffect(() => {

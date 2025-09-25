@@ -7,12 +7,7 @@ import { VenuesFilters } from './VenuesFilters';
 import type { TDateRange } from '../../types/dateTypes';
 import { useVenues } from './hooks/useVenues';
 import { Pagination } from './Pagination';
-import {
-  getCityOptions,
-  filterVenues,
-  sortVenues,
-  type SortOrder,
-} from './sortAndFilter';
+import { getCityOptions, filterVenues, sortVenues, type SortOrder } from './sortAndFilter';
 import { SearchResults } from '../Common/SearchResults';
 import { SkeletonCardGrid } from '../Common/skeleton/SkeletonCardGrid';
 
@@ -35,8 +30,7 @@ type VenuesListProps = { pageSize?: number };
  */
 export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   const location = useLocation();
-  const searchQuery =
-    new URLSearchParams(location.search).get('q')?.trim() ?? '';
+  const searchQuery = new URLSearchParams(location.search).get('q')?.trim() ?? '';
 
   const { venues: allVenues, loading, error: loadError } = useVenues(100);
 
@@ -87,10 +81,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   }
 
   return (
-    <section
-      className="m-auto w-full px-5 md:px-10 py-10"
-      aria-labelledby="venues-heading"
-    >
+    <section className="m-auto w-full px-5 md:px-10 py-10" aria-labelledby="venues-heading">
       <div className="mb-4 flex justify-center">
         <VenuesFilters
           cities={cityOptions}
@@ -104,18 +95,11 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
       </div>
       <div className="mb-6 border-b border-gray-400" />
       <div className="mb-4 flex-wrap sm:flex items-end justify-between gap-5">
-        <h2
-          id="venues-heading"
-          className="text-2xl font-medium font-medium-buttons"
-        >
+        <h2 id="venues-heading" className="text-2xl font-medium font-medium-buttons">
           Venues
         </h2>
         {!loading && !loadError && totalVenues > 0 && (
-          <VenueSort
-            sortOrder={sortOrder}
-            onChange={setSortOrder}
-            disabled={loading}
-          />
+          <VenueSort sortOrder={sortOrder} onChange={setSortOrder} disabled={loading} />
         )}
       </div>
 
@@ -132,9 +116,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
           aria-live="polite"
           className="rounded-xl border border-dashed border-gray-300 px-8 py-16 text-center font-text"
         >
-          <p className="mb-2 text-gray-700 font-text">
-            Oh no! No venues to show right now.
-          </p>
+          <p className="mb-2 text-gray-700 font-text">Oh no! No venues available right now.</p>
         </div>
       )}
 

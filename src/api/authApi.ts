@@ -58,10 +58,7 @@ export async function registerAccount(userData: TRegisterData) {
  */
 export function logout() {
   clearAuthSession();
-  if (
-    typeof window !== 'undefined' &&
-    typeof window.dispatchEvent === 'function'
-  ) {
+  if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
     window.dispatchEvent(new Event(AUTH_CHANGED_EVENT));
   }
 }

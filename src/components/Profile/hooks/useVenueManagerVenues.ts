@@ -23,9 +23,7 @@ export function useVenueManagerVenues(profileName?: string, enabled?: boolean) {
   }, []);
 
   const replaceVenueLocally = useCallback((updated: TVenue) => {
-    setVenues((previous) =>
-      previous.map((item) => (item.id === updated.id ? updated : item))
-    );
+    setVenues((previous) => previous.map((item) => (item.id === updated.id ? updated : item)));
   }, []);
 
   useEffect(() => {

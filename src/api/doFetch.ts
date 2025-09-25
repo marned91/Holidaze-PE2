@@ -20,24 +20,18 @@ import type { TDoFetchOptions } from '../types/apiTypes';
  * @returns Promise resolving to `T | null`.
  * @throws Error with optional `status` and `details` when the response is not OK or parsing fails.
  */
-export async function doFetch<T>(
-  url: string,
-  options: TDoFetchOptions = {}
-): Promise<T | null> {
+export async function doFetch<T>(url: string, options: TDoFetchOptions = {}): Promise<T | null> {
   try {
     const tokenFromAuth = getAccessToken();
     const tokenFromLegacyKey = localStorage.getItem('token');
     const accessToken = tokenFromAuth || tokenFromLegacyKey || '';
 
-    const shouldAttachAuthHeader =
-      options.auth !== false && accessToken.length > 0;
+    const shouldAttachAuthHeader = options.auth !== false && accessToken.length > 0;
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       'X-Noroff-API-Key': API_KEY,
-      ...(shouldAttachAuthHeader
-        ? { Authorization: `Bearer ${accessToken}` }
-        : {}),
+      ...(shouldAttachAuthHeader ? { Authorization: `Bearer ${accessToken}` } : {}),
       ...(options.headers as Record<string, string> | undefined),
     };
 

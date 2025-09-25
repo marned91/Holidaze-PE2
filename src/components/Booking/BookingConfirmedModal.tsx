@@ -39,15 +39,10 @@ export function BookingConfirmedModal({
   return (
     <Modal open={open} onClose={onClose} ariaLabel="Booking confirmed">
       <div className="flex flex-col items-center text-center">
-        <div
-          className="mb-3 rounded-full bg-green-100 p-3 text-green-600"
-          aria-hidden
-        >
+        <div className="mb-3 rounded-full bg-green-100 p-3 text-green-600" aria-hidden>
           <FaCheckCircle className="h-8 w-8" />
         </div>
-        <h3 className="text-xl font-semibold font-small-nav-footer">
-          You’re booked!
-        </h3>
+        <h3 className="text-xl font-semibold font-small-nav-footer">You’re booked!</h3>
         <p className="mt-1 text-sm text-gray-600 font-text">
           You can view your booking in your profile.
         </p>
@@ -78,9 +73,7 @@ export function BookingConfirmedModal({
             <dl className="mt-4 space-y-2">
               <div className="flex items-start justify-between gap-4">
                 <dt className="text-sm text-gray-500">Dates</dt>
-                <dd className="text-sm font-medium font-text">
-                  {dateRangeText}
-                </dd>
+                <dd className="text-sm font-medium font-text">{dateRangeText}</dd>
               </div>
               <div className="flex items-start justify-between gap-4">
                 <dt className="text-sm text-gray-500">Guests</dt>
@@ -89,9 +82,7 @@ export function BookingConfirmedModal({
               <div className="mt-2 border-t pt-3">
                 <div className="flex items-start justify-between gap-4">
                   <dt className="text-sm text-gray-500">Total</dt>
-                  <dd className="text-base font-semibold font-text">
-                    {totalText}
-                  </dd>
+                  <dd className="text-base font-semibold font-text">{totalText}</dd>
                 </div>
               </div>
             </dl>

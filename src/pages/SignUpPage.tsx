@@ -100,16 +100,11 @@ export function SignUpPage() {
         className="w-full max-w-lg bg-white rounded-lg shadow-xl p-5 md:p-10 my-10"
         aria-labelledby={headingId}
       >
-        <h1
-          id={headingId}
-          className="text-3xl font-semibold text-dark mb-6 font-large"
-        >
+        <h1 id={headingId} className="text-3xl font-semibold text-dark mb-6 font-large">
           Create account
         </h1>
         <div className="mb-8">
-          <p className="mb-2 text-sm text-gray-700 font-text">
-            Select account type:
-          </p>
+          <p className="mb-2 text-sm text-gray-700 font-text">Select account type:</p>
           <input
             type="checkbox"
             className="sr-only"
@@ -136,9 +131,7 @@ export function SignUpPage() {
                 className={`relative z-10 px-5 py-3 text-center font-medium-buttons transition
                     focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight
                     ${
-                      !isVenueManager
-                        ? 'text-dark font-semibold'
-                        : 'text-gray-700 hover:bg-gray-50'
+                      !isVenueManager ? 'text-dark font-semibold' : 'text-gray-700 hover:bg-gray-50'
                     }`}
                 onClick={() =>
                   setValue('isVenueManager', false, {
@@ -157,9 +150,7 @@ export function SignUpPage() {
                 className={`relative z-10 px-5 py-3 text-center font-medium-buttons transition
                     focus:outline-none focus-visible:ring-2 focus-visible:ring-highlight
                     ${
-                      isVenueManager
-                        ? 'text-dark font-semibold'
-                        : 'text-gray-700 hover:bg-gray-50'
+                      isVenueManager ? 'text-dark font-semibold' : 'text-gray-700 hover:bg-gray-50'
                     }`}
                 onClick={() =>
                   setValue('isVenueManager', true, {
@@ -173,33 +164,23 @@ export function SignUpPage() {
               </button>
             </div>
           </div>
-          <div
-            className="mt-6"
-            id="account-type-description"
-            role="region"
-            aria-live="polite"
-          >
+          <div className="mt-6" id="account-type-description" role="region" aria-live="polite">
             <h2 className="text-2xl font-semibold font-medium-buttons mb-1">
               {isVenueManager ? 'Venue manager account' : 'Customer account'}
             </h2>
             {isVenueManager ? (
               <p className="text-sm text-gray-600 font-text">
-                Create and manage venues, set availability and prices, and view
-                upcoming bookings for your venues.
+                Create and manage venues, set availability and prices, and view upcoming bookings
+                for your venues.
               </p>
             ) : (
               <p className="text-sm text-gray-600 font-text">
-                Discover and book venues securely, manage your reservations, and
-                save favourites.
+                Discover and book venues securely, manage your reservations, and save favourites.
               </p>
             )}
           </div>
         </div>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-6"
-          noValidate
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
           <TextInput
             id="name"
             label="Name"

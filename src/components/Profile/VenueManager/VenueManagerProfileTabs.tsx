@@ -41,9 +41,7 @@ export function ProfileTabs({ active, onChange, isManager }: ProfileTabsProps) {
         aria-selected={active === 'addVenue'}
         aria-controls="tab-addVenue"
         onClick={() => onChange('addVenue')}
-        className={`${tabBaseClass} ${
-          active === 'addVenue' ? tabActiveClass : tabIdleClass
-        }`}
+        className={`${tabBaseClass} ${active === 'addVenue' ? tabActiveClass : tabIdleClass}`}
       >
         My Venues
       </button>
@@ -69,9 +67,7 @@ export function ProfileTabs({ active, onChange, isManager }: ProfileTabsProps) {
         aria-selected={active === 'myBookings'}
         aria-controls="tab-myBookings"
         onClick={() => onChange('myBookings')}
-        className={`${tabBaseClass} ${
-          active === 'myBookings' ? tabActiveClass : tabIdleClass
-        }`}
+        className={`${tabBaseClass} ${active === 'myBookings' ? tabActiveClass : tabIdleClass}`}
       >
         My Bookings
       </button>

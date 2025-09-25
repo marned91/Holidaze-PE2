@@ -52,15 +52,13 @@ export function ManageVenues({ venue, onEdit, onDelete }: ManageVenuesProps) {
 
         <ul className="mt-2 space-y-1 text-sm text-gray-600 font-text">
           <li>
-            <span className="font-semibold">Price:</span>{' '}
-            {formatCurrencyNOK(venue.price)} / night
+            <span className="font-semibold">Price:</span> {formatCurrencyNOK(venue.price)} / night
           </li>
           <li>
             <span className="font-semibold">Max guests:</span> {venue.maxGuests}
           </li>
           <li>
-            <span className="font-semibold">Location:</span>{' '}
-            {getLocationText(venue)}
+            <span className="font-semibold">Location:</span> {getLocationText(venue)}
           </li>
         </ul>
 

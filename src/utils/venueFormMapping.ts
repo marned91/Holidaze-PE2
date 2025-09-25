@@ -22,9 +22,7 @@ export function venueToFormValues(venue: TVenue): TVenueFormValues {
 }
 
 /** Map `TVenueFormValues` back to a `TCreateVenueInput` payload for the API. */
-export function formValuesToCreatePayload(
-  values: TVenueFormValues
-): TCreateVenueInput {
+export function formValuesToCreatePayload(values: TVenueFormValues): TCreateVenueInput {
   const media = values.images
     .map((imageItem, index) => ({
       url: imageItem.url.trim(),

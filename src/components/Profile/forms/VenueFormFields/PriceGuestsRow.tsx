@@ -35,10 +35,7 @@ export function PriceGuestsRow({
   return (
     <div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-2">
       <div>
-        <label
-          htmlFor={priceId}
-          className="mb-1 block text-sm font-medium font-text"
-        >
+        <label htmlFor={priceId} className="mb-1 block text-sm font-medium font-text">
           Price per night (NOK)
         </label>
         <input
@@ -57,21 +54,14 @@ export function PriceGuestsRow({
           aria-describedby={hasPriceError ? priceErrorId : undefined}
         />
         {hasPriceError && (
-          <p
-            id={priceErrorId}
-            role="alert"
-            className="mt-1 text-sm text-red-600 font-text"
-          >
+          <p id={priceErrorId} role="alert" className="mt-1 text-sm text-red-600 font-text">
             {errors.price?.message}
           </p>
         )}
       </div>
 
       <div>
-        <label
-          htmlFor={guestsId}
-          className="mb-1 block text-sm font-medium font-text"
-        >
+        <label htmlFor={guestsId} className="mb-1 block text-sm font-medium font-text">
           How many people?
         </label>
         <select
@@ -93,11 +83,7 @@ export function PriceGuestsRow({
           ))}
         </select>
         {hasGuestsError && (
-          <p
-            id={guestsErrorId}
-            role="alert"
-            className="mt-1 text-sm text-red-600 font-text"
-          >
+          <p id={guestsErrorId} role="alert" className="mt-1 text-sm text-red-600 font-text">
             {errors.maxGuests?.message}
           </p>
         )}

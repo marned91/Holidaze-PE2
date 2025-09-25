@@ -52,10 +52,7 @@ export function LoginPage() {
         className="w-full max-w-md bg-white rounded-lg shadow-xl py-15 px-8"
         aria-labelledby={headingId}
       >
-        <h1
-          id={headingId}
-          className="text-3xl font-semibold text-dark mb-6 font-large"
-        >
+        <h1 id={headingId} className="text-3xl font-semibold text-dark mb-6 font-large">
           Sign in
         </h1>
 
@@ -68,11 +65,7 @@ export function LoginPage() {
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit(onLoginSubmit)}
-          className="space-y-8"
-          noValidate
-        >
+        <form onSubmit={handleSubmit(onLoginSubmit)} className="space-y-8" noValidate>
           <TextInput
             id="email"
             label="Email"
@@ -95,9 +88,7 @@ export function LoginPage() {
             errorMessage={errors.password?.message}
             inputProps={{
               autoComplete: 'current-password',
-              'aria-describedby': errors.password
-                ? 'password-error'
-                : undefined,
+              'aria-describedby': errors.password ? 'password-error' : undefined,
               ...register('password'),
             }}
           />

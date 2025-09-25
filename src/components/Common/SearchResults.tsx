@@ -38,9 +38,7 @@ export function SearchResults({ query }: SearchResultsProps) {
       </div>
 
       {isSearching && <p className="text-gray-600 font-text">Searching…</p>}
-      {!isSearching && searchError && (
-        <p className="text-red-600 font-text">{searchError}</p>
-      )}
+      {!isSearching && searchError && <p className="text-red-600 font-text">{searchError}</p>}
       {!isSearching && !searchError && searchResults.length === 0 && (
         <p className="text-gray-600 font-text">No venues found.</p>
       )}

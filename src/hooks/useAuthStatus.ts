@@ -48,10 +48,7 @@ export function useAuthStatus(): { isLoggedIn: boolean } {
 
     return () => {
       window.removeEventListener('storage', onStorage);
-      window.removeEventListener(
-        AUTH_CHANGED_EVENT,
-        onAuthChanged as EventListener
-      );
+      window.removeEventListener(AUTH_CHANGED_EVENT, onAuthChanged as EventListener);
     };
   }, []);
 

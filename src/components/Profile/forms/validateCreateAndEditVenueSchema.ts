@@ -21,23 +21,14 @@ export const CITY_NAME_REGEX = /^[A-ZÆØÅ][\p{L} .'\-]*$/u;
  */
 export const venueSchema: yup.ObjectSchema<TVenueFormValues> = yup
   .object({
-    name: yup
-      .string()
-      .required('Venue name is required')
-      .max(40, 'Max 40 characters'),
-    description: yup
-      .string()
-      .required('Description is required')
-      .max(600, 'Max 600 characters'),
+    name: yup.string().required('Venue name is required').max(40, 'Max 40 characters'),
+    description: yup.string().required('Description is required').max(600, 'Max 600 characters'),
     images: yup
       .array()
       .of(
         yup
           .object({
-            url: yup
-              .string()
-              .url('Enter a valid URL')
-              .required('Image URL is required'),
+            url: yup.string().url('Enter a valid URL').required('Image URL is required'),
           })
           .required()
       )

@@ -43,12 +43,7 @@ function ProfilePageInner() {
   }>();
   const navigate = useNavigate();
 
-  const {
-    profile,
-    loading,
-    error,
-    reload: reloadProfile,
-  } = useProfile(username);
+  const { profile, loading, error, reload: reloadProfile } = useProfile(username);
 
   const {
     venues,
@@ -86,23 +81,17 @@ function ProfilePageInner() {
       : profile
     : null;
 
-  const { showSuccessAlert, showErrorAlert, showInformationAlert } =
-    useAlerts();
+  const { showSuccessAlert, showErrorAlert, showInformationAlert } = useAlerts();
   const confirm = useConfirm();
 
   const tabToPath = (tab: ProfileTab) =>
-    tab === 'myBookings'
-      ? 'bookings'
-      : tab === 'addVenue'
-      ? 'venues'
-      : 'venue-bookings';
+    tab === 'myBookings' ? 'bookings' : tab === 'addVenue' ? 'venues' : 'venue-bookings';
 
   const sectionToTab = (s?: string, isManager?: boolean): ProfileTab => {
     const key = (s ?? '').toLowerCase();
     if (key === 'bookings') return 'myBookings';
     if (key === 'venues') return 'addVenue';
-    if (key === 'venue-bookings' || key === 'manager-bookings')
-      return 'managerBookings';
+    if (key === 'venue-bookings' || key === 'manager-bookings') return 'managerBookings';
     return isManager ? 'addVenue' : 'myBookings';
   };
 
@@ -183,12 +172,7 @@ function ProfilePageInner() {
     !profile.venueManager &&
     (activeTab === 'addVenue' || activeTab === 'managerBookings')
   ) {
-    return (
-      <Navigate
-        to={`/profile/${encodeURIComponent(username)}/bookings`}
-        replace
-      />
-    );
+    return <Navigate to={`/profile/${encodeURIComponent(username)}/bookings`} replace />;
   }
 
   return (

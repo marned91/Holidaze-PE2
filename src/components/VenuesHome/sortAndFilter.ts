@@ -1,9 +1,6 @@
 import type { TVenue } from '../../types/venueTypes';
 import type { TDateRange } from '../../types/dateTypes';
-import {
-  normalizeDateRange,
-  isVenueAvailableForRange,
-} from '../../utils/dateRange';
+import { normalizeDateRange, isVenueAvailableForRange } from '../../utils/dateRange';
 
 export type SortOrder = 'newest' | 'oldest' | 'priceLow' | 'priceHigh';
 
@@ -82,10 +79,7 @@ export function getCityOptions(allVenues: TVenue[]): string[] {
  * @param wantedRange - Inclusive range with Date `from` and `to`.
  * @returns True if the venue is available for the range.
  */
-export function isVenueAvailable(
-  venue: TVenue,
-  wantedRange: { from: Date; to: Date }
-): boolean {
+export function isVenueAvailable(venue: TVenue, wantedRange: { from: Date; to: Date }): boolean {
   return isVenueAvailableForRange(venue, wantedRange);
 }
 
@@ -110,9 +104,7 @@ export function filterVenues(
 
   if (selectedCity) {
     const wantedCity = normalizeString(selectedCity);
-    result = result.filter(
-      (venue) => normalizeString(venue.location?.city) === wantedCity
-    );
+    result = result.filter((venue) => normalizeString(venue.location?.city) === wantedCity);
   }
 
   if (minGuests != null) {
@@ -121,9 +113,7 @@ export function filterVenues(
 
   const normalized = normalizeDateRange(dateRange);
   if (normalized) {
-    result = result.filter((venue) =>
-      isVenueAvailableForRange(venue, normalized)
-    );
+    result = result.filter((venue) => isVenueAvailableForRange(venue, normalized));
   }
 
   return result;
@@ -146,23 +136,17 @@ export function sortVenues(venues: TVenue[], sortOrder: SortOrder): TVenue[] {
 
   switch (sortOrder) {
     case 'newest':
-      sorted.sort(
-        (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
-      );
+      sorted.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
       break;
 
     case 'oldest':
-      sorted.sort(
-        (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()
-      );
+      sorted.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime());
       break;
 
     case 'priceLow':
       sorted.sort((a, b) => {
-        const priceA =
-          typeof a.price === 'number' ? a.price : Number.POSITIVE_INFINITY;
-        const priceB =
-          typeof b.price === 'number' ? b.price : Number.POSITIVE_INFINITY;
+        const priceA = typeof a.price === 'number' ? a.price : Number.POSITIVE_INFINITY;
+        const priceB = typeof b.price === 'number' ? b.price : Number.POSITIVE_INFINITY;
         return priceA - priceB;
       });
       break;
@@ -170,10 +154,8 @@ export function sortVenues(venues: TVenue[], sortOrder: SortOrder): TVenue[] {
     case 'priceHigh':
     default:
       sorted.sort((a, b) => {
-        const priceA =
-          typeof a.price === 'number' ? a.price : Number.NEGATIVE_INFINITY;
-        const priceB =
-          typeof b.price === 'number' ? b.price : Number.NEGATIVE_INFINITY;
+        const priceA = typeof a.price === 'number' ? a.price : Number.NEGATIVE_INFINITY;
+        const priceB = typeof b.price === 'number' ? b.price : Number.NEGATIVE_INFINITY;
         return priceB - priceA;
       });
       break;

@@ -1,11 +1,7 @@
 import { Link } from 'react-router-dom';
 import { FaMapMarkerAlt, FaUser } from 'react-icons/fa';
 import type { TVenue } from '../../types/venueTypes';
-import {
-  getLocationText,
-  getVenueImage,
-  getGuestsText,
-} from '../../utils/venue';
+import { getLocationText, getVenueImage, getGuestsText } from '../../utils/venue';
 import { formatCurrencyNOK } from '../../utils/currency';
 import PlaceholderImage from '../../assets/placeholder.png';
 
@@ -54,10 +50,7 @@ export function VenueCard({ venue }: VenueCardProps) {
               {venue.name || 'Untitled venue'}
             </h4>
             <div className="flex items-center text-sm text-gray-600 font-text">
-              <FaMapMarkerAlt
-                className="mr-1 text-main-light"
-                aria-hidden="true"
-              />
+              <FaMapMarkerAlt className="mr-1 text-main-light" aria-hidden="true" />
               <span>{locationText}</span>
             </div>
             <div className="flex items-center text-sm text-gray-600 font-text">
@@ -66,9 +59,7 @@ export function VenueCard({ venue }: VenueCardProps) {
             </div>
           </div>
           <div className="mt-auto pt-2 text-sm text-gray-800 font-text">
-            <span className="font-semibold">
-              Price {formatCurrencyNOK(venue.price)}
-            </span>
+            <span className="font-semibold">Price {formatCurrencyNOK(venue.price)}</span>
           </div>
         </div>
       </article>

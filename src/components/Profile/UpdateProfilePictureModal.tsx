@@ -117,8 +117,7 @@ export function UpdateProfilePicture({
   const initialUrlTrimmed = (initialUrl ?? '').trim();
   const initialAltTrimmed = (initialAlt ?? '').trim();
   const isUnchanged =
-    trimmedWatchedUrl === initialUrlTrimmed &&
-    trimmedWatchedAlt === initialAltTrimmed;
+    trimmedWatchedUrl === initialUrlTrimmed && trimmedWatchedAlt === initialAltTrimmed;
 
   const isSaveDisabled = isSubmitting || !isValid || isUnchanged;
 
@@ -131,10 +130,7 @@ export function UpdateProfilePicture({
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <div>
-          <label
-            htmlFor={urlInputId}
-            className="mb-1 block text-sm font-medium font-text"
-          >
+          <label htmlFor={urlInputId} className="mb-1 block text-sm font-medium font-text">
             Image URL
           </label>
           <input
@@ -159,10 +155,7 @@ export function UpdateProfilePicture({
         </div>
 
         <div>
-          <label
-            htmlFor={altInputId}
-            className="mb-1 block text-sm font-medium font-text"
-          >
+          <label htmlFor={altInputId} className="mb-1 block text-sm font-medium font-text">
             Alt text (optional)
           </label>
           <input

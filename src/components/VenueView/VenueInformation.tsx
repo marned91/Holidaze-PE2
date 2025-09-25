@@ -1,15 +1,7 @@
 import { useId } from 'react';
 import { type TVenue } from '../../types/venueTypes';
 import { getGuestsText } from '../../utils/venue';
-import {
-  FaMapMarkerAlt,
-  FaStar,
-  FaDog,
-  FaWifi,
-  FaParking,
-  FaCoffee,
-  FaUser,
-} from 'react-icons/fa';
+import { FaMapMarkerAlt, FaStar, FaDog, FaWifi, FaParking, FaCoffee, FaUser } from 'react-icons/fa';
 
 type VenueInformationProps = {
   title: string;
@@ -54,9 +46,7 @@ export function VenueInformation({
   );
 
   const ratingText =
-    typeof rating === 'number' && Number.isFinite(rating)
-      ? rating.toFixed(1)
-      : null;
+    typeof rating === 'number' && Number.isFinite(rating) ? rating.toFixed(1) : null;
 
   const headingId = useId();
 
@@ -86,19 +76,13 @@ export function VenueInformation({
       <div className="my-4 border-b border-gray-400" />
       {description && (
         <>
-          <h3 className="text-xl font-medium font-small-nav-footer">
-            Description
-          </h3>
-          <p className="mt-5 whitespace-pre-line text-gray-700 font-text">
-            {description}
-          </p>
+          <h3 className="text-xl font-medium font-small-nav-footer">Description</h3>
+          <p className="mt-5 whitespace-pre-line text-gray-700 font-text">{description}</p>
           <div className="my-5 border-b border-gray-400" />
         </>
       )}
       <div className="my-5 border-b border-gray-400">
-        <h3 className="text-xl font-medium font-small-nav-footer">
-          Facilities
-        </h3>
+        <h3 className="text-xl font-medium font-small-nav-footer">Facilities</h3>
         {hasAnyFacility ? (
           <ul className="mt-5 grid grid-cols-2 gap-2 text-gray-800 sm:grid-cols-3 my-5">
             {facilities?.wifi && (
@@ -127,9 +111,7 @@ export function VenueInformation({
             )}
           </ul>
         ) : (
-          <p className="mt-2 my-5 text-gray-600 font-text italic">
-            No facilities listed
-          </p>
+          <p className="mt-2 my-5 text-gray-600 font-text italic">No facilities listed</p>
         )}
       </div>
     </section>

@@ -10,9 +10,7 @@ export function SkeletonVenueView() {
       aria-live="polite"
       className="mx-auto w-full max-w-[85%] px-4 py-8 md:py-10"
     >
-      <div
-        className={`overflow-hidden rounded-xl shadow animate-pulse ${block}`}
-      >
+      <div className={`overflow-hidden rounded-xl shadow animate-pulse ${block}`}>
         <div className={`aspect-[16/7] w-full ${block}`} />
       </div>
 

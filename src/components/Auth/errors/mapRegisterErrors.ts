@@ -4,13 +4,9 @@ import type { TRegisterFieldErrors } from '../../../types/authTypes';
  * Maps a server error object (from doFetch) to field-level errors
  * used by the sign-up form. Returns undefined if nothing could be mapped.
  */
-export function mapRegisterErrors(
-  error: unknown
-): TRegisterFieldErrors | undefined {
+export function mapRegisterErrors(error: unknown): TRegisterFieldErrors | undefined {
   const errorObject =
-    error && typeof error === 'object'
-      ? (error as Record<string, unknown>)
-      : undefined;
+    error && typeof error === 'object' ? (error as Record<string, unknown>) : undefined;
 
   const details =
     errorObject?.details && typeof errorObject.details === 'object'
@@ -25,12 +21,9 @@ export function mapRegisterErrors(
       const fieldName = String(item.field ?? item.path ?? '');
       const fieldMessage = String(
         item.message ??
-          (typeof errorObject?.message === 'string'
-            ? errorObject.message
-            : 'Validation error')
+          (typeof errorObject?.message === 'string' ? errorObject.message : 'Validation error')
       );
-      if (fieldName === 'name' || fieldName === 'username')
-        fieldErrors.name = fieldMessage;
+      if (fieldName === 'name' || fieldName === 'username') fieldErrors.name = fieldMessage;
       else if (fieldName === 'email') fieldErrors.email = fieldMessage;
       else if (fieldName === 'password') fieldErrors.password = fieldMessage;
       else if (fieldName === 'avatar.url' || fieldName === 'avatarUrl')
@@ -42,10 +35,8 @@ export function mapRegisterErrors(
     if (typeof map.email === 'string') fieldErrors.email = map.email;
     if (typeof map.password === 'string') fieldErrors.password = map.password;
     const avatarUrlMessage =
-      (map['avatar.url'] as string | undefined) ??
-      (map.avatarUrl as string | undefined);
-    if (typeof avatarUrlMessage === 'string')
-      fieldErrors.avatarUrl = avatarUrlMessage;
+      (map['avatar.url'] as string | undefined) ?? (map.avatarUrl as string | undefined);
+    if (typeof avatarUrlMessage === 'string') fieldErrors.avatarUrl = avatarUrlMessage;
   }
 
   if (Object.keys(fieldErrors).length) return fieldErrors;

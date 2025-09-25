@@ -27,9 +27,7 @@ interface WindowWithBooking extends Window {
 }
 
 function hasAuthToken(): boolean {
-  return Boolean(
-    localStorage.getItem('accessToken') || localStorage.getItem('token')
-  );
+  return Boolean(localStorage.getItem('accessToken') || localStorage.getItem('token'));
 }
 
 /**
@@ -82,12 +80,8 @@ export function VenuePage() {
 
   if (loading) return <SkeletonVenueView />;
 
-  if (loadError)
-    return (
-      <div className="mx-auto max-w-2xl p-6 text-red-600">{loadError}</div>
-    );
-  if (!venue)
-    return <div className="mx-auto max-w-7xl p-6">Venue not found.</div>;
+  if (loadError) return <div className="mx-auto max-w-2xl p-6 text-red-600">{loadError}</div>;
+  if (!venue) return <div className="mx-auto max-w-7xl p-6">Venue not found.</div>;
 
   const normalized = normalizeDateRange(selectedDates);
   const nights = normalized ? nightsBetween(normalized.from, normalized.to) : 0;
@@ -185,9 +179,7 @@ export function VenuePage() {
         imageUrl={firstImageUrl}
         dateRangeText={dateText}
         guestsText={`${(window as WindowWithBooking).__bookingGuests ?? 1} ${
-          ((window as WindowWithBooking).__bookingGuests ?? 1) === 1
-            ? 'Guest'
-            : 'Guests'
+          ((window as WindowWithBooking).__bookingGuests ?? 1) === 1 ? 'Guest' : 'Guests'
         }`}
         totalText={totalText}
         submitting={submitting}
@@ -205,9 +197,7 @@ export function VenuePage() {
         imageUrl={firstImageUrl}
         dateRangeText={dateText}
         guestsText={`${(window as WindowWithBooking).__bookingGuests ?? 1} ${
-          ((window as WindowWithBooking).__bookingGuests ?? 1) === 1
-            ? 'Guest'
-            : 'Guests'
+          ((window as WindowWithBooking).__bookingGuests ?? 1) === 1 ? 'Guest' : 'Guests'
         }`}
         totalText={totalText}
       />

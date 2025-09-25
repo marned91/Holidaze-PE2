@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  ConfirmContext,
-  type ConfirmFunction,
-  type ConfirmOptions,
-} from './confirmContext';
+import { ConfirmContext, type ConfirmFunction, type ConfirmOptions } from './confirmContext';
 
 type PendingRequest = {
   options: ConfirmOptions;
@@ -29,8 +25,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
 
   const openConfirm: ConfirmFunction = useCallback((options) => {
     return new Promise<boolean>((resolve) => {
-      lastFocusedElementRef.current =
-        (document.activeElement as HTMLElement) ?? null;
+      lastFocusedElementRef.current = (document.activeElement as HTMLElement) ?? null;
       setPendingRequest({ options, resolve });
     });
   }, []);
@@ -79,10 +74,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
     };
   }, [pendingRequest]);
 
-  const providerValue = useMemo<ConfirmFunction>(
-    () => openConfirm,
-    [openConfirm]
-  );
+  const providerValue = useMemo<ConfirmFunction>(() => openConfirm, [openConfirm]);
 
   return (
     <ConfirmContext.Provider value={providerValue}>
@@ -118,10 +110,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
                 </h3>
               )}
               {pendingRequest.options.message && (
-                <p
-                  id="confirm-dialog-message"
-                  className="text-sm text-neutral-700 font-text"
-                >
+                <p id="confirm-dialog-message" className="text-sm text-neutral-700 font-text">
                   {pendingRequest.options.message}
                 </p>
               )}

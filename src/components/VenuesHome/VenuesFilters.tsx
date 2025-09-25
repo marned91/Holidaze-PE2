@@ -53,9 +53,7 @@ export function VenuesFilters({
   const [guestsDraft, setGuestsDraft] = useState<string>(
     minGuests != null ? String(minGuests) : ''
   );
-  const [startDraft, setStartDraft] = useState<string>(
-    dateRange.startDate ?? ''
-  );
+  const [startDraft, setStartDraft] = useState<string>(dateRange.startDate ?? '');
   const [endDraft, setEndDraft] = useState<string>(dateRange.endDate ?? '');
 
   const cityList = useMemo(() => cities.filter(Boolean), [cities]);
@@ -94,11 +92,8 @@ export function VenuesFilters({
   }
 
   function applyGuests() {
-    const parsed =
-      guestsDraft.trim() === '' ? null : Math.max(1, Number(guestsDraft));
-    onMinGuestsChange(
-      Number.isFinite(parsed as number) ? (parsed as number) : null
-    );
+    const parsed = guestsDraft.trim() === '' ? null : Math.max(1, Number(guestsDraft));
+    onMinGuestsChange(Number.isFinite(parsed as number) ? (parsed as number) : null);
     closeAll();
   }
   function clearGuests() {
@@ -147,9 +142,7 @@ export function VenuesFilters({
         />
       )}
       <div className="relative flex flex-wrap justify-center gap-3 font-text font-medium text-dark">
-        <div
-          className={`relative inline-block ${isCityOpen ? 'z-[80]' : 'z-10'}`}
-        >
+        <div className={`relative inline-block ${isCityOpen ? 'z-[80]' : 'z-10'}`}>
           <button
             id={cityBtnId}
             type="button"
@@ -210,9 +203,7 @@ export function VenuesFilters({
                     type="button"
                     onClick={() => setCityDraft(cityName)}
                     className={`mb-1 w-full rounded-md px-2 py-1 text-left ${
-                      cityDraft === cityName
-                        ? 'bg-gray-200'
-                        : 'hover:bg-gray-200'
+                      cityDraft === cityName ? 'bg-gray-200' : 'hover:bg-gray-200'
                     }`}
                   >
                     {cityName}
@@ -239,18 +230,13 @@ export function VenuesFilters({
           )}
         </div>
 
-        <div
-          className={`relative inline-block ${
-            isGuestsOpen ? 'z-[80]' : 'z-10'
-          }`}
-        >
+        <div className={`relative inline-block ${isGuestsOpen ? 'z-[80]' : 'z-10'}`}>
           <button
             id={guestsBtnId}
             type="button"
             onClick={() => {
               const willOpen = !isGuestsOpen;
-              if (willOpen)
-                setGuestsDraft(minGuests != null ? String(minGuests) : '');
+              if (willOpen) setGuestsDraft(minGuests != null ? String(minGuests) : '');
               if (willOpen) openOnly('guests');
               else closeAll();
             }}
@@ -289,10 +275,7 @@ export function VenuesFilters({
               aria-labelledby={guestsBtnId}
               className={popoverPanelClass}
             >
-              <label
-                htmlFor="guests-input"
-                className="mb-1 block text-sm text-gray-700 font-text"
-              >
+              <label htmlFor="guests-input" className="mb-1 block text-sm text-gray-700 font-text">
                 Minimum guests
               </label>
               <input
@@ -325,9 +308,7 @@ export function VenuesFilters({
           )}
         </div>
 
-        <div
-          className={`relative inline-block ${isDatesOpen ? 'z-[80]' : 'z-10'}`}
-        >
+        <div className={`relative inline-block ${isDatesOpen ? 'z-[80]' : 'z-10'}`}>
           <button
             id={datesBtnId}
             type="button"
@@ -340,11 +321,7 @@ export function VenuesFilters({
               if (willOpen) openOnly('dates');
               else closeAll();
             }}
-            className={
-              dateRange.startDate || dateRange.endDate
-                ? activeButton
-                : inactiveButton
-            }
+            className={dateRange.startDate || dateRange.endDate ? activeButton : inactiveButton}
             aria-haspopup="dialog"
             aria-expanded={isDatesOpen}
             aria-controls={datesPanelId}

@@ -46,29 +46,23 @@ function isUpcoming(booking: TBooking, todayIso: string) {
  * @returns A section element with filters and booking cards.
  */
 export function MyBookingsSection(props: WithItems | WithBookings) {
-  const {
-    isLoading,
-    errorMessage,
-    title = 'My bookings',
-    onEditBooking,
-    onCancelBooking,
-  } = props;
+  const { isLoading, errorMessage, title = 'My bookings', onEditBooking, onCancelBooking } = props;
 
   const normalized: Item[] =
     'items' in props && props.items
       ? props.items
       : 'bookings' in props && props.bookings
-      ? props.bookings
-          .filter((bookingWithVenue) => !!bookingWithVenue.venue)
-          .map((bookingWithVenue) => ({
-            booking: bookingWithVenue,
-            venue: bookingWithVenue.venue,
-            totalPriceOverride:
-              typeof bookingWithVenue.totalPrice === 'number'
-                ? bookingWithVenue.totalPrice
-                : undefined,
-          }))
-      : [];
+        ? props.bookings
+            .filter((bookingWithVenue) => !!bookingWithVenue.venue)
+            .map((bookingWithVenue) => ({
+              booking: bookingWithVenue,
+              venue: bookingWithVenue.venue,
+              totalPriceOverride:
+                typeof bookingWithVenue.totalPrice === 'number'
+                  ? bookingWithVenue.totalPrice
+                  : undefined,
+            }))
+        : [];
 
   const [editedById, setEditedById] = useState<Record<string, TBooking>>({});
   const displayed: Item[] = useMemo(
@@ -136,14 +130,9 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
         >
           {(['all', 'upcoming', 'past'] as const).map((key) => {
             const isActive = filter === key;
-            const label =
-              key === 'all' ? 'All' : key === 'upcoming' ? 'Upcoming' : 'Past';
+            const label = key === 'all' ? 'All' : key === 'upcoming' ? 'Upcoming' : 'Past';
             const badge =
-              key === 'all'
-                ? counts.all
-                : key === 'upcoming'
-                ? counts.upcoming
-                : counts.past;
+              key === 'all' ? counts.all : key === 'upcoming' ? counts.upcoming : counts.past;
             return (
               <button
                 key={key}
@@ -159,9 +148,7 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
                 <span>{label}</span>
                 <span
                   className={`min-w-[1.5rem] rounded-full px-2 py-0.5 text-center text-xs ${
-                    isActive
-                      ? 'bg-white text-gray-900'
-                      : 'bg-gray-200 text-gray-700'
+                    isActive ? 'bg-white text-gray-900' : 'bg-gray-200 text-gray-700'
                   }`}
                 >
                   {badge}

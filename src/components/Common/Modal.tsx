@@ -1,8 +1,6 @@
 import { type ReactNode, useEffect, useId, useRef } from 'react';
 
-type LabelProps =
-  | { title: string; ariaLabel?: string }
-  | { title?: string; ariaLabel: string };
+type LabelProps = { title: string; ariaLabel?: string } | { title?: string; ariaLabel: string };
 type BaseProps = {
   open: boolean;
   onClose: () => void;
@@ -26,13 +24,7 @@ type ModalProps = BaseProps & LabelProps;
  * @returns The modal or `null` when closed.
  * @throws Error when something unexpected occurs (not expected in normal operation).
  */
-export function Modal({
-  open,
-  title,
-  ariaLabel,
-  onClose,
-  children,
-}: ModalProps) {
+export function Modal({ open, title, ariaLabel, onClose, children }: ModalProps) {
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -54,8 +46,7 @@ export function Modal({
 
     const focusable = getFocusableElements(dialogRef.current);
     const first = focusable[0];
-    const target =
-      first ?? (closeButtonRef.current as HTMLElement | null) ?? null;
+    const target = first ?? (closeButtonRef.current as HTMLElement | null) ?? null;
 
     const focusTimer = window.setTimeout(() => {
       target?.focus();
@@ -114,9 +105,7 @@ export function Modal({
     <div
       role="dialog"
       aria-modal="true"
-      {...(title
-        ? { 'aria-labelledby': titleId }
-        : { 'aria-label': ariaLabel ?? 'Dialog' })}
+      {...(title ? { 'aria-labelledby': titleId } : { 'aria-label': ariaLabel ?? 'Dialog' })}
       className="fixed inset-0 z-[1000] flex items-start sm:items-center justify-center p-4 overscroll-contain"
     >
       <div
@@ -133,10 +122,7 @@ export function Modal({
       >
         <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-gray-200 bg-white/95 px-6 py-4">
           {title ? (
-            <h2
-              id={titleId}
-              className="text-2xl font-medium font-small-nav-footer"
-            >
+            <h2 id={titleId} className="text-2xl font-medium font-small-nav-footer">
               {title}
             </h2>
           ) : (
@@ -172,11 +158,8 @@ function getFocusableElements(container: HTMLElement | null): HTMLElement[] {
   if (!container) return [];
   const selector =
     'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
-  const elements = Array.from(
-    container.querySelectorAll<HTMLElement>(selector)
-  );
+  const elements = Array.from(container.querySelectorAll<HTMLElement>(selector));
   return elements.filter(
-    (element) =>
-      element.offsetParent !== null || element === document.activeElement
+    (element) => element.offsetParent !== null || element === document.activeElement
   );
 }

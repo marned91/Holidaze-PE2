@@ -23,10 +23,7 @@ export function CityField() {
 
   return (
     <div className="pb-4">
-      <label
-        htmlFor={inputId}
-        className="mb-1 block text-sm font-medium font-text"
-      >
+      <label htmlFor={inputId} className="mb-1 block text-sm font-medium font-text">
         City (Norway)
       </label>
       <input
@@ -43,11 +40,7 @@ export function CityField() {
         aria-describedby={hasError ? errorId : helpId}
       />
       {hasError && (
-        <p
-          id={errorId}
-          role="alert"
-          className="mt-1 text-sm text-red-600 font-text"
-        >
+        <p id={errorId} role="alert" className="mt-1 text-sm text-red-600 font-text">
           {errors.city?.message}
         </p>
       )}

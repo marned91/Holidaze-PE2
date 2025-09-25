@@ -26,10 +26,7 @@ export function TitleField({ max = 100 }: { max?: number }) {
 
   return (
     <div>
-      <label
-        htmlFor={inputId}
-        className="mb-1 block text-sm font-medium font-text"
-      >
+      <label htmlFor={inputId} className="mb-1 block text-sm font-medium font-text">
         Venue name
       </label>
       <input
@@ -48,10 +45,7 @@ export function TitleField({ max = 100 }: { max?: number }) {
         <span id={errorId} role="alert" className="text-red-600">
           {errors.name?.message}
         </span>
-        <span
-          id={counterId}
-          className={value.length > max ? 'text-red-600' : 'text-gray-500'}
-        >
+        <span id={counterId} className={value.length > max ? 'text-red-600' : 'text-gray-500'}>
           {value.length}/{max}
         </span>
       </div>

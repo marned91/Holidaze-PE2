@@ -103,35 +103,24 @@ export function UpcomingVenueBookings({
       const bookings = ((venue as VenueWithExtendedBookings).bookings ??
         []) as TVenueBookingExtended[];
       return bookings
-        .filter(
-          (booking: TVenueBookingExtended) =>
-            toIsoDateOnly(booking.dateFrom) >= today
-        )
+        .filter((booking: TVenueBookingExtended) => toIsoDateOnly(booking.dateFrom) >= today)
         .map((booking: TVenueBookingExtended) => ({ venue, booking }));
     })
     .sort((a, b) =>
-      toIsoDateOnly(a.booking.dateFrom).localeCompare(
-        toIsoDateOnly(b.booking.dateFrom)
-      )
+      toIsoDateOnly(a.booking.dateFrom).localeCompare(toIsoDateOnly(b.booking.dateFrom))
     );
 
-  const grouped = upcoming.reduce<Record<string, UpcomingItem[]>>(
-    (accumulator, item) => {
-      const key = monthKey(toIsoDateOnly(item.booking.dateFrom));
-      (accumulator[key] ||= []).push(item);
-      return accumulator;
-    },
-    {}
-  );
+  const grouped = upcoming.reduce<Record<string, UpcomingItem[]>>((accumulator, item) => {
+    const key = monthKey(toIsoDateOnly(item.booking.dateFrom));
+    (accumulator[key] ||= []).push(item);
+    return accumulator;
+  }, {});
 
   const sectionTitleId = 'upcoming-venue-bookings-title';
 
   return (
     <section aria-labelledby={sectionTitleId}>
-      <h2
-        id={sectionTitleId}
-        className="mb-4 text-2xl font-medium font-medium-buttons"
-      >
+      <h2 id={sectionTitleId} className="mb-4 text-2xl font-medium font-medium-buttons">
         Upcoming bookings for your venues
       </h2>
 
@@ -165,9 +154,7 @@ export function UpcomingVenueBookings({
       {!isLoading && !errorMessage && upcoming.length === 0 && (
         <div className="rounded-xl border border-dashed border-gray-300 px-8 py-14 text-center font-text">
           <p className="text-gray-700 mb-2">No upcoming bookings.</p>
-          <p className="text-sm text-gray-500">
-            New bookings for your venues will show up here.
-          </p>
+          <p className="text-sm text-gray-500">New bookings for your venues will show up here.</p>
         </div>
       )}
 
@@ -188,19 +175,14 @@ export function UpcomingVenueBookings({
                 className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl px-4 py-3 hover:bg-gray-50"
                 aria-controls={`${monthTitleId}-panel`}
               >
-                <span className="text-xl italic font-small-nav-footer">
-                  {monthHeading(key)}
-                </span>
+                <span className="text-xl italic font-small-nav-footer">{monthHeading(key)}</span>
                 <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-medium text-gray-700">
                   {items.length}
                 </span>
               </summary>
 
               <div id={`${monthTitleId}-panel`}>
-                <ul
-                  role="list"
-                  className="divide-y divide-gray-200 border-t border-gray-200"
-                >
+                <ul role="list" className="divide-y divide-gray-200 border-t border-gray-200">
                   {items.map(({ venue, booking }) => {
                     const { url, alt } = getVenueImage(venue);
                     const from = toIsoDateOnly(booking.dateFrom);
@@ -208,12 +190,9 @@ export function UpcomingVenueBookings({
                     const nights = Math.max(nightsBetween(from, to), 1);
                     const guests = booking.guests ?? 0;
                     const bookedBy =
-                      booking.customer?.name ||
-                      booking.customer?.username ||
-                      'Unknown';
+                      booking.customer?.name || booking.customer?.username || 'Unknown';
                     const total =
-                      booking.totalPrice ??
-                      (nights > 0 ? venue.price * nights : venue.price);
+                      booking.totalPrice ?? (nights > 0 ? venue.price * nights : venue.price);
 
                     return (
                       <li
@@ -233,9 +212,7 @@ export function UpcomingVenueBookings({
                         </div>
 
                         <div className="min-w-0 flex-1">
-                          <h4 className="truncate text-lg font-semibold font-text">
-                            {venue.name}
-                          </h4>
+                          <h4 className="truncate text-lg font-semibold font-text">{venue.name}</h4>
 
                           <div className="mt-1 grid grid-cols-1 gap-1 text-sm text-gray-700 sm:grid-cols-2 font-text">
                             <div>

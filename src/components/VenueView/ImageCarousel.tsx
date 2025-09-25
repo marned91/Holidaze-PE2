@@ -1,9 +1,4 @@
-import {
-  useEffect,
-  useState,
-  type KeyboardEvent,
-  type TouchEvent,
-} from 'react';
+import { useEffect, useState, type KeyboardEvent, type TouchEvent } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import type { TVenue } from '../../types/venueTypes';
 import PlaceholderImage from '../../assets/placeholder.png';
@@ -29,9 +24,7 @@ type ImageCarouselProps = {
  * @returns An interactive, accessible image carousel.
  */
 export function ImageCarousel({ images = [] }: ImageCarouselProps) {
-  const slides = Array.isArray(images)
-    ? images.filter((item) => Boolean(item?.url))
-    : [];
+  const slides = Array.isArray(images) ? images.filter((item) => Boolean(item?.url)) : [];
 
   const slideCount = slides.length;
   const [activeIndex, setActiveIndex] = useState(0);
@@ -126,11 +119,7 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
              opacity-100 md:opacity-0 md:group-hover:opacity-100"
             aria-label="Previous image"
           >
-            <FaChevronLeft
-              className="text-gray-800"
-              size={16}
-              aria-hidden="true"
-            />
+            <FaChevronLeft className="text-gray-800" size={16} aria-hidden="true" />
           </button>
 
           <button
@@ -142,11 +131,7 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
              opacity-100 md:opacity-0 md:group-hover:opacity-100"
             aria-label="Next image"
           >
-            <FaChevronRight
-              className="text-gray-800"
-              size={16}
-              aria-hidden="true"
-            />
+            <FaChevronRight className="text-gray-800" size={16} aria-hidden="true" />
           </button>
 
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/35 px-2 py-1">

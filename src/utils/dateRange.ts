@@ -26,9 +26,7 @@ export function parseLocal(ymd?: string): Date | null {
  * Normalize a `TDateRange` (string inputs) to concrete `Date` objects.
  * Returns `null` if start/end is missing or if start is after end.
  */
-export function normalizeDateRange(
-  range: TDateRange
-): DateRangeNormalized | null {
+export function normalizeDateRange(range: TDateRange): DateRangeNormalized | null {
   const from = parseLocal(range.startDate);
   const to = parseLocal(range.endDate);
   if (!from || !to) return null;
@@ -47,8 +45,7 @@ export function rangesOverlapInclusive(
   rangeBEnd: Date
 ): boolean {
   return (
-    rangeAStart.getTime() <= rangeBEnd.getTime() &&
-    rangeBStart.getTime() <= rangeAEnd.getTime()
+    rangeAStart.getTime() <= rangeBEnd.getTime() && rangeBStart.getTime() <= rangeAEnd.getTime()
   );
 }
 
@@ -67,11 +64,6 @@ export function isVenueAvailableForRange(
     const bookingStart = parseLocal(booking.dateFrom?.split('T')[0] ?? '');
     const bookingEnd = parseLocal(booking.dateTo?.split('T')[0] ?? '');
     if (!bookingStart || !bookingEnd) return true;
-    return !rangesOverlapInclusive(
-      wanted.from,
-      wanted.to,
-      bookingStart,
-      bookingEnd
-    );
+    return !rangesOverlapInclusive(wanted.from, wanted.to, bookingStart, bookingEnd);
   });
 }

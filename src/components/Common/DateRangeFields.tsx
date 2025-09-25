@@ -1,13 +1,6 @@
 import Calendar from 'react-calendar';
 import type { Value } from 'react-calendar/dist/shared/types.js';
-import React, {
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-  useLayoutEffect,
-} from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { TDateRange } from '../../types/dateTypes';
 import {
@@ -39,8 +32,7 @@ type DateRangeFieldsProps = {
  * `useLayoutEffect` on the client, `useEffect` on the server.
  * Prevents React hydration/SSR warnings when measuring layout.
  */
-const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 /**
  * Lightweight portal that positions a popover anchored to an element.
@@ -76,8 +68,7 @@ function PopoverPortal({
       if (!anchor) return;
 
       const anchorRect = anchor.getBoundingClientRect();
-      const viewportHeight =
-        window.visualViewport?.height ?? window.innerHeight;
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
       const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
 
       const margin = 8;
@@ -85,29 +76,19 @@ function PopoverPortal({
       const spaceBelow = viewportHeight - (anchorRect.bottom + margin);
       const spaceAbove = anchorRect.top - margin;
 
-      const placeAbove =
-        spaceBelow < wantedMinHeight && spaceAbove > spaceBelow;
+      const placeAbove = spaceBelow < wantedMinHeight && spaceAbove > spaceBelow;
 
-      const availableHeight = Math.max(
-        160,
-        (placeAbove ? spaceAbove : spaceBelow) - 8
-      );
+      const availableHeight = Math.max(160, (placeAbove ? spaceAbove : spaceBelow) - 8);
 
       const leftPos =
-        align === 'left'
-          ? Math.max(8, Math.min(anchorRect.left, viewportWidth - 16))
-          : undefined;
+        align === 'left' ? Math.max(8, Math.min(anchorRect.left, viewportWidth - 16)) : undefined;
       const rightPos =
-        align === 'right'
-          ? Math.max(8, viewportWidth - anchorRect.right)
-          : undefined;
+        align === 'right' ? Math.max(8, viewportWidth - anchorRect.right) : undefined;
 
       setStyle({
         position: 'fixed',
         top: placeAbove ? undefined : anchorRect.bottom + margin,
-        bottom: placeAbove
-          ? viewportHeight - anchorRect.top + margin
-          : undefined,
+        bottom: placeAbove ? viewportHeight - anchorRect.top + margin : undefined,
         left: leftPos,
         right: rightPos,
         zIndex: 9999,
@@ -168,13 +149,7 @@ function DateRangeFieldsCalendar({
   className,
 }: Pick<
   DateRangeFieldsProps,
-  | 'value'
-  | 'onChange'
-  | 'labelFrom'
-  | 'labelTo'
-  | 'bookings'
-  | 'months'
-  | 'className'
+  'value' | 'onChange' | 'labelFrom' | 'labelTo' | 'bookings' | 'months' | 'className'
 >) {
   const startInputId = useId();
   const endInputId = useId();
@@ -191,8 +166,7 @@ function DateRangeFieldsCalendar({
       const targetNode = event.target as Node;
       const inStart = startButtonRef.current?.contains(targetNode) ?? false;
       const inEnd = endButtonRef.current?.contains(targetNode) ?? false;
-      const inPopover =
-        popoverContentRef.current?.contains(targetNode) ?? false;
+      const inPopover = popoverContentRef.current?.contains(targetNode) ?? false;
       const clickedAnchor = inStart || inEnd;
       if (!clickedAnchor && !inPopover) {
         setIsStartOpen(false);
@@ -203,14 +177,8 @@ function DateRangeFieldsCalendar({
     return () => document.removeEventListener('mousedown', onDocumentMouseDown);
   }, []);
 
-  const selectedStartDate = useMemo(
-    () => parseISOYmd(value.startDate) ?? null,
-    [value.startDate]
-  );
-  const selectedEndDate = useMemo(
-    () => parseISOYmd(value.endDate) ?? null,
-    [value.endDate]
-  );
+  const selectedStartDate = useMemo(() => parseISOYmd(value.startDate) ?? null, [value.startDate]);
+  const selectedEndDate = useMemo(() => parseISOYmd(value.endDate) ?? null, [value.endDate]);
 
   const blockedRanges = useMemo(() => {
     const ranges =
@@ -268,8 +236,7 @@ function DateRangeFieldsCalendar({
     if (nextValue instanceof Date) {
       const nextStartISO = formatISOYmd(nextValue);
       const currentEndISO = value.endDate;
-      const shouldClearEnd =
-        currentEndISO && parseISOYmd(currentEndISO)! < nextValue;
+      const shouldClearEnd = currentEndISO && parseISOYmd(currentEndISO)! < nextValue;
       onChange({
         startDate: nextStartISO,
         endDate: shouldClearEnd ? undefined : currentEndISO,
@@ -302,21 +269,14 @@ function DateRangeFieldsCalendar({
     }
   }
 
-  const displayStartText = value.startDate
-    ? formatDotFromISO(value.startDate)
-    : 'dd.mm.yyyy';
-  const displayEndText = value.endDate
-    ? formatDotFromISO(value.endDate)
-    : 'dd.mm.yyyy';
+  const displayStartText = value.startDate ? formatDotFromISO(value.startDate) : 'dd.mm.yyyy';
+  const displayEndText = value.endDate ? formatDotFromISO(value.endDate) : 'dd.mm.yyyy';
 
   return (
     <div className={className ?? ''}>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
-          <label
-            htmlFor={startInputId}
-            className="mb-1 block text-sm text-gray-700 font-text"
-          >
+          <label htmlFor={startInputId} className="mb-1 block text-sm text-gray-700 font-text">
             {labelFrom}
           </label>
           <button
@@ -348,9 +308,7 @@ function DateRangeFieldsCalendar({
                   value={selectedStartDate}
                   onChange={handleStartChange}
                   tileDisabled={isBaseTileDisabled}
-                  className={`react-calendar ${
-                    months === 2 ? 'react-calendar--doubleView' : ''
-                  }`}
+                  className={`react-calendar ${months === 2 ? 'react-calendar--doubleView' : ''}`}
                 />
                 <div className="mt-2 flex justify-end gap-2">
                   <button
@@ -378,10 +336,7 @@ function DateRangeFieldsCalendar({
           )}
         </div>
         <div>
-          <label
-            htmlFor={endInputId}
-            className="mb-1 block text-sm text-gray-700 font-text"
-          >
+          <label htmlFor={endInputId} className="mb-1 block text-sm text-gray-700 font-text">
             {labelTo}
           </label>
           <button
@@ -414,9 +369,7 @@ function DateRangeFieldsCalendar({
                   value={selectedEndDate}
                   onChange={handleEndChange}
                   tileDisabled={isEndTileDisabled}
-                  className={`react-calendar ${
-                    months === 2 ? 'react-calendar--doubleView' : ''
-                  }`}
+                  className={`react-calendar ${months === 2 ? 'react-calendar--doubleView' : ''}`}
                 />
                 <div className="mt-2 flex justify-end gap-2">
                   <button
@@ -502,10 +455,7 @@ export function DateRangeFields({
     <div className={className ?? ''}>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
-          <label
-            htmlFor={startInputId}
-            className="mb-1 block text-sm text-gray-700"
-          >
+          <label htmlFor={startInputId} className="mb-1 block text-sm text-gray-700">
             {labelFrom}
           </label>
           {variant === 'native' ? (
@@ -546,10 +496,7 @@ export function DateRangeFields({
         </div>
 
         <div>
-          <label
-            htmlFor={endInputId}
-            className="mb-1 block text-sm text-gray-700"
-          >
+          <label htmlFor={endInputId} className="mb-1 block text-sm text-gray-700">
             {labelTo}
           </label>
           {variant === 'native' ? (
@@ -559,9 +506,7 @@ export function DateRangeFields({
               type="date"
               value={value.endDate ?? ''}
               min={endMin}
-              onChange={(event) =>
-                onChange({ ...value, endDate: event.target.value || undefined })
-              }
+              onChange={(event) => onChange({ ...value, endDate: event.target.value || undefined })}
               className="w-full rounded-md border bg-gray-100 border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-highlight"
             />
           ) : (

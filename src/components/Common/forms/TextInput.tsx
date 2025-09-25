@@ -34,10 +34,7 @@ export function TextInput({
   const hasError = !!errorMessage;
   return (
     <div>
-      <label
-        htmlFor={id}
-        className="block text-md text-gray-700 mb-1 font-text"
-      >
+      <label htmlFor={id} className="block text-md text-gray-700 mb-1 font-text">
         {label}
       </label>
       <input

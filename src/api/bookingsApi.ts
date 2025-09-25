@@ -53,9 +53,7 @@ export async function getBookingsByProfile(
   const params = new URLSearchParams();
   if (options?.withVenue) params.set('_venue', 'true');
   const query = params.toString();
-  const url = `${API_PROFILES}/${encodeURIComponent(username)}/bookings${
-    query ? `?${query}` : ''
-  }`;
+  const url = `${API_PROFILES}/${encodeURIComponent(username)}/bookings${query ? `?${query}` : ''}`;
   const data = await doFetch<TBookingWithVenue[]>(url, { auth: true });
   return data ?? [];
 }
@@ -90,14 +88,11 @@ export async function updateBooking(
   bookingId: string,
   payload: TUpdateBookingPayload
 ): Promise<TBooking> {
-  const data = await doFetch<TBooking>(
-    `${API_BOOKINGS}/${encodeURIComponent(bookingId)}`,
-    {
-      method: 'PUT',
-      auth: true,
-      body: JSON.stringify(payload),
-    }
-  );
+  const data = await doFetch<TBooking>(`${API_BOOKINGS}/${encodeURIComponent(bookingId)}`, {
+    method: 'PUT',
+    auth: true,
+    body: JSON.stringify(payload),
+  });
   if (!data) throw new Error('Failed to update booking');
   return data;
 }

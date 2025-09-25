@@ -19,11 +19,7 @@ type VenueSortProps = {
  * @param disabled - Whether the control is disabled (default false).
  * @returns A labeled select element for choosing venue sort order.
  */
-export function VenueSort({
-  sortOrder,
-  onChange,
-  disabled = false,
-}: VenueSortProps) {
+export function VenueSort({ sortOrder, onChange, disabled = false }: VenueSortProps) {
   const selectId = 'venue-sort';
 
   return (

@@ -14,9 +14,7 @@ import type { TVenue, TCreateVenueInput } from '../types/venueTypes';
  * @throws Error when the venue is missing or the request fails.
  */
 export async function getVenue(venueId: string): Promise<TVenue> {
-  const url = `${API_VENUES}/${encodeURIComponent(
-    venueId
-  )}?_bookings=true&_owner=true`;
+  const url = `${API_VENUES}/${encodeURIComponent(venueId)}?_bookings=true&_owner=true`;
   try {
     const responseData = await doFetch<TVenue>(url, {
       method: 'GET',
@@ -26,13 +24,9 @@ export async function getVenue(venueId: string): Promise<TVenue> {
     return responseData;
   } catch (error: unknown) {
     const errorObject =
-      error && typeof error === 'object'
-        ? (error as Record<string, unknown>)
-        : {};
+      error && typeof error === 'object' ? (error as Record<string, unknown>) : {};
     const message =
-      typeof errorObject.message === 'string'
-        ? errorObject.message
-        : 'Failed to load venue';
+      typeof errorObject.message === 'string' ? errorObject.message : 'Failed to load venue';
     throw new Error(message);
   }
 }
@@ -58,9 +52,7 @@ export async function listVenues(limit = 100): Promise<TVenue[]> {
     return responseData ?? [];
   } catch (error: unknown) {
     const errorObject =
-      error && typeof error === 'object'
-        ? (error as Record<string, unknown>)
-        : {};
+      error && typeof error === 'object' ? (error as Record<string, unknown>) : {};
     const message =
       typeof errorObject.message === 'string'
         ? errorObject.message
@@ -94,9 +86,7 @@ export async function getVenuesByOwner(
   if (options?.page) queryParams.set('page', String(options.page));
 
   const baseUrl = `${API_PROFILES}/${encodeURIComponent(profileName)}/venues`;
-  const url = queryParams.toString()
-    ? `${baseUrl}?${queryParams.toString()}`
-    : baseUrl;
+  const url = queryParams.toString() ? `${baseUrl}?${queryParams.toString()}` : baseUrl;
 
   try {
     const responseData = await doFetch<TVenue[]>(url, {
@@ -106,9 +96,7 @@ export async function getVenuesByOwner(
     return responseData ?? [];
   } catch (error: unknown) {
     const errorObject =
-      error && typeof error === 'object'
-        ? (error as Record<string, unknown>)
-        : {};
+      error && typeof error === 'object' ? (error as Record<string, unknown>) : {};
     const message =
       typeof errorObject.message === 'string'
         ? errorObject.message
@@ -140,13 +128,9 @@ export async function createVenue(input: TCreateVenueInput): Promise<TVenue> {
     return responseData;
   } catch (error: unknown) {
     const errorObject =
-      error && typeof error === 'object'
-        ? (error as Record<string, unknown>)
-        : {};
+      error && typeof error === 'object' ? (error as Record<string, unknown>) : {};
     const message =
-      typeof errorObject.message === 'string'
-        ? errorObject.message
-        : 'Could not create venue';
+      typeof errorObject.message === 'string' ? errorObject.message : 'Could not create venue';
     throw new Error(message);
   }
 }
@@ -195,9 +179,7 @@ export async function listVenuesPaged(options?: {
     return responseData ?? [];
   } catch (error: unknown) {
     const errorObject =
-      error && typeof error === 'object'
-        ? (error as Record<string, unknown>)
-        : {};
+      error && typeof error === 'object' ? (error as Record<string, unknown>) : {};
     const message =
       typeof errorObject.message === 'string'
         ? errorObject.message
@@ -262,10 +244,7 @@ export async function listVenuesAll(options?: {
  * @returns The updated venue.
  * @throws Error when the request fails or the server returns no venue.
  */
-export async function updateVenue(
-  venueId: string,
-  input: TCreateVenueInput
-): Promise<TVenue> {
+export async function updateVenue(venueId: string, input: TCreateVenueInput): Promise<TVenue> {
   const url = `${API_VENUES}/${encodeURIComponent(venueId)}`;
   const body = JSON.stringify(input);
   try {
@@ -278,13 +257,9 @@ export async function updateVenue(
     return responseData;
   } catch (error: unknown) {
     const errorObject =
-      error && typeof error === 'object'
-        ? (error as Record<string, unknown>)
-        : {};
+      error && typeof error === 'object' ? (error as Record<string, unknown>) : {};
     const message =
-      typeof errorObject.message === 'string'
-        ? errorObject.message
-        : 'Could not update venue';
+      typeof errorObject.message === 'string' ? errorObject.message : 'Could not update venue';
     throw new Error(message);
   }
 }
@@ -306,13 +281,9 @@ export async function deleteVenue(venueId: string): Promise<void> {
     await doFetch<void>(url, { method: 'DELETE', auth: true });
   } catch (error: unknown) {
     const errorObject =
-      error && typeof error === 'object'
-        ? (error as Record<string, unknown>)
-        : {};
+      error && typeof error === 'object' ? (error as Record<string, unknown>) : {};
     const message =
-      typeof errorObject.message === 'string'
-        ? errorObject.message
-        : 'Could not delete venue';
+      typeof errorObject.message === 'string' ? errorObject.message : 'Could not delete venue';
     throw new Error(message);
   }
 }
@@ -341,7 +312,5 @@ export async function searchVenuesByName(query: string): Promise<TVenue[]> {
 
   const venues = responseData ?? [];
   const lowercasedQuery = trimmedQuery.toLowerCase();
-  return venues.filter((venue) =>
-    (venue.name ?? '').toLowerCase().includes(lowercasedQuery)
-  );
+  return venues.filter((venue) => (venue.name ?? '').toLowerCase().includes(lowercasedQuery));
 }

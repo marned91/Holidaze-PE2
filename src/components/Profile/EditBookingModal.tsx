@@ -7,10 +7,7 @@ import type { TDateRange } from '../../types/dateTypes';
 import { getVenue } from '../../api/venuesApi';
 import { updateBooking } from '../../api/bookingsApi';
 import { DateRangeFields } from '../Common/DateRangeFields';
-import {
-  normalizeDateRange,
-  isVenueAvailableForRange,
-} from '../../utils/dateRange';
+import { normalizeDateRange, isVenueAvailableForRange } from '../../utils/dateRange';
 import { todayYmd } from '../../utils/date';
 import { useAlerts } from '../../hooks/useAlerts';
 
@@ -21,12 +18,7 @@ function parseDate(value: string) {
   const [year, month, day] = value.split('-').map(Number);
   return new Date(year, (month || 1) - 1, day || 1);
 }
-function dateRangesOverlap(
-  startA: string,
-  endA: string,
-  startB: string,
-  endB: string
-) {
+function dateRangesOverlap(startA: string, endA: string, startB: string, endB: string) {
   const startTimeA = parseDate(startA).getTime();
   const endTimeA = parseDate(endA).getTime();
   const startTimeB = parseDate(startB).getTime();
@@ -114,13 +106,9 @@ export function EditBookingModal({
     [dateFrom, dateTo]
   );
 
-  const normalizedRange = useMemo(
-    () => normalizeDateRange(dateRangeValue),
-    [dateRangeValue]
-  );
+  const normalizedRange = useMemo(() => normalizeDateRange(dateRangeValue), [dateRangeValue]);
 
-  const unavailableRaw: BookingLike[] = (loadedVenue?.bookings ??
-    []) as unknown as BookingLike[];
+  const unavailableRaw: BookingLike[] = (loadedVenue?.bookings ?? []) as unknown as BookingLike[];
 
   const unavailableFiltered = useMemo(() => {
     return unavailableRaw.filter((existing) => {
@@ -153,9 +141,7 @@ export function EditBookingModal({
   const maxGuests = loadedVenue?.maxGuests ?? venue.maxGuests;
 
   const hasDateOrderError =
-    !!dateFrom &&
-    !!dateTo &&
-    parseDate(dateFrom).getTime() >= parseDate(dateTo).getTime();
+    !!dateFrom && !!dateTo && parseDate(dateFrom).getTime() >= parseDate(dateTo).getTime();
 
   const hasOverlapWithUnavailableDates =
     !!dateFrom &&
@@ -173,8 +159,8 @@ export function EditBookingModal({
     guests < 1
       ? 'Must be at least 1 guest'
       : guests > maxGuests
-      ? `Max ${maxGuests} guests for this venue`
-      : '';
+        ? `Max ${maxGuests} guests for this venue`
+        : '';
 
   const startIsBeforeTomorrow = useMemo(() => {
     if (!dateFrom) return false;
@@ -234,20 +220,9 @@ export function EditBookingModal({
   if (!open) return null;
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="Edit booking"
-      ariaLabel="Edit booking"
-    >
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-5 font-text"
-        noValidate
-      >
-        {isVenueLoading && (
-          <p className="text-sm text-gray-600">Loading availability…</p>
-        )}
+    <Modal open={open} onClose={onClose} title="Edit booking" ariaLabel="Edit booking">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 font-text" noValidate>
+        {isVenueLoading && <p className="text-sm text-gray-600">Loading availability…</p>}
         {venueLoadError && (
           <p className="text-sm text-red-600 font-text" role="alert">
             {venueLoadError}
@@ -255,9 +230,7 @@ export function EditBookingModal({
         )}
 
         <div>
-          <label className="mb-1 block text-sm font-medium font-text">
-            Guests
-          </label>
+          <label className="mb-1 block text-sm font-medium font-text">Guests</label>
           <select
             {...register('guests', { valueAsNumber: true })}
             className={`w-full rounded-lg border px-3 py-2 bg-white text-sm outline-none font-text ${
@@ -267,14 +240,13 @@ export function EditBookingModal({
             }`}
             aria-invalid={!!guestsValidationMessage || undefined}
           >
-            {Array.from(
-              { length: Math.max(maxGuests, 1) },
-              (_, index) => index + 1
-            ).map((count) => (
-              <option key={count} value={count}>
-                {count}
-              </option>
-            ))}
+            {Array.from({ length: Math.max(maxGuests, 1) }, (_, index) => index + 1).map(
+              (count) => (
+                <option key={count} value={count}>
+                  {count}
+                </option>
+              )
+            )}
           </select>
           {guestsValidationMessage && (
             <p className="mt-1 text-sm text-red-600 font-text" role="alert">
@@ -303,14 +275,11 @@ export function EditBookingModal({
             months={1}
           />
 
-          {normalizedRange &&
-            availability === true &&
-            !startIsBeforeTomorrow &&
-            !hasEmptyRange && (
-              <p className="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
-                Available for the selected dates!
-              </p>
-            )}
+          {normalizedRange && availability === true && !startIsBeforeTomorrow && !hasEmptyRange && (
+            <p className="mt-3 rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">
+              Available for the selected dates!
+            </p>
+          )}
 
           {normalizedRange &&
             availability === false &&
@@ -323,18 +292,16 @@ export function EditBookingModal({
             )}
         </div>
 
-        {!!dateFrom &&
-          !!dateTo &&
-          (hasDateOrderError || startIsBeforeTomorrow) && (
-            <div
-              className="rounded-md border border-red-200 font-text bg-red-50 px-3 py-2 text-sm text-red-700"
-              role="alert"
-            >
-              {startIsBeforeTomorrow
-                ? 'Start date must be in the future (tomorrow or later).'
-                : 'The end date must be after the start date.'}
-            </div>
-          )}
+        {!!dateFrom && !!dateTo && (hasDateOrderError || startIsBeforeTomorrow) && (
+          <div
+            className="rounded-md border border-red-200 font-text bg-red-50 px-3 py-2 text-sm text-red-700"
+            role="alert"
+          >
+            {startIsBeforeTomorrow
+              ? 'Start date must be in the future (tomorrow or later).'
+              : 'The end date must be after the start date.'}
+          </div>
+        )}
 
         <div className="mt-6 flex items-center justify-end gap-3">
           <button

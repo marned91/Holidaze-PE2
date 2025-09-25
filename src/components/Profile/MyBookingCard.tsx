@@ -42,13 +42,10 @@ export function MyBookingCard({
   const toYmd = toIsoDateOnly(booking.dateTo);
   const fromDate = parseISOYmd(fromYmd);
   const toDate = parseISOYmd(toYmd);
-  const nights =
-    fromDate && toDate ? Math.max(1, nightsBetween(fromDate, toDate)) : 1;
+  const nights = fromDate && toDate ? Math.max(1, nightsBetween(fromDate, toDate)) : 1;
 
   const total =
-    typeof totalPriceOverride === 'number'
-      ? totalPriceOverride
-      : nights * Number(venue.price || 0);
+    typeof totalPriceOverride === 'number' ? totalPriceOverride : nights * Number(venue.price || 0);
 
   const { url, alt } = getVenueImage(venue);
 
@@ -59,12 +56,7 @@ export function MyBookingCard({
     >
       <div className="aspect-[16/10] w-full overflow-hidden bg-gray-100">
         {url ? (
-          <img
-            src={url}
-            alt={alt}
-            className="h-full w-full object-cover"
-            loading="lazy"
-          />
+          <img src={url} alt={alt} className="h-full w-full object-cover" loading="lazy" />
         ) : (
           <div className="flex h-full w-full font-text items-center justify-center text-sm text-gray-500">
             No image

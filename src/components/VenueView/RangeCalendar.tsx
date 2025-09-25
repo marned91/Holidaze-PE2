@@ -2,12 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Calendar from 'react-calendar';
 import type { TVenueBooking } from '../../types/venueTypes';
 import type { TDateRange } from '../../types/dateTypes';
-import {
-  parseISOYmd,
-  formatISOYmd,
-  startOfToday,
-  isWithinInclusiveDay,
-} from '../../utils/date';
+import { parseISOYmd, formatISOYmd, startOfToday, isWithinInclusiveDay } from '../../utils/date';
 
 type RangeCalendarProps = {
   value: TDateRange;
@@ -32,30 +27,18 @@ type RangeCalendarProps = {
  * @param months - Desired month panels (2 by default; 1 on small screens).
  * @returns A responsive calendar range picker.
  */
-export function RangeCalendar({
-  value,
-  onChange,
-  bookings = [],
-  months = 2,
-}: RangeCalendarProps) {
+export function RangeCalendar({ value, onChange, bookings = [], months = 2 }: RangeCalendarProps) {
   const startDate = parseISOYmd(value.startDate);
   const endDate = parseISOYmd(value.endDate);
   const today = startOfToday();
 
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(() => {
-    if (
-      typeof window === 'undefined' ||
-      typeof window.matchMedia !== 'function'
-    )
-      return false;
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
     return window.matchMedia('(max-width: 640px)').matches;
   });
 
   useEffect(() => {
-    if (
-      typeof window === 'undefined' ||
-      typeof window.matchMedia !== 'function'
-    ) {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
       return;
     }
 
@@ -86,9 +69,7 @@ export function RangeCalendar({
   }, [bookings]);
 
   const selectedValue =
-    startDate && endDate
-      ? ([startDate, endDate] as [Date, Date])
-      : startDate ?? undefined;
+    startDate && endDate ? ([startDate, endDate] as [Date, Date]) : (startDate ?? undefined);
 
   return (
     <div>

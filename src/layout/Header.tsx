@@ -67,9 +67,7 @@ export function Header() {
                 <li>
                   <NavLink
                     to="/"
-                    className={({ isActive }) =>
-                      roundIconButtonClassName(isActive)
-                    }
+                    className={({ isActive }) => roundIconButtonClassName(isActive)}
                     aria-label="Home"
                     title="Home"
                   >
@@ -83,9 +81,7 @@ export function Header() {
                       <NavLink
                         to="/signup"
                         className={({ isActive }) =>
-                          `${pillButtonClassName} ${
-                            isActive ? 'ring-2 ring-white/60' : ''
-                          }`
+                          `${pillButtonClassName} ${isActive ? 'ring-2 ring-white/60' : ''}`
                         }
                       >
                         Join us!
@@ -95,9 +91,7 @@ export function Header() {
                       <NavLink
                         to="/login"
                         className={({ isActive }) =>
-                          `${pillButtonClassName} ${
-                            isActive ? 'ring-2 ring-white/60' : ''
-                          }`
+                          `${pillButtonClassName} ${isActive ? 'ring-2 ring-white/60' : ''}`
                         }
                       >
                         Log in
@@ -109,24 +103,15 @@ export function Header() {
                     <li>
                       <NavLink
                         to={getProfileUrl()}
-                        className={({ isActive }) =>
-                          roundIconButtonClassName(isActive)
-                        }
+                        className={({ isActive }) => roundIconButtonClassName(isActive)}
                         aria-label="Profile"
                         title="Profile"
                       >
-                        <FaUser
-                          className="text-lg text-white"
-                          aria-hidden="true"
-                        />
+                        <FaUser className="text-lg text-white" aria-hidden="true" />
                       </NavLink>
                     </li>
                     <li>
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        className={pillButtonClassName}
-                      >
+                      <button type="button" onClick={handleLogout} className={pillButtonClassName}>
                         Log out
                       </button>
                     </li>
@@ -161,9 +146,7 @@ export function Header() {
             <NavLink
               to="/login"
               className={({ isActive }) =>
-                `${pillButtonClassName} ${
-                  isActive ? 'ring-2 ring-white/60' : ''
-                }`
+                `${pillButtonClassName} ${isActive ? 'ring-2 ring-white/60' : ''}`
               }
               onClick={() => setIsMobileMenuOpen(false)}
             >

@@ -48,24 +48,17 @@ export function useVenues(limit = 100): UseVenuesResult {
 
           const norwegianOnly = (apiVenues ?? []).filter(isInNorway);
 
-          const venuesSortedByNewest = [...norwegianOnly].sort(
-            (venueA, venueB) => {
-              const aTime = new Date(
-                venueA.created || venueA.updated || 0
-              ).getTime();
-              const bTime = new Date(
-                venueB.created || venueB.updated || 0
-              ).getTime();
-              return bTime - aTime;
-            }
-          );
+          const venuesSortedByNewest = [...norwegianOnly].sort((venueA, venueB) => {
+            const aTime = new Date(venueA.created || venueA.updated || 0).getTime();
+            const bTime = new Date(venueB.created || venueB.updated || 0).getTime();
+            return bTime - aTime;
+          });
 
           setVenues(venuesSortedByNewest);
         } catch (unknownError: unknown) {
           if (isComponentActive) {
             const message =
-              (unknownError as Error)?.message ??
-              'Failed to load venues, please reload the page';
+              (unknownError as Error)?.message ?? 'Failed to load venues, please reload the page';
             setError(message);
           }
         } finally {

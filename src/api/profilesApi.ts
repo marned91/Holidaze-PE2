@@ -34,9 +34,7 @@ export async function getProfile(
     if (!data) throw new Error('Profile not found');
     return data;
   } catch (error) {
-    const message =
-      (error as Error)?.message ||
-      'Could not get profile, please reload the page';
+    const message = (error as Error)?.message || 'Could not get profile, please reload the page';
     throw new Error(message);
   }
 }
@@ -73,8 +71,7 @@ export async function setProfilePicture(
     return data;
   } catch (error) {
     const message =
-      (error as Error)?.message ||
-      'Could not update profile picture, please try again';
+      (error as Error)?.message || 'Could not update profile picture, please try again';
     throw new Error(message);
   }
 }

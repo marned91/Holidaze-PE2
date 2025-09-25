@@ -7,10 +7,7 @@ import { updateVenue } from '../../../api/venuesApi';
 import type { TVenue } from '../../../types/venueTypes';
 import type { TVenueFormValues } from '../../../types/formTypes';
 import { venueSchema } from '../forms/validateCreateAndEditVenueSchema';
-import {
-  venueToFormValues,
-  formValuesToCreatePayload,
-} from '../../../utils/venueFormMapping';
+import { venueToFormValues, formValuesToCreatePayload } from '../../../utils/venueFormMapping';
 import { TitleField } from '../forms/VenueFormFields/TitleField';
 import { DescriptionField } from '../forms/VenueFormFields/DescriptionField';
 import { ImagesField } from '../forms/VenueFormFields/ImagesField';
@@ -94,28 +91,16 @@ export function EditVenueModal({
       onClose();
       navigate(`/profile/${encodeURIComponent(profileName)}`);
     } catch (unknownError) {
-      const message =
-        (unknownError as Error)?.message || 'Could not update venue';
+      const message = (unknownError as Error)?.message || 'Could not update venue';
       showErrorAlert(message);
     }
   }
 
   return (
-    <Modal
-      open={open}
-      title="Edit venue"
-      ariaLabel="Edit venue"
-      onClose={onClose}
-    >
+    <Modal open={open} title="Edit venue" ariaLabel="Edit venue" onClose={onClose}>
       <FormProvider {...methods}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5"
-          noValidate
-        >
-          <p className="text-sm text-gray-600 font-text">
-            Update the details for your venue.
-          </p>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+          <p className="text-sm text-gray-600 font-text">Update the details for your venue.</p>
           <TitleField max={100} />
           <DescriptionField max={1000} />
           <ImagesField />

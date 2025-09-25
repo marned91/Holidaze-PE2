@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AlertsContext } from './alertsContext';
 
 export type AlertCategory = 'info' | 'success' | 'error';
@@ -29,18 +22,9 @@ export interface AlertItem {
 /** Public API exposed by the alerts context. */
 export interface AlertsContextValue {
   showAlert: (message: string, options?: ShowAlertOptions) => string;
-  showInformationAlert: (
-    message: string,
-    options?: Omit<ShowAlertOptions, 'category'>
-  ) => string;
-  showSuccessAlert: (
-    message: string,
-    options?: Omit<ShowAlertOptions, 'category'>
-  ) => string;
-  showErrorAlert: (
-    message: string,
-    options?: Omit<ShowAlertOptions, 'category'>
-  ) => string;
+  showInformationAlert: (message: string, options?: Omit<ShowAlertOptions, 'category'>) => string;
+  showSuccessAlert: (message: string, options?: Omit<ShowAlertOptions, 'category'>) => string;
+  showErrorAlert: (message: string, options?: Omit<ShowAlertOptions, 'category'>) => string;
 }
 
 const DEFAULT_TIMEOUT_INFO = 2500;
@@ -69,8 +53,7 @@ function defaultTimeoutFor(category: AlertCategory): number {
 }
 
 function classesFor(category: AlertCategory): string {
-  if (category === 'success')
-    return 'border-green-300 bg-green-50 text-green-900';
+  if (category === 'success') return 'border-green-300 bg-green-50 text-green-900';
   if (category === 'error') return 'border-red-300 bg-red-50 text-red-900';
   return 'border-blue-300 bg-blue-50 text-blue-900';
 }
@@ -87,10 +70,7 @@ function classesFor(category: AlertCategory): string {
  * @param override - Optional explicit headline text.
  * @returns Headline text or undefined when none should be shown.
  */
-function defaultHeadlineFor(
-  category: AlertCategory,
-  override?: string
-): string | undefined {
+function defaultHeadlineFor(category: AlertCategory, override?: string): string | undefined {
   if (override) return override;
   if (category === 'success') return 'Success';
   if (category === 'error') return 'Something went wrong';
@@ -160,9 +140,7 @@ export function AlertsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     return () => {
-      Object.values(timeoutHandles.current).forEach((h) =>
-        window.clearTimeout(h)
-      );
+      Object.values(timeoutHandles.current).forEach((h) => window.clearTimeout(h));
       timeoutHandles.current = {};
     };
   }, []);
@@ -240,9 +218,7 @@ function AlertsViewportInternal({
             <div className="flex items-start gap-3">
               <div className="flex-1">
                 {headlineText && (
-                  <p className="font-small-nav-footer text-lg font-medium">
-                    {headlineText}
-                  </p>
+                  <p className="font-small-nav-footer text-lg font-medium">{headlineText}</p>
                 )}
                 <p className="font-text text-sm font-medium">{item.message}</p>
               </div>

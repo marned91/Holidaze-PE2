@@ -35,26 +35,14 @@ export function todayYmd(): string {
 }
 
 /** Check if `date` is within `[startDate, endDate]` (inclusive) comparing calendar days. */
-export function isWithinInclusiveDay(
-  date: Date,
-  startDate: Date,
-  endDate: Date
-): boolean {
-  const dateMs = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate()
-  ).getTime();
+export function isWithinInclusiveDay(date: Date, startDate: Date, endDate: Date): boolean {
+  const dateMs = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
   const startMs = new Date(
     startDate.getFullYear(),
     startDate.getMonth(),
     startDate.getDate()
   ).getTime();
-  const endMs = new Date(
-    endDate.getFullYear(),
-    endDate.getMonth(),
-    endDate.getDate()
-  ).getTime();
+  const endMs = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()).getTime();
   return dateMs >= startMs && dateMs <= endMs;
 }
 
@@ -62,11 +50,7 @@ const MILLISECONDS_PER_DAY = 86_400_000;
 
 /** Count nights between two dates by comparing local midnights; returns at least `1`. */
 export function nightsBetween(from: Date, to: Date): number {
-  const fromAtMidnight = new Date(
-    from.getFullYear(),
-    from.getMonth(),
-    from.getDate()
-  );
+  const fromAtMidnight = new Date(from.getFullYear(), from.getMonth(), from.getDate());
   const toAtMidnight = new Date(to.getFullYear(), to.getMonth(), to.getDate());
   const millisecondsBetween = toAtMidnight.getTime() - fromAtMidnight.getTime();
   return Math.max(1, Math.round(millisecondsBetween / MILLISECONDS_PER_DAY));

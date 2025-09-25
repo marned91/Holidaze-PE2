@@ -25,9 +25,7 @@ export function LoginRequiredModal({
 }: LoginRequiredProps) {
   return (
     <Modal open={open} title="Please sign in" onClose={onClose}>
-      <p className="text-gray-700 text-sm font-text">
-        You need to be logged in to book venues.
-      </p>
+      <p className="text-gray-700 text-sm font-text">You need to be logged in to book venues.</p>
       <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 font-medium-buttons">
         <button
           type="button"

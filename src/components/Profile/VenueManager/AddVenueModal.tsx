@@ -31,11 +31,7 @@ type AddVenueModalProps = {
  * - Uses `react-hook-form` with a Yup resolver (`venueSchema`).
  * - Initializes with two empty image rows and Norway as the country (via payload mapping).
  */
-export function AddVenueModal({
-  open,
-  onClose,
-  onCreated,
-}: AddVenueModalProps) {
+export function AddVenueModal({ open, onClose, onCreated }: AddVenueModalProps) {
   const methods = useForm<TVenueFormValues>({
     resolver: yupResolver(venueSchema),
     mode: 'onChange',
@@ -115,18 +111,9 @@ export function AddVenueModal({
   }
 
   return (
-    <Modal
-      open={open}
-      title="Add venue"
-      ariaLabel="Add venue"
-      onClose={onClose}
-    >
+    <Modal open={open} title="Add venue" ariaLabel="Add venue" onClose={onClose}>
       <FormProvider {...methods}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5"
-          noValidate
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
           <p className="text-sm text-gray-600 font-text">
             Fill in the details to publish your venue.
           </p>

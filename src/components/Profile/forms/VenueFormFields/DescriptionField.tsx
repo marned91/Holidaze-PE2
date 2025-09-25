@@ -26,10 +26,7 @@ export function DescriptionField({ max = 1000 }: { max?: number }) {
 
   return (
     <div>
-      <label
-        htmlFor={textareaId}
-        className="mb-1 block text-sm font-medium font-text"
-      >
+      <label htmlFor={textareaId} className="mb-1 block text-sm font-medium font-text">
         Description
       </label>
       <textarea
@@ -48,10 +45,7 @@ export function DescriptionField({ max = 1000 }: { max?: number }) {
         <span id={errorId} role="alert" className="text-red-600">
           {errors.description?.message}
         </span>
-        <span
-          id={counterId}
-          className={value.length > max ? 'text-red-600' : 'text-gray-500'}
-        >
+        <span id={counterId} className={value.length > max ? 'text-red-600' : 'text-gray-500'}>
           {value.length}/{max}
         </span>
       </div>
