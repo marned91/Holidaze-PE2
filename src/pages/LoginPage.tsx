@@ -48,9 +48,9 @@ export function LoginPage() {
   }
 
   return (
-    <main className="min-h-[calc(100vh-120px)] flex items-center justify-center bg-light px-4">
+    <main className="min-h-[calc(100vh-120px)] overflow-x-hidden flex items-center justify-center bg-light px-4">
       <section
-        className="w-full max-w-md bg-white rounded-lg shadow-xl py-10 px-8"
+        className="w-full max-w-md bg-white rounded-lg shadow-xl py-15 px-8"
         aria-labelledby={headingId}
       >
         <h1

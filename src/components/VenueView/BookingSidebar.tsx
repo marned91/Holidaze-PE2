@@ -83,7 +83,7 @@ export function BookingSidebar({
   const guestsSelectId = useId();
 
   return (
-    <div className="rounded-lg border border-gray-300 p-5 shadow-lg">
+    <div className="rounded-lg border border-gray-300 p-5 shadow-xl">
       <h2 className="text-2xl font-semibold font-medium-buttons">Book Now</h2>
       <div className="mt-2 text-lg font-text">
         <span className="font-semibold">{priceText}</span>
@@ -169,7 +169,7 @@ export function BookingSidebar({
         className={`mt-6 w-full rounded-lg py-2 text-white text-lg font-medium font-medium-buttons ${
           canRequest
             ? 'bg-main-dark hover:bg-dark-highlight'
-            : 'bg-gray-300 cursor-not-allowed'
+            : 'bg-main-dark opacity-60 cursor-not-allowed'
         }`}
       >
         Book Now!

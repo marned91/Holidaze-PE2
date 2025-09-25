@@ -192,7 +192,7 @@ export function MyBookingsSection(props: WithItems | WithBookings) {
       {errorMessage && <p className="text-red-600">{errorMessage}</p>}
       {!isLoading && !errorMessage && sorted.length === 0 && (
         <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center font-text">
-          <p className="text-gray-700">{emptyMessage}</p>
+          <p className="text-gray-700 py-10">{emptyMessage}</p>
         </div>
       )}
       {!isLoading && !errorMessage && sorted.length > 0 && (

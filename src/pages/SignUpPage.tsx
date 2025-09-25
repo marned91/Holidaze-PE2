@@ -96,7 +96,7 @@ export function SignUpPage() {
   }
 
   return (
-    <main className="min-h-[calc(100vh-120px)] flex items-center justify-center bg-light px-4">
+    <main className="min-h-screen overflow-x-hidden flex items-center justify-center bg-light px-4">
       <section
         className="w-full max-w-lg bg-white rounded-lg shadow-xl p-5 md:p-10 my-10"
         aria-labelledby={headingId}

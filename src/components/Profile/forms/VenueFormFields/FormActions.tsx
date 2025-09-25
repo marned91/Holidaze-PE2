@@ -24,7 +24,7 @@ export function FormActions({
         onClick={onCancel}
         disabled={submitting}
         aria-disabled={submitting}
-        className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-100 font-medium-buttons disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-white"
+        className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-100 font-medium-buttons"
       >
         Cancel
       </button>
@@ -33,7 +33,7 @@ export function FormActions({
         disabled={submitting}
         aria-disabled={submitting}
         aria-busy={submitting}
-        className="cursor-pointer rounded-lg bg-main-dark px-5 py-2 text-white hover:bg-dark-highlight disabled:opacity-80 disabled:cursor-not-allowed disabled:hover:bg-main-dark font-medium-buttons"
+        className="cursor-pointer rounded-lg bg-main-dark px-5 py-2 text-white hover:bg-dark-highlight font-medium-buttons"
       >
         {submitting ? busyLabel : idleLabel}
       </button>

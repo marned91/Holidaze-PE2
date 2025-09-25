@@ -114,7 +114,7 @@ export function VenuesFilters({
         }`
       : 'Select dates';
   const baseButton =
-    'relative inline-flex items-center gap-3 rounded-full border px-4 py-2 shadow-sm transition-colors';
+    'relative inline-flex items-center gap-3 rounded-full border px-4 py-2 shadow-sm transition-colors cursor-pointer';
   const inactiveButton = `${baseButton} border-gray-300 shadow-md bg-white hover:bg-gray-50 hover:border-gray-500`;
   const activeButton = `${baseButton} border-gray-400 bg-gray-50`;
   const popoverPanelClass =
@@ -207,7 +207,7 @@ export function VenuesFilters({
                 <button
                   type="button"
                   onClick={closeAll}
-                  className="rounded-md border px-3 py-1 text-sm cursor-pointer font-medium-buttons"
+                  className="rounded-md border px-3 py-1 text-sm cursor-pointer font-medium-buttons hover:bg-gray-50"
                 >
                   Cancel
                 </button>
@@ -293,7 +293,7 @@ export function VenuesFilters({
                 <button
                   type="button"
                   onClick={closeAll}
-                  className="rounded-md border px-3 py-1 text-sm font-medium-buttons cursor-pointer"
+                  className="rounded-md border px-3 py-1 text-sm font-medium-buttons cursor-pointer hover:bg-gray-50"
                 >
                   Cancel
                 </button>
@@ -381,7 +381,7 @@ export function VenuesFilters({
                 <button
                   type="button"
                   onClick={closeAll}
-                  className="rounded-md border px-3 py-1 text-sm font-medium-buttons"
+                  className="rounded-md border px-3 py-1 text-sm font-medium-buttons hover:bg-gray-50"
                 >
                   Cancel
                 </button>

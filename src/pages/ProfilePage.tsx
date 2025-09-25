@@ -159,7 +159,7 @@ function ProfilePageInner() {
   }
 
   return (
-    <div className="bg-light min-h-[calc(100vh-120px)]">
+    <div className="bg-light min-h-screen overflow-x-hidden">
       <div className="mx-auto max-w-[95%] md:max-w-[85%] px-4 py-10">
         <div className="rounded-xl bg-white p-5 lg:p-10 shadow-xl font-text">
           {loading && <SkeletonProfileHeader />}
