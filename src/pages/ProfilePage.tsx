@@ -193,8 +193,8 @@ function ProfilePageInner() {
 
   return (
     <div className="bg-light min-h-screen overflow-x-hidden">
-      <div className="mx-auto max-w-[95%] md:max-w-[85%] px-4 py-10">
-        <div className="rounded-xl bg-white px-5 xl:px-40 py-10 xl:py-20 shadow-xl font-text">
+      <div className="mx-auto max-w-[95%] md:max-w-[90%] 2xl:max-w-[85%] px-4 py-10">
+        <div className="rounded-xl bg-white px-5 md:px-10 2xl:px-40 py-5 md:py-10 2xl:py-20 shadow-xl font-text">
           {loading && <SkeletonProfileHeader />}
           {!loading && error && (
             <p className="text-red-600" role="alert">
