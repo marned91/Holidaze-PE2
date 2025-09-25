@@ -1,7 +1,6 @@
 import { SkeletonProfileHeader } from '../components/Profile/SkeletonProfileHeader';
 import { SkeletonCardGrid } from '../components/Common/skeleton/SkeletonCardGrid';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useProfile } from '../components/Profile/hooks/useProfile';
 import { useVenueManagerVenues } from '../components/Profile/hooks/useVenueManagerVenues';
 import { useMyBookings } from '../components/Profile/hooks/useMyBookings';
@@ -20,6 +19,7 @@ import { EditVenueModal } from '../components/Profile/VenueManager/EditVenueModa
 import { ConfirmProvider } from '../components/Common/alerts/ConfirmProvider';
 import { useAlerts } from '../hooks/useAlerts';
 import { useConfirm } from '../hooks/useConfirm';
+import { useParams, useNavigate, Navigate } from 'react-router-dom';
 
 /**
  * Route-level wrapper that provides confirm dialog context only for this page.
@@ -37,7 +37,11 @@ export function ProfilePage() {
  * Shows the Venue Manager UI when profile.venueManager is true; otherwise renders "My Bookings".
  */
 function ProfilePageInner() {
-  const { username = '' } = useParams<{ username: string }>();
+  const { username = '', section } = useParams<{
+    username: string;
+    section?: string;
+  }>();
+  const navigate = useNavigate();
 
   const {
     profile,
@@ -86,10 +90,33 @@ function ProfilePageInner() {
     useAlerts();
   const confirm = useConfirm();
 
+  const tabToPath = (tab: ProfileTab) =>
+    tab === 'myBookings'
+      ? 'bookings'
+      : tab === 'addVenue'
+      ? 'venues'
+      : 'venue-bookings';
+
+  const sectionToTab = (s?: string, isManager?: boolean): ProfileTab => {
+    const key = (s ?? '').toLowerCase();
+    if (key === 'bookings') return 'myBookings';
+    if (key === 'venues') return 'addVenue';
+    if (key === 'venue-bookings' || key === 'manager-bookings')
+      return 'managerBookings';
+    return isManager ? 'addVenue' : 'myBookings';
+  };
+
   useEffect(() => {
-    if (!profile) return;
-    setActiveTab(profile.venueManager ? 'addVenue' : 'myBookings');
-  }, [profile]);
+    const next = sectionToTab(section, profile?.venueManager === true);
+    setActiveTab(next);
+  }, [section, profile?.venueManager]);
+
+  const handleChangeTab = (next: ProfileTab) => {
+    setActiveTab(next);
+    navigate(`/profile/${encodeURIComponent(username)}/${tabToPath(next)}`, {
+      replace: true,
+    });
+  };
 
   function handleAvatarUpdated(url: string, alt?: string) {
     setAvatarOpen(false);
@@ -102,10 +129,6 @@ function ProfilePageInner() {
     reloadVenues();
   }
 
-  /**
-   * Asks for confirmation and deletes a venue. Shows success or error alerts.
-   * Applies an optimistic local update and then refreshes from the server.
-   */
   async function handleDeleteVenue(venue: TVenue) {
     const userAccepted = await confirm({
       title: 'Delete venue?',
@@ -130,10 +153,6 @@ function ProfilePageInner() {
     }
   }
 
-  /**
-   * Asks for confirmation and cancels a booking. Shows success or error alerts.
-   * Applies an optimistic local update and then refreshes from the server.
-   */
   async function handleCancelMyBooking(booking: TBooking, venue: TVenue) {
     const userAccepted = await confirm({
       title: 'Cancel booking?',
@@ -156,6 +175,20 @@ function ProfilePageInner() {
       const message = (error as Error)?.message || 'Could not cancel booking';
       showErrorAlert(message);
     }
+  }
+
+  if (
+    !loading &&
+    profile &&
+    !profile.venueManager &&
+    (activeTab === 'addVenue' || activeTab === 'managerBookings')
+  ) {
+    return (
+      <Navigate
+        to={`/profile/${encodeURIComponent(username)}/bookings`}
+        replace
+      />
+    );
   }
 
   return (
@@ -182,7 +215,7 @@ function ProfilePageInner() {
                 ) : (
                   <VenueManager
                     activeTab={activeTab}
-                    onChangeTab={setActiveTab}
+                    onChangeTab={handleChangeTab}
                     venues={venues}
                     isLoadingVenues={venuesLoading}
                     venuesError={venuesError}

@@ -37,8 +37,7 @@ function hasAuthToken(): boolean {
  *
  * @remarks
  * - Presents a review modal before creating a booking.
- * - After confirmation, the “View booking” action navigates to the profile page.
- * - No styling or behavioral changes beyond navigation target already approved.
+ * - After confirmation, the “View booking” action navigates to the profile page/My Bookings.
  */
 export function VenuePage() {
   const { venueId } = useParams<{ venueId: string }>();
@@ -198,8 +197,8 @@ export function VenuePage() {
         open={modalView === 'confirmed'}
         onClose={() => setModalView('none')}
         onViewBooking={() => {
-          const username = getUsername()!; // booking krever innlogging
-          navigate(`/profile/${encodeURIComponent(username)}`);
+          const username = getUsername()!;
+          navigate(`/profile/${encodeURIComponent(username)}/bookings`);
         }}
         venueTitle={venue.name}
         locationText={locationText}

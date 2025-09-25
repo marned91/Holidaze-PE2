@@ -166,7 +166,6 @@ export function UpcomingVenueBookings({
                   className="divide-y divide-gray-200 border-t border-gray-200"
                 >
                   {items.map(({ venue, booking }) => {
-                    // … behold hele li-innholdet ditt som før …
                     const { url, alt } = getVenueImage(venue);
                     const from = toIsoDateOnly(booking.dateFrom);
                     const to = toIsoDateOnly(booking.dateTo);
@@ -187,7 +186,7 @@ export function UpcomingVenueBookings({
                         aria-label={`Booking for ${venue.name} from ${from} to ${to}`}
                       >
                         <div className="shrink-0">
-                          <div className="h-24 w-32 overflow-hidden rounded-lg bg-gray-100">
+                          <div className="h-24 w-32 overflow-hidden rounded-md bg-gray-100">
                             <img
                               src={url}
                               alt={alt}

@@ -3,6 +3,7 @@ import type { TBooking } from '../../types/bookingTypes';
 import { getVenueImage } from '../../utils/venue';
 import { formatCurrencyNOK } from '../../utils/currency';
 import { parseISOYmd, nightsBetween } from '../../utils/date';
+import { Link } from 'react-router-dom';
 
 /** Returns only YYYY-MM-DD part of an ISO datetime string. */
 function toIsoDateOnly(input?: string) {
@@ -72,7 +73,12 @@ export function MyBookingCard({
       </div>
       <div className="p-4">
         <h4 className="text-lg font-small-nav-footer font-medium">
-          {venue.name}
+          <Link
+            to={`/venue/${encodeURIComponent(venue.id)}`}
+            className="hover:underline focus:outline-none focus:ring-2 focus:ring-highlight rounded-sm"
+          >
+            {venue.name}
+          </Link>
         </h4>
         <ul className="mt-2 space-y-1 text-sm text-gray-600 font-text">
           <li>
