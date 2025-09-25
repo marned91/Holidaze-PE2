@@ -1,4 +1,9 @@
-import { useEffect, useState, type KeyboardEvent } from 'react';
+import {
+  useEffect,
+  useState,
+  type KeyboardEvent,
+  type TouchEvent,
+} from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import type { TVenue } from '../../types/venueTypes';
 import PlaceholderImage from '../../assets/placeholder.png';
@@ -11,11 +16,6 @@ type ImageCarouselProps = {
 
 /**
  * Image carousel for a venue, supporting keyboard navigation (Left/Right) and dot indicators.
- *
- * @remarks
- * - Exposes `aria-roledescription="carousel"` and an accessible label.
- * - Decorative arrow icons are marked `aria-hidden`.
- * - No functional or styling changes were made.
  */
 export function ImageCarousel({ images = [] }: ImageCarouselProps) {
   const slides = Array.isArray(images)
@@ -24,19 +24,19 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
 
   const slideCount = slides.length;
   const [activeIndex, setActiveIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const hasMultiple = slideCount > 1;
 
   useEffect(() => setActiveIndex(0), [slideCount]);
 
-  const hasMultiple = slideCount > 1;
-
   function goToNext() {
     if (!hasMultiple) return;
-    setActiveIndex((current) => (current + 1) % slideCount);
+    setActiveIndex((c) => (c + 1) % slideCount);
   }
 
   function goToPrevious() {
     if (!hasMultiple) return;
-    setActiveIndex((current) => (current - 1 + slideCount) % slideCount);
+    setActiveIndex((c) => (c - 1 + slideCount) % slideCount);
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -48,6 +48,19 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
       event.preventDefault();
       goToNext();
     }
+  }
+
+  function onTouchStart(e: TouchEvent<HTMLDivElement>) {
+    if (!hasMultiple) return;
+    setTouchStartX(e.touches[0]?.clientX ?? null);
+  }
+  function onTouchEnd(e: TouchEvent<HTMLDivElement>) {
+    if (!hasMultiple || touchStartX == null) return;
+    const dx = (e.changedTouches[0]?.clientX ?? touchStartX) - touchStartX;
+    const THRESHOLD = 40;
+    if (dx <= -THRESHOLD) goToNext();
+    else if (dx >= THRESHOLD) goToPrevious();
+    setTouchStartX(null);
   }
 
   if (slideCount === 0) {
@@ -69,6 +82,8 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
       className="group relative overflow-hidden rounded-lg shadow-xl"
       tabIndex={0}
       onKeyDown={handleKeyDown}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
       aria-roledescription="carousel"
       aria-label="Venue images"
     >
@@ -88,30 +103,41 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
         ))}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/35 to-transparent" />
       </div>
+
       {hasMultiple && (
         <>
           <button
             type="button"
             onClick={goToPrevious}
-            className="absolute left-3 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full
-                       bg-white/80 backdrop-blur-sm shadow-md ring-1 ring-black/5 transition
-                       hover:bg-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-highlight
-                       opacity-0 group-hover:opacity-100 sm:opacity-100"
+            className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 md:h-11 md:w-11 place-items-center rounded-full
+             bg-white/85 backdrop-blur-sm shadow-md ring-1 ring-black/5 transition
+             hover:bg-white 
+             opacity-100 md:opacity-0 md:group-hover:opacity-100"
             aria-label="Previous image"
           >
-            <FaChevronLeft className="text-gray-800" aria-hidden="true" />
+            <FaChevronLeft
+              className="text-gray-800"
+              size={16}
+              aria-hidden="true"
+            />
           </button>
+
           <button
             type="button"
             onClick={goToNext}
-            className="absolute right-3 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full
-                       bg-white/80 backdrop-blur-sm shadow-md ring-1 ring-black/5 transition
-                       hover:bg-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-highlight
-                       opacity-0 group-hover:opacity-100 sm:opacity-100"
+            className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 md:h-11 md:w-11 place-items-center rounded-full
+             bg-white/85 backdrop-blur-sm shadow-md ring-1 ring-black/5 transition
+             hover:bg-white 
+             opacity-100 md:opacity-0 md:group-hover:opacity-100"
             aria-label="Next image"
           >
-            <FaChevronRight className="text-gray-800" aria-hidden="true" />
+            <FaChevronRight
+              className="text-gray-800"
+              size={16}
+              aria-hidden="true"
+            />
           </button>
+
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/35 px-2 py-1">
             {slides.map((_, indexNumber) => (
               <button
@@ -119,10 +145,10 @@ export function ImageCarousel({ images = [] }: ImageCarouselProps) {
                 type="button"
                 onClick={() => setActiveIndex(indexNumber)}
                 aria-label={`Go to image ${indexNumber + 1}`}
-                className={`h-1.5 rounded-full transition-all ${
+                className={`h-2 rounded-full transition-all ${
                   indexNumber === activeIndex
-                    ? 'w-6 bg-white'
-                    : 'w-2.5 bg-white/60 hover:bg-white/80'
+                    ? 'w-7 bg-white'
+                    : 'w-3.5 bg-white/70 hover:bg-white/90'
                 }`}
               />
             ))}

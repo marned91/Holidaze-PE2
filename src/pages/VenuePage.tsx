@@ -118,7 +118,7 @@ export function VenuePage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl p-6 min-h-screen overflow-x-clip pb-24">
+    <div className="mx-auto max-w-7xl p-4 md:p-6 min-h-screen overflow-x-clip pb-24">
       <ImageCarousel images={carouselImages} />
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-8 lg:gap-12 xl:gap-16 items-start">
         <div className="space-y-8 lg:max-w-[760px] xl:max-w-[820px] 2xl:max-w-[880px]">
