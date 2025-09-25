@@ -79,6 +79,7 @@ To get the project running on your local machine, follow these steps:
 
 ### Running the Development Server:
 Start the development server with Vite:
+
 ```npm run dev```
 
 ### Build the project for production:
