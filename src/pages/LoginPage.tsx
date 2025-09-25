@@ -15,7 +15,6 @@ import { setValueAsTrim } from '../utils/formValueTransforms';
  * @remarks
  * - Uses `react-hook-form` with a Yup resolver.
  * - Server error is announced via a live `role="alert"` region.
- * - No functional or styling changes were made.
  */
 export function LoginPage() {
   const navigate = useNavigate();

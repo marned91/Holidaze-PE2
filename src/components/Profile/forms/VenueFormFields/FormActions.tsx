@@ -1,3 +1,17 @@
+/**
+ * Generic form action row with Cancel and Submit buttons.
+ *
+ * Behavior:
+ * - Disables both buttons while `submitting` is true.
+ * - Shows `busyLabel` while submitting, otherwise `idleLabel`.
+ * - Invokes `onCancel` when the Cancel button is clicked.
+ *
+ * @param onCancel - Callback to run when the user cancels the form.
+ * @param submitting - Whether the form is currently submitting (disables buttons).
+ * @param idleLabel - Submit button label in idle state.
+ * @param busyLabel - Submit button label while submitting.
+ * @returns A right-aligned action bar with Cancel and Submit buttons.
+ */
 export function FormActions({
   onCancel,
   submitting,
@@ -9,14 +23,6 @@ export function FormActions({
   idleLabel: string;
   busyLabel: string;
 }) {
-  /**
-   * Action row for forms with Cancel and Submit buttons.
-   *
-   * @param onCancel   - Callback when the user clicks Cancel.
-   * @param submitting - Whether the form is currently submitting.
-   * @param idleLabel  - Label shown on the submit button when idle.
-   * @param busyLabel  - Label shown on the submit button when submitting.
-   */
   return (
     <div className="mt-6 flex items-center justify-end gap-3">
       <button

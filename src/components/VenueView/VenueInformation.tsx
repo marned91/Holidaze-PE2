@@ -21,12 +21,22 @@ type VenueInformationProps = {
 };
 
 /**
- * Displays venue header information including title, location, rating, capacity, description, and facilities.
+ * Displays venue header information: title, location, rating, capacity, description, and facilities.
  *
- * @remarks
- * - Associates the section with its main heading via `aria-labelledby`.
- * - Decorative icons are marked `aria-hidden` to reduce screen reader noise.
- * - No functional or styling changes were made.
+ * Behavior:
+ * - Associates the section to its main heading via `aria-labelledby`.
+ * - Shows location, optional max guests (formatted with `getGuestsText`), and optional rating (1 decimal).
+ * - Renders description (preserves line breaks) when provided.
+ * - Lists facilities (Wi-Fi, Parking, Breakfast, Pets) with decorative icons marked `aria-hidden`.
+ * - Falls back to “No facilities listed” when none are enabled.
+ *
+ * @param title - Venue title.
+ * @param locationText - Human-readable location string.
+ * @param rating - Average rating (number); displayed with one decimal when finite.
+ * @param maxGuests - Maximum number of guests the venue supports.
+ * @param description - Optional venue description (plain text; newlines preserved).
+ * @param facilities - Feature flags from the venue’s `meta` (wifi, parking, breakfast, pets).
+ * @returns A section element containing venue summary information.
  */
 export function VenueInformation({
   title,

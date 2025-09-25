@@ -12,13 +12,22 @@ type AddVenuesProps = {
 };
 
 /**
- * Section for listing and managing the user's venues.
+ * Section for listing and managing the current user's venues.
  *
- * @remarks
- * - Shows loading/error states, an empty state with call-to-action, and a grid of venues.
- * - Adds basic ARIA semantics: `aria-labelledby` for the section title,
- *   `role="status"` for loading, and `role="alert"` for errors.
- * - No functional changes to rendering logic or handlers.
+ * Behavior:
+ * - Handles loading and error states with proper ARIA roles (`status`, `alert`).
+ * - Renders an empty state with a call-to-action card to create a venue.
+ * - When venues exist, shows an "Add venue" card followed by a grid of venue cards.
+ * - Delegates edit/delete actions to parent via `onEditVenue` / `onDeleteVenue`.
+ * - Associates the section with its heading using `aria-labelledby`.
+ *
+ * @param venues - List of venues to display.
+ * @param isLoading - Whether the venues are currently loading.
+ * @param errorMessage - Error message to display, if any.
+ * @param onCreateVenue - Callback when the user chooses to create a venue.
+ * @param onEditVenue - Callback when the user chooses to edit a venue.
+ * @param onDeleteVenue - Callback when the user chooses to delete a venue.
+ * @returns A section with heading, states, and a responsive grid of venue cards.
  */
 export function DisplayAndAddVenues({
   venues,

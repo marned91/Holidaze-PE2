@@ -16,10 +16,15 @@ type VenueCardProps = {
 /**
  * Card displaying a single venue with image, location, capacity, and price.
  *
- * @remarks
- * - Uses a link wrapper for navigation to the venue details page.
- * - Decorative icons are marked `aria-hidden` to reduce screen reader noise.
- * - No functional or styling changes were made.
+ * Behavior:
+ * - Wraps the card in a link to the venue details page (`/venue/:id`).
+ * - Uses a placeholder image when no venue image is available.
+ * - Computes accessible `alt` text via `getVenueImage`.
+ * - Marks decorative icons as `aria-hidden` to avoid screen reader noise.
+ * - Adds a visible focus ring on keyboard focus.
+ *
+ * @param venue - Venue to render.
+ * @returns A clickable card linking to the venue detail page.
  */
 export function VenueCard({ venue }: VenueCardProps) {
   const { url, alt } = getVenueImage(venue);

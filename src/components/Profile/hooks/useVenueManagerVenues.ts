@@ -6,7 +6,7 @@ import type { TVenue } from '../../../types/venueTypes';
 /**
  * Loads venues for a given owner with bookings included.
  * Runs only when enabled is true and profileName is present.
- * Also exposes small helpers to update local state optimistically.
+ * Also exposes small helpers to update local state.
  */
 export function useVenueManagerVenues(profileName?: string, enabled?: boolean) {
   const [venues, setVenues] = useState<TVenue[]>([]);

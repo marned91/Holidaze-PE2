@@ -9,10 +9,15 @@ type VenueSortProps = {
 /**
  * Sort selector for venues.
  *
- * @remarks
- * - Associates label and select via `htmlFor`/`id`.
- * - Mirrors `disabled` state as `aria-disabled` for screen readers.
- * - No functional or styling changes were made.
+ * Behavior:
+ * - Binds a labeled `<select>` to control the current sort order.
+ * - Calls `onChange` with the chosen sort key.
+ * - Reflects the disabled state both visually and via `aria-disabled`.
+ *
+ * @param sortOrder - Current sort order key.
+ * @param onChange - Callback with the next sort order.
+ * @param disabled - Whether the control is disabled (default false).
+ * @returns A labeled select element for choosing venue sort order.
  */
 export function VenueSort({
   sortOrder,

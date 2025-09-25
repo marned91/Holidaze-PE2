@@ -30,7 +30,6 @@ type AddVenueModalProps = {
  * @remarks
  * - Uses `react-hook-form` with a Yup resolver (`venueSchema`).
  * - Initializes with two empty image rows and Norway as the country (via payload mapping).
- * - UI/behavior unchanged; this file only adds JSDoc.
  */
 export function AddVenueModal({
   open,

@@ -10,7 +10,6 @@ type ImageUrlRowProps = {
 
 /**
  * Renders a single “image URL” row with a live preview on the left
- * and a URL input (with optional “Remove” button) on the right.
  *
  * Accessibility:
  * - Sets `aria-invalid` when there’s an error message.

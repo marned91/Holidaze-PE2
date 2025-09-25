@@ -24,6 +24,29 @@ type VenueManagerProps = {
   onCancelMyBooking?: (booking: TBooking, venue: TVenue) => void;
 };
 
+/**
+ * Renders the Venue Manager dashboard with tabs for managing venues and bookings.
+ *
+ * Behavior:
+ * - Shows three tabs: **My Venues**, **Bookings for my venues**, **My Bookings**.
+ * - Uses `activeTab` to decide which panel to render and calls `onChangeTab` when user switches.
+ * - Delegates create/edit/delete venue and cancel booking actions to provided callbacks.
+ *
+ * @param activeTab - Currently selected tab key (`'addVenue' | 'managerBookings' | 'myBookings'`).
+ * @param onChangeTab - Called when the user switches tab.
+ * @param venues - List of venues owned by the manager.
+ * @param isLoadingVenues - Whether venue data is loading.
+ * @param venuesError - Error message for venue load failures.
+ * @param onCreateVenue - Triggered when user clicks to create a new venue.
+ * @param onEditVenue - Triggered when user chooses to edit an existing venue.
+ * @param onDeleteVenue - Triggered when user confirms deleting a venue.
+ * @param myBookings - The manager's own bookings (for “My Bookings” tab).
+ * @param isLoadingMyBookings - Whether bookings are loading.
+ * @param myBookingsError - Error message for bookings load failures.
+ * @param onCancelMyBooking - Triggered when user cancels one of their bookings.
+ * @returns JSX section containing the manager UI.
+ */
+
 export function VenueManager({
   activeTab,
   onChangeTab,

@@ -19,13 +19,19 @@ import { SkeletonCardGrid } from '../Common/skeleton/SkeletonCardGrid';
 type VenuesListProps = { pageSize?: number };
 
 /**
- * Lists available venues with client-side filtering, sorting, and pagination.
+ * Lists venues with client-side filtering (city, guests, date range),
+ * sorting, pagination, and optional query-driven search mode.
  *
- * @remarks
- * - When a `q` query param is present, renders `<SearchResults>` instead of the standard list.
- * - Section is labeled via `aria-labelledby` and exposes `aria-busy` while loading.
- * - Uses polite status for loading and `role="alert"` for error feedback.
- * - No functional or styling changes were made.
+ * Behavior:
+ * - If `q` is present in the URL search params, renders <SearchResults> instead of the list.
+ * - Fetches and memoizes venues via `useVenues(100)`.
+ * - Resets to page 1 whenever filters/sort/pageSize change and clamps the current page.
+ * - Applies filters (`filterVenues`), then sorting (`sortVenues`), then paginates.
+ * - Shows skeletons while loading, `role="alert"` on errors, and an empty-state message.
+ * - Exposes a `Pagination` control that scrolls to top on page changes.
+ *
+ * @param pageSize - Number of cards per page (default 12).
+ * @returns A section with filters, heading + sort, results grid, and pagination.
  */
 export function VenuesList({ pageSize = 12 }: VenuesListProps) {
   const location = useLocation();
@@ -127,7 +133,7 @@ export function VenuesList({ pageSize = 12 }: VenuesListProps) {
           className="rounded-xl border border-dashed border-gray-300 px-8 py-16 text-center font-text"
         >
           <p className="mb-2 text-gray-700 font-text">
-            Oh no! No venues to venues to show right now.
+            Oh no! No venues to show right now.
           </p>
         </div>
       )}

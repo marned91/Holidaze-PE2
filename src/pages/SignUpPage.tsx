@@ -19,7 +19,6 @@ import { useAlerts } from '../hooks/useAlerts';
  * @remarks
  * - Uses `react-hook-form` with a Yup resolver.
  * - Maps API validation errors to specific fields; uses the AlertsProvider for user feedback.
- * - No functional or styling changes were made.
  */
 export function SignUpPage() {
   const navigate = useNavigate();

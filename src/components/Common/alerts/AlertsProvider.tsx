@@ -13,7 +13,7 @@ export type AlertCategory = 'info' | 'success' | 'error';
 export interface ShowAlertOptions {
   category?: AlertCategory;
   headline?: string;
-  timeoutInMilliseconds?: number; // 0 disables auto-dismiss
+  timeoutInMilliseconds?: number;
   onClose?: () => void;
 }
 
@@ -47,10 +47,21 @@ const DEFAULT_TIMEOUT_INFO = 2500;
 const DEFAULT_TIMEOUT_SUCCESS = 2500;
 const DEFAULT_TIMEOUT_ERROR = 5000;
 
+/**
+ * Generates a collision-resistant identifier for an alert.
+ *
+ * @returns Unique identifier string (timestamp + random suffix).
+ */
 function createUniqueIdentifier(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
+/**
+ * Resolves the default auto-dismiss timeout for a given alert category.
+ *
+ * @param category - Alert category ("info" | "success" | "error").
+ * @returns Timeout in milliseconds used if no explicit timeout is provided.
+ */
 function defaultTimeoutFor(category: AlertCategory): number {
   if (category === 'error') return DEFAULT_TIMEOUT_ERROR;
   if (category === 'success') return DEFAULT_TIMEOUT_SUCCESS;
@@ -64,6 +75,18 @@ function classesFor(category: AlertCategory): string {
   return 'border-blue-300 bg-blue-50 text-blue-900';
 }
 
+/**
+ * Computes the headline text for an alert.
+ *
+ * Behavior:
+ * - Uses an explicit override if provided.
+ * - Falls back to sensible defaults for "success" and "error".
+ * - Returns undefined for "info" to omit a headline by default.
+ *
+ * @param category - Alert category.
+ * @param override - Optional explicit headline text.
+ * @returns Headline text or undefined when none should be shown.
+ */
 function defaultHeadlineFor(
   category: AlertCategory,
   override?: string
@@ -74,7 +97,17 @@ function defaultHeadlineFor(
   return undefined;
 }
 
-/** Provides the alerts context to the application. */
+/**
+ * Top-level provider that exposes the alerts API via context and
+ * renders a viewport for visible alerts.
+ *
+ * Behavior:
+ * - Manages a queue of alerts with optional auto-dismiss timeouts.
+ * - Ensures timeouts are cleared on unmount to avoid leaks.
+ * - Re-schedules missing timeouts after fast refresh or remounts.
+ *
+ * @param children - React tree that will consume the alerts context.
+ */
 export function AlertsProvider({ children }: { children: ReactNode }) {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const timeoutHandles = useRef<Record<string, number>>({});

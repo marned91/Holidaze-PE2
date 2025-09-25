@@ -7,12 +7,18 @@ type ProfileTabsProps = {
 };
 
 /**
- * Tab strip for venue manager actions (create venue, view venue bookings, own bookings).
+ * Tab strip for venue-manager sections (create/manage venues, venue bookings, own bookings).
  *
- * @remarks
- * - Exposes WAI-ARIA roles: `tablist` and `tab`.
- * - Each tab has an `id` so corresponding tabpanels can reference it via `aria-labelledby`.
- * - No behavioral changes (click handlers and selected logic are unchanged).
+ * Behavior:
+ * - Renders nothing when `isManager` is false.
+ * - Applies WAI-ARIA roles (`tablist`, `tab`) and wires tabs to panels via `aria-controls`.
+ * - Indicates the active tab with `aria-selected` and visual styles.
+ * - Calls `onChange` with the selected tab key.
+ *
+ * @param active - Currently selected tab key.
+ * @param onChange - Callback invoked with the next tab key when a tab is clicked.
+ * @param isManager - Whether the current user is a venue manager (gates visibility).
+ * @returns A tablist element with three tabs, or null if `isManager` is false.
  */
 export function ProfileTabs({ active, onChange, isManager }: ProfileTabsProps) {
   if (!isManager) return null;

@@ -15,7 +15,18 @@ type ImageCarouselProps = {
 };
 
 /**
- * Image carousel for a venue, supporting keyboard navigation (Left/Right) and dot indicators.
+ * Image carousel for a venue with keyboard (←/→), touch swipe, buttons, and dot indicators.
+ *
+ * Behavior:
+ * - Filters out media items without a URL.
+ * - Resets to the first slide when the image list changes.
+ * - Supports keyboard navigation when the carousel has focus.
+ * - Supports touch swipe with a small threshold to avoid accidental swipes.
+ * - Renders previous/next buttons and clickable dot indicators when multiple slides exist.
+ * - Exposes `aria-roledescription="carousel"` and a label for assistive tech.
+ *
+ * @param images - Venue media items to display (uses a placeholder when empty).
+ * @returns An interactive, accessible image carousel.
  */
 export function ImageCarousel({ images = [] }: ImageCarouselProps) {
   const slides = Array.isArray(images)

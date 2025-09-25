@@ -21,12 +21,23 @@ type BookingSidebarProps = {
 };
 
 /**
- * Sidebar panel for selecting dates and guests, showing price/total, and submitting a booking request.
+ * Sidebar panel for picking dates and guests, showing price breakdown, and sending a booking request.
  *
- * @remarks
- * - Uses `DateRangeFields` with venue bookings to indicate availability.
- * - Announces availability feedback via `role="status"`/`role="alert"`.
- * - No functional or styling changes were made.
+ * Behavior:
+ * - Uses <DateRangeFields variant="calendar"> and venue bookings to indicate availability.
+ * - Computes `nights` from the selected range and derives `total = nights × price`.
+ * - Disables the request button unless a valid range is selected, the venue is available,
+ *   and the guest count is within `[1, venue.maxGuests]` when defined.
+ * - Supports controlled (`guestCount` + `onGuestCountChange`) or internal guest state.
+ * - Announces availability via ARIA (`role="status"` for available, `role="alert"` for unavailable).
+ *
+ * @param venue - Venue data, including `price`, `maxGuests`, and (optionally) `bookings`.
+ * @param value - Current date range (`{ startDate?: string; endDate?: string }`) in ISO yyyy-mm-dd.
+ * @param onChange - Called when the date range changes.
+ * @param onRequest - Called with the normalized range `{ from: Date; to: Date }` and `guests` when booking is requested.
+ * @param guestCount - Optional controlled guest count. If omitted, the component manages its own guest state.
+ * @param onGuestCountChange - Change handler for controlled guest count.
+ * @returns A styled sidebar with date/guest pickers, availability, price summary, and a Book button.
  */
 export function BookingSidebar({
   venue,

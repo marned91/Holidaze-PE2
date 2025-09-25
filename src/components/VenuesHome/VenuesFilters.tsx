@@ -19,10 +19,21 @@ type VenuesFiltersProps = {
 /**
  * Filter controls for venues (city, minimum guests, and date range).
  *
- * @remarks
- * - Each trigger button is linked to its popover via `aria-controls`, and popovers are labeled by their trigger (`aria-labelledby`).
- * - Decorative clear icons are marked `aria-hidden` to reduce screen reader noise.
- * - No functional or styling changes were made.
+ * Behavior:
+ * - Each filter opens a small popover; only one popover can be open at a time.
+ * - Clear icons are keyboard-accessible and marked `aria-hidden` to keep SR output clean.
+ * - Popovers are wired with `aria-haspopup="dialog"`, `aria-expanded`, `aria-controls`,
+ *   and are labeled by their trigger via `aria-labelledby`.
+ * - Applies changes via explicit Apply/Cancel buttons; shows current selection in triggers.
+ *
+ * @param cities - List of available city names.
+ * @param selectedCity - Currently selected city, or null for “All Norway”.
+ * @param onCityChange - Callback when a new city is applied or cleared.
+ * @param minGuests - Minimum guest count, or null when unset.
+ * @param onMinGuestsChange - Callback when minimum guests is applied or cleared.
+ * @param dateRange - Current date range (ISO yyyy-mm-dd; undefined for empty ends).
+ * @param onDateRangeChange - Callback when a new date range is applied or cleared.
+ * @returns A row of three filter triggers with corresponding popovers.
  */
 export function VenuesFilters({
   cities,
@@ -56,6 +67,11 @@ export function VenuesFilters({
   const datesBtnId = useId();
   const datesPanelId = useId();
 
+  /**
+   * Opens exactly one filter popover and closes the others.
+   *
+   * @param which - Filter key to open ("city" | "guests" | "dates").
+   */
   function openOnly(which: 'city' | 'guests' | 'dates') {
     setIsCityOpen(which === 'city');
     setIsGuestsOpen(which === 'guests');

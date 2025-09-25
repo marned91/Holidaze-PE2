@@ -8,7 +8,11 @@ import { getUsername } from '../utils/authStorage';
 import { SearchBox } from '../components/Common/SearchBox';
 import { useAlerts } from '../hooks/useAlerts';
 
-/** Builds a profile URL from the stored username; falls back to `/login` if missing. */
+/**
+ * Builds a profile URL from the stored username; falls back to `/login` if missing.
+ *
+ * @returns Profile URL (e.g., `/profile/jane`), or `/login` when no username is stored.
+ */
 function getProfileUrl(): string {
   const stored = getUsername();
   return stored ? `/profile/${encodeURIComponent(stored)}` : '/login';
@@ -17,10 +21,15 @@ function getProfileUrl(): string {
 /**
  * Site header with logo, primary navigation, auth actions, and search.
  *
- * @remarks
- * - Desktop and mobile layouts share the same routes; mobile menu is toggled via state.
- * - Icons are decorative and marked `aria-hidden` where the control already has an accessible name.
- * - No functional or styling changes were made.
+ * Behavior:
+ * - Shows desktop navigation (icons + auth buttons + search) and a collapsible mobile menu.
+ * - Reflects auth state:
+ *   - Logged out: “Join us!” + “Log in”
+ *   - Logged in: Profile shortcut + “Log out”
+ * - `handleLogout` clears the session, shows an informational alert, closes the menu, and navigates home.
+ * - Uses accessible labels for interactive icons and ARIA attributes for the mobile menu toggle.
+ *
+ * @returns A responsive site header with navigation and search.
  */
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

@@ -9,10 +9,18 @@ type PaginationProps = {
 /**
  * Pagination control with Previous/Next buttons and a live page status.
  *
- * @remarks
- * - Wrapper uses `role="navigation"` with an accessible label.
- * - The status text is a polite live region so screen readers announce page changes.
- * - No behavioral changes; only a11y attributes and JSDoc were added.
+ * Behavior:
+ * - Disables Previous on the first page and Next on the last page.
+ * - Announces page changes via a polite live region ("Page X / Y").
+ * - Exposes `onPrevious` / `onNext` callbacks for navigation.
+ * - Uses `role="navigation"` with an accessible label.
+ *
+ * @param currentPage - 1-based current page index.
+ * @param totalPages - Total number of pages.
+ * @param onPrevious - Callback when the user requests the previous page.
+ * @param onNext - Callback when the user requests the next page.
+ * @param className - Optional wrapper classes.
+ * @returns A navigation region with pagination controls.
  */
 export function Pagination({
   currentPage,

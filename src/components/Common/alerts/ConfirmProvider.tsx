@@ -11,8 +11,16 @@ type PendingRequest = {
 } | null;
 
 /**
- * Provider that renders a single accessible confirm dialog. Use together with
- * the useConfirm hook to show custom confirm modals without window.confirm.
+ * Provider that exposes a promise-based confirm API via context and renders
+ * a single accessible confirm dialog (instead of using `window.confirm`).
+ *
+ * Behavior:
+ * - Queues a single pending request at a time and resolves it to `true/false`.
+ * - Traps focus: stores the last focused element and restores it on close.
+ * - Blocks page scroll while open (sets `document.body.style.overflow = 'hidden'`).
+ * - Supports keyboard dismissal via Escape.
+ *
+ * @param children - React tree that can call `useConfirm()` to open the dialog.
  */
 export function ConfirmProvider({ children }: { children: React.ReactNode }) {
   const [pendingRequest, setPendingRequest] = useState<PendingRequest>(null);

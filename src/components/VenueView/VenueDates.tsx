@@ -10,11 +10,17 @@ type VenueDatesProps = {
 };
 
 /**
- * Availability section that presents a range calendar for selecting start and end dates.
+ * Availability section that renders a range calendar for picking start/end dates.
  *
- * @remarks
- * - Associates section title and description to the calendar group via `aria-labelledby`/`aria-describedby`.
- * - No functional or styling changes were made.
+ * Behavior:
+ * - Labels the calendar group via `aria-labelledby`/`aria-describedby` for screen readers.
+ * - Delegates date picking to <RangeCalendar>, which disables past and booked dates.
+ * - Forwards `value`/`onChange` and optional `bookings`.
+ *
+ * @param value - Current date range (`{ startDate?: string; endDate?: string }` in ISO yyyy-mm-dd).
+ * @param onChange - Called when the user selects a new range.
+ * @param bookings - Optional venue bookings used to indicate availability.
+ * @returns A titled section wrapping the availability calendar.
  */
 export function VenueDates({
   value,

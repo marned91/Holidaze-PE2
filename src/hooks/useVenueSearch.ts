@@ -9,7 +9,6 @@ import { isInNorway } from '../components/VenuesHome/sortAndFilter';
  * @remarks
  * - Trims the incoming query; empty queries clear results and errors.
  * - Exposes loading and error states.
- * - No functional changes were made.
  *
  * @param searchQuery - Raw user-entered query string.
  * @returns Object with `isSearching`, `searchError`, and `searchResults`.

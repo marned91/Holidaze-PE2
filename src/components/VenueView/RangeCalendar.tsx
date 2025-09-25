@@ -19,10 +19,18 @@ type RangeCalendarProps = {
 /**
  * Calendar-based date range picker that disables already-booked dates.
  *
- * @remarks
- * - Uses `react-calendar` with `selectRange`.
- * - Blocks dates overlapping existing bookings (inclusive).
- * - No functional or styling changes were made.
+ * Behavior:
+ * - Uses `react-calendar` with `selectRange` and ISO week settings.
+ * - Blocks dates overlapping existing bookings (inclusive of both ends).
+ * - Disallows past dates (minDate = today).
+ * - Adapts to small screens by collapsing the double-month view.
+ * - Emits ISO `yyyy-mm-dd` strings via `onChange`.
+ *
+ * @param value - Current date range (`{ startDate?: string; endDate?: string }`).
+ * @param onChange - Callback invoked when the range changes.
+ * @param bookings - Optional booked ranges used to disable days.
+ * @param months - Desired month panels (2 by default; 1 on small screens).
+ * @returns A responsive calendar range picker.
  */
 export function RangeCalendar({
   value,

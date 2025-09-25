@@ -6,7 +6,6 @@ import type { TVenueFormValues } from '../../../../types/formTypes';
  * Checkbox group for venue facilities (all optional).
  *
  * @remarks
- * - Uses `<fieldset>`/`<legend>` for korrekt gruppesemantikk.
  * - Adds `aria-describedby` to reference a help text for screen readers.
  * - Keeps label-wrapping pattern for implicit input–label association.
  */

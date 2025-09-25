@@ -28,6 +28,23 @@ type EditVenueModalProps = {
   onUpdated?: (venue: TVenue) => void;
 };
 
+/**
+ * Edit venue modal with a validated form for updating core venue fields.
+ *
+ * Behavior:
+ * - Initializes form defaults from the provided `venue`.
+ * - Resets form when the modal opens or the `venue` prop changes.
+ * - Submits to the API; on success, shows a success alert, closes the modal,
+ *   navigates to the owner's profile, and invokes `onUpdated`.
+ * - On failure, shows an error alert with a friendly message.
+ *
+ * @param open - Whether the modal is visible.
+ * @param onClose - Callback to close the modal without saving.
+ * @param venue - Current venue data used as form defaults.
+ * @param profileName - Owner profile name for post-save navigation.
+ * @param onUpdated - Optional callback receiving the updated venue.
+ * @returns Modal containing the edit form.
+ */
 export function EditVenueModal({
   open,
   onClose,
@@ -56,6 +73,18 @@ export function EditVenueModal({
     if (open) reset(venueToFormValues(venue));
   }, [open, venue, reset]);
 
+  /**
+   * Handles form submission by mapping form values to the API payload and
+   * calling `updateVenue`.
+   *
+   * Behavior:
+   * - Maps UI values via `formValuesToCreatePayload`.
+   * - Shows success/error alerts based on outcome.
+   * - On success: triggers `onUpdated`, closes the modal, and navigates to profile.
+   *
+   * @param values - Current form values validated by `venueSchema`.
+   * @throws Displays an error alert; exceptions are caught and not rethrown.
+   */
   async function onSubmit(values: TVenueFormValues) {
     const payload = formValuesToCreatePayload(values);
     try {

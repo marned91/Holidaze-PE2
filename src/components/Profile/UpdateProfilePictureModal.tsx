@@ -18,8 +18,22 @@ type UpdateProfilePictureProps = {
 };
 
 /**
- * Modal for updating a profile picture (URL + optional alt text).
- * Validation is handled by the Yup schema together with react-hook-form.
+ * Modal for updating a user's profile picture (image URL + optional alt text).
+ *
+ * Behavior:
+ * - Initializes and resets form values when the modal opens or initial values change.
+ * - Validates inputs with Yup via `react-hook-form`.
+ * - Disables Save when submitting, invalid, or unchanged from initial values.
+ * - On success: updates parent via `onUpdated`, shows a success alert, and closes.
+ * - On failure: shows a user-friendly error alert.
+ *
+ * @param username - Profile username to update.
+ * @param open - Whether the modal is visible.
+ * @param onClose - Callback to close the modal.
+ * @param onUpdated - Callback invoked with the final URL and alt after a successful save.
+ * @param initialUrl - Optional initial image URL to prefill.
+ * @param initialAlt - Optional initial alt text to prefill.
+ * @returns A modal containing the update form.
  */
 export function UpdateProfilePicture({
   username,
@@ -57,6 +71,19 @@ export function UpdateProfilePicture({
     }
   }, [open, initialUrl, initialAlt, reset]);
 
+  /**
+   * Submits the form by calling the profile API and reconciling returned values.
+   *
+   * Behavior:
+   * - Trims URL/alt, calls `setProfilePicture(username, url, alt)`.
+   * - Uses API response when it includes `avatar.url`/`avatar.alt`,
+   *   otherwise falls back to trimmed form values.
+   * - Notifies parent via `onUpdated`, shows success, and closes the modal.
+   * - Catches errors and shows a friendly error alert.
+   *
+   * @param values - Current form values validated by `profilePictureSchema`.
+   * @throws Errors are handled internally; no rethrow.
+   */
   async function onSubmit(values: TUpdateProfilePictureFormValues) {
     try {
       const data = await setProfilePicture(

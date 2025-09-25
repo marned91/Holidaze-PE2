@@ -6,7 +6,7 @@ import type { TLoginFormValues } from '../../types/formTypes';
  *
  * Behavior:
  * - Requires a valid email.
- * - Requires a non-empty password.
+ * - Requires a password.
  */
 export const loginSchema: yup.ObjectSchema<TLoginFormValues> = yup.object({
   email: yup

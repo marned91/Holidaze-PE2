@@ -1,7 +1,11 @@
 /**
  * Custom event name dispatched on `window` when authentication state changes.
  *
- * @remarks
- * - Use with `window.addEventListener(AUTH_CHANGED_EVENT, handler)` to react to login/logout.
+ * Fires after login/logout so consumers can update UI (e.g., menus, badges).
+ *
+ * @example
+ * window.addEventListener(AUTH_CHANGED_EVENT, () => {
+ *   // refresh auth-aware UI
+ * });
  */
 export const AUTH_CHANGED_EVENT = 'auth:changed';

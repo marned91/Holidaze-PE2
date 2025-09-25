@@ -9,17 +9,34 @@ type UpcomingVenueBookingsProps = {
   errorMessage: string | null;
 };
 
+/**
+ * Returns true if the month key (yyyy-mm) equals today's month.
+ *
+ * @param key - A yyyy-mm string (e.g., "2025-09").
+ * @param today - Today's date as yyyy-mm-dd.
+ * @returns Whether both represent the same month and year.
+ */
 function isSameMonthKey(key: string, today: string) {
   return key === today.slice(0, 7);
 }
 
+/**
+ * Extracts the yyyy-mm-dd portion from an ISO datetime string.
+ *
+ * @param input - ISO string (date or datetime).
+ * @returns ISO date-only string or an empty string if falsy.
+ */
 function toIsoDateOnly(input?: string): string {
   return (input || '').slice(0, 10);
 }
 
 /**
- * Count nights between two ISO date-only strings.
+ * Counts nights between two ISO date-only strings.
  * Returns 0 if either input is missing; never negative.
+ *
+ * @param from - Start date (yyyy-mm-dd).
+ * @param to - End date (yyyy-mm-dd).
+ * @returns Number of nights between the dates (clamped to ≥ 0).
  */
 function nightsBetween(from?: string, to?: string): number {
   if (!from || !to) return 0;
@@ -29,11 +46,23 @@ function nightsBetween(from?: string, to?: string): number {
   return Math.max(0, Math.round(diffMs / (1000 * 60 * 60 * 24)));
 }
 
+/**
+ * Converts an ISO date (yyyy-mm-dd) to a month key (yyyy-mm).
+ *
+ * @param isoDate - ISO date-only input.
+ * @returns The yyyy-mm month key.
+ */
 function monthKey(isoDate: string) {
   const [y, m] = isoDate.split('-');
   return `${y}-${m}`;
 }
 
+/**
+ * Human-readable month heading for a yyyy-mm key.
+ *
+ * @param key - Month key (yyyy-mm).
+ * @returns Localized month label, e.g. "September 2025".
+ */
 function monthHeading(key: string) {
   const [year, month] = key.split('-').map(Number);
   return new Date(year, month - 1).toLocaleString('en-GB', {
@@ -45,10 +74,17 @@ function monthHeading(key: string) {
 /**
  * Lists upcoming bookings for the user's venues, grouped by month.
  *
- * @remarks
- * - Shows loading, error, empty states, and grouped results.
- * - Adds ARIA semantics: `aria-labelledby` on sections, `role="status"` for loading,
- *   and `role="alert"` for errors.
+ * Behavior:
+ * - Filters out past bookings (keeps bookings with dateFrom ≥ today).
+ * - Sorts by start date, groups by month, and expands the current month by default.
+ * - Renders loading, error, empty, and populated states with appropriate ARIA roles.
+ * - Computes total price from booking.totalPrice when present,
+ *   otherwise falls back to nights × venue.price (minimum 1 night).
+ *
+ * @param venues - Venues including their extended bookings.
+ * @param isLoading - Whether data is currently loading.
+ * @param errorMessage - Optional error to display.
+ * @returns A section rendering grouped upcoming bookings.
  */
 export function UpcomingVenueBookings({
   venues,

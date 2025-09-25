@@ -2,11 +2,17 @@ import { useId } from 'react';
 import HeroImage from '../assets/holidaze_home.png';
 
 /**
- * Full-width hero with background image and two headline lines.
+ * Full-width hero section with a background image and two headline lines.
  *
- * @remarks
- * - Section is labeled via `aria-labelledby` referencing the first headline.
- * - Note: There are two `h1` elements; consider demoting the second to `h2` for improved semantics (not changed here).
+ * Behavior:
+ * - Labels the section via `aria-labelledby` (first headline).
+ * - Renders a responsive background image with overlayed headlines.
+ *
+ * Accessibility note:
+ * - The component uses two <h1> elements. Consider changing the second to <h2>
+ *   for better document outline semantics (kept as-is here).
+ *
+ * @returns A responsive hero banner with image and headings.
  */
 export function HeroSection() {
   const headingId = useId();

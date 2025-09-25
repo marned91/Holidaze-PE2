@@ -11,10 +11,15 @@ type ManageVenuesProps = {
 /**
  * Card displaying a single venue with key details and Edit/Delete actions.
  *
- * @remarks
- * - Keeps visual structure and behavior unchanged.
- * - Adds ARIA semantics by linking the article to its heading and
- *   giving the buttons screen-reader-friendly labels.
+ * Behavior:
+ * - Shows venue image (or a "No image" placeholder), name, price, max guests, and location.
+ * - Exposes Edit and Delete buttons; invokes `onEdit`/`onDelete` with the venue.
+ * - Improves accessibility by associating the article with its heading via `aria-labelledby`.
+ *
+ * @param venue - Venue to display.
+ * @param onEdit - Optional callback when the Edit button is clicked.
+ * @param onDelete - Optional callback when the Delete button is clicked.
+ * @returns A styled card with venue information and actions.
  */
 export function ManageVenues({ venue, onEdit, onDelete }: ManageVenuesProps) {
   const { url: imageUrl, alt: imageAlt } = getVenueImage(venue);
