@@ -175,7 +175,7 @@ export function SignUpPage() {
               </p>
             ) : (
               <p className="text-sm text-gray-600 font-text">
-                Discover and book venues, view and manage your reservations.
+                Discover and book venues, view and manage your bookings.
               </p>
             )}
           </div>
