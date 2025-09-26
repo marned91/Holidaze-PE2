@@ -108,7 +108,9 @@ export function EditBookingModal({
 
   const normalizedRange = useMemo(() => normalizeDateRange(dateRangeValue), [dateRangeValue]);
 
-  const unavailableRaw: BookingLike[] = (loadedVenue?.bookings ?? []) as unknown as BookingLike[];
+  const unavailableRaw = useMemo<BookingLike[]>(() => {
+    return (loadedVenue?.bookings ?? []) as unknown as BookingLike[];
+  }, [loadedVenue?.bookings]);
 
   const unavailableFiltered = useMemo(() => {
     return unavailableRaw.filter((existing) => {

@@ -57,11 +57,9 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
         resolveAndClose(false);
       }
     }
-    window.addEventListener('keydown', handleKeyDown, { capture: true });
-    return () =>
-      window.removeEventListener('keydown', handleKeyDown, {
-        capture: true,
-      } as any);
+    const captureOptions: AddEventListenerOptions = { capture: true };
+    window.addEventListener('keydown', handleKeyDown, captureOptions);
+    return () => window.removeEventListener('keydown', handleKeyDown, captureOptions);
   }, [pendingRequest]);
 
   useEffect(() => {

@@ -48,21 +48,25 @@ function isUpcoming(booking: TBooking, todayIso: string) {
 export function MyBookingsSection(props: WithItems | WithBookings) {
   const { isLoading, errorMessage, title = 'My bookings', onEditBooking, onCancelBooking } = props;
 
-  const normalized: Item[] =
-    'items' in props && props.items
-      ? props.items
-      : 'bookings' in props && props.bookings
-        ? props.bookings
-            .filter((bookingWithVenue) => !!bookingWithVenue.venue)
-            .map((bookingWithVenue) => ({
-              booking: bookingWithVenue,
-              venue: bookingWithVenue.venue,
-              totalPriceOverride:
-                typeof bookingWithVenue.totalPrice === 'number'
-                  ? bookingWithVenue.totalPrice
-                  : undefined,
-            }))
-        : [];
+  const sourceItems = 'items' in props ? props.items : undefined;
+  const sourceBookings = 'bookings' in props ? props.bookings : undefined;
+
+  const normalized: Item[] = useMemo(() => {
+    if (sourceItems) return sourceItems;
+    if (sourceBookings) {
+      return sourceBookings
+        .filter((b): b is TBookingWithVenue & { venue: TVenue } => Boolean(b.venue))
+        .map((bookingWithVenue) => ({
+          booking: bookingWithVenue,
+          venue: bookingWithVenue.venue,
+          totalPriceOverride:
+            typeof bookingWithVenue.totalPrice === 'number'
+              ? bookingWithVenue.totalPrice
+              : undefined,
+        }));
+    }
+    return [];
+  }, [sourceItems, sourceBookings]);
 
   const [editedById, setEditedById] = useState<Record<string, TBooking>>({});
   const displayed: Item[] = useMemo(

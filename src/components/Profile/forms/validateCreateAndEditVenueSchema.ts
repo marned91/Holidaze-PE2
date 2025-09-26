@@ -9,7 +9,7 @@ export const MAX_GUESTS = 25;
  * - Must start with a capital letter (A–Z/ÆØÅ)
  * - Allows letters from any language (`\p{L}`), spaces, dot, apostrophe and hyphen
  */
-export const CITY_NAME_REGEX = /^[A-ZÆØÅ][\p{L} .'\-]*$/u;
+export const CITY_NAME_REGEX = /^[A-ZÆØÅ][\p{L} .'-]*$/u;
 
 /**
  * Yup validation schema for creating/editing a venue.

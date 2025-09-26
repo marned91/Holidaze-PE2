@@ -113,7 +113,8 @@ function ProfilePageInner() {
     reloadProfile();
   }
 
-  function handleVenueCreated(_newVenue: TVenue) {
+  function handleVenueCreated(newVenue: TVenue) {
+    void newVenue;
     setAddVenueOpen(false);
     reloadVenues();
   }
