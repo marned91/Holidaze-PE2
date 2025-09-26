@@ -105,6 +105,23 @@ Start the development server with Vite:
 
 `npm run preview`
 
+# Linting & formatting
+This project uses ESLint and Prettier.
+
+### Check lint issues:
+
+`npm run lint`
+
+### Fix auto-fixable issues:
+
+`npm run lint:fix`
+
+### Format code with Prettier:
+
+`npm run format`
+
+
+
 # Deployment
 
 The project is hosted on Netlify for live demo purposes.
