@@ -119,7 +119,7 @@ function PopoverPortal({
     <div ref={wrapperRef} style={style} className="rc-popover">
       {children}
     </div>,
-    typeof document !== 'undefined' ? document.body : (null as any)
+    typeof document !== 'undefined' ? document.body : (null as unknown as Element)
   );
 }
 

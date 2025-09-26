@@ -21,6 +21,7 @@ import type { TDoFetchOptions } from '../types/apiTypes';
  * @throws Error with optional `status` and `details` when the response is not OK or parsing fails.
  */
 export async function doFetch<T>(url: string, options: TDoFetchOptions = {}): Promise<T | null> {
+  // eslint-disable-next-line no-useless-catch
   try {
     const tokenFromAuth = getAccessToken();
     const tokenFromLegacyKey = localStorage.getItem('token');
@@ -39,6 +40,7 @@ export async function doFetch<T>(url: string, options: TDoFetchOptions = {}): Pr
 
     if (response.status === 204) return null;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let parsedBody: any = null;
     try {
       parsedBody = await response.clone().json();
@@ -57,6 +59,7 @@ export async function doFetch<T>(url: string, options: TDoFetchOptions = {}): Pr
 
     const error = new Error(message) as Error & {
       status?: number;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       details?: any;
     };
     error.status = response.status;

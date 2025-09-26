@@ -42,13 +42,17 @@ export function mapRegisterErrors(error: unknown): TRegisterFieldErrors | undefi
   if (Object.keys(fieldErrors).length) return fieldErrors;
 
   const status =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     typeof (errorObject as any)?.status === 'number'
-      ? ((errorObject as any).status as number)
+      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ((errorObject as any).status as number)
       : undefined;
 
   const topMessage =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     typeof (errorObject as any)?.message === 'string'
-      ? ((errorObject as any).message as string)
+      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ((errorObject as any).message as string)
       : undefined;
 
   const messageL = (topMessage || '').toLowerCase();
