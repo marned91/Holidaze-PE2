@@ -1,13 +1,27 @@
-/* Calendar styling – used on VenuePage.tsx */
+/* Calendar styling */
 
 .react-calendar {
+  /* Theme */
   --cal-accent: var(--color-highlight, #6199a8);
   --cal-hover: var(--color-highlight, #6199a8);
+
+  /* Layout tokens (default / full calendar) */
+  --rc-font-size: inherit;
+  --rc-nav-height: 44px;
+  --rc-nav-btn-min: 44px;
+  --rc-nav-btn-pad-i: 0.5rem;
+  --rc-weekday-fs: 0.75rem; /* text-xs */
+  --rc-days-gap: 0.45rem;
+  --rc-days-pad: 0.25rem 0.5rem;
+  --rc-tile-pad: 0.35rem;
+  --rc-tile-radius: 0.4rem;
+  --rc-now-outline-w: 1px;
 
   box-sizing: border-box;
   width: 100%;
   background: transparent;
   border: 0;
+  font-size: var(--rc-font-size);
 }
 .react-calendar *,
 .react-calendar *::before,
@@ -26,17 +40,17 @@
 .react-calendar__navigation {
   display: flex;
   align-items: center;
-  height: 44px;
+  height: var(--rc-nav-height);
   margin-bottom: 0.75rem;
 }
 .react-calendar__navigation button {
-  min-width: 44px;
+  min-width: var(--rc-nav-btn-min);
   border-radius: 0.375rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem var(--rc-nav-btn-pad-i);
 }
 .react-calendar__navigation button:enabled:hover {
-  background: #f3f4f6;
-} /* gray-100 */
+  background: #f3f4f6; /* gray-100 */
+}
 .react-calendar__navigation button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -67,7 +81,7 @@
 .react-calendar__month-view__weekdays__weekday {
   text-align: center;
   color: #6b7280; /* gray-500 */
-  font-size: 0.75rem; /* text-xs */
+  font-size: var(--rc-weekday-fs);
   padding: 0.5rem 0;
   user-select: none;
 }
@@ -77,15 +91,15 @@
 
 /* Day tiles */
 .react-calendar__month-view__days {
-  gap: 0.45rem; /* spacing between days */
-  padding: 0.25rem 0.5rem;
+  gap: var(--rc-days-gap);
+  padding: var(--rc-days-pad);
 }
 .react-calendar__tile {
   max-width: 100%;
   text-align: center;
   aspect-ratio: 1 / 1;
-  padding: 0.35rem;
-  border-radius: 0.4rem;
+  padding: var(--rc-tile-pad);
+  border-radius: var(--rc-tile-radius);
   transition: background-color 0.12s ease;
 }
 .react-calendar__tile:enabled {
@@ -99,13 +113,13 @@
 
 /* Neighboring-month days */
 .react-calendar__month-view__days__day--neighboringMonth {
-  color: #d1d5db;
-} /* gray-300 */
+  color: #d1d5db; /* gray-300 */
+}
 
 /* Today */
 .react-calendar__tile--now {
-  outline: 1px solid #9ca3af;
-} /* gray-400 */
+  outline: var(--rc-now-outline-w) solid #9ca3af; /* gray-400 */
+}
 
 /* Disabled (past + tileDisabled) */
 .react-calendar__tile:disabled {
@@ -128,11 +142,6 @@
   background: #f3f4f6;
 }
 
-.react-calendar--selectRange .react-calendar__tile--hover {
-  background: var(--cal-accent, #6199a8) !important;
-  color: #fff !important;
-}
-
 /* keep selected color on hover too */
 .react-calendar__tile--active:enabled:hover,
 .react-calendar__tile--rangeStart:enabled:hover,
@@ -148,7 +157,7 @@
   outline-offset: 2px;
 }
 
-/* --- Selection fixes (force selected tiles to keep their fill) --- */
+/* Force selected tiles to keep fill (once, not duplicated)*/
 .react-calendar .react-calendar__tile--active,
 .react-calendar .react-calendar__tile--rangeStart,
 .react-calendar .react-calendar__tile--rangeEnd,
@@ -156,8 +165,6 @@
   background: var(--cal-accent, var(--color-highlight, #6199a8)) !important;
   color: #fff !important;
 }
-
-/* Keep same color when hovering a selected tile */
 .react-calendar .react-calendar__tile--active:enabled:hover,
 .react-calendar .react-calendar__tile--rangeStart:enabled:hover,
 .react-calendar .react-calendar__tile--rangeEnd:enabled:hover,
@@ -166,78 +173,25 @@
   color: #fff !important;
 }
 
-/* --- Compact style for the small popover calendars --- */
+/* Compact popover variant (overrides via variables) */
 .rc-popover .react-calendar {
-  max-width: 280px; /* smal popover */
-  font-size: 0.9rem; /* mindre font */
-  border-radius: 0.75rem; /* rundere kort-form */
-}
+  /* size overrides */
+  --rc-font-size: 0.85rem;
+  --rc-nav-height: 38px;
+  --rc-nav-btn-min: 36px;
+  --rc-nav-btn-pad-i: 0.4rem;
+  --rc-weekday-fs: 0.7rem;
+  --rc-days-gap: 0.3rem;
+  --rc-days-pad: 0.25rem 0.4rem;
+  --rc-tile-pad: 0.25rem;
+  --rc-tile-radius: 0.45rem;
+  --rc-now-outline-w: 0.5px;
 
-.rc-popover .react-calendar__navigation {
-  height: 38px;
-  margin-bottom: 0.5rem;
-}
-.rc-popover .react-calendar__navigation button {
-  min-width: 36px;
-  padding: 0.25rem 0.4rem;
-}
-
-.rc-popover .react-calendar__month-view__weekdays__weekday {
-  font-size: 0.7rem; /* smal ukedagstekst */
-  padding: 0.35rem 0;
-}
-
-.rc-popover .react-calendar__month-view__days {
-  gap: 0.3rem; /* litt tettere grid */
-  padding: 0.25rem 0.4rem;
-}
-.rc-popover .react-calendar__tile {
-  padding: 0.25rem; /* mindre dag-tiles */
-  border-radius: 0.45rem;
-  line-height: 1.25; /* unngå at hover dekker tall */
-}
-.rc-popover .react-calendar__tile--now {
-  outline-width: 0.5px;
-}
-.rc-popover .react-calendar__tile:enabled:hover,
-.rc-popover .react-calendar__tile--hover {
-  /* du har allerede hover-farge; vi gjør den litt mildere i liten popover */
-  filter: brightness(0.97);
-}
-
-/* --- Compact popover style overrides --- */
-.rc-popover .react-calendar {
-  max-width: 280px;
-  font-size: 0.85rem;
+  max-width: 280px; /* keep narrow popover */
   border-radius: 0.75rem;
 }
 
-/* navigasjon og ukedager litt mindre */
-.rc-popover .react-calendar__navigation {
-  height: 38px;
-  margin-bottom: 0.5rem;
-}
-.rc-popover .react-calendar__navigation button {
-  min-width: 36px;
-  padding: 0.25rem 0.4rem;
-}
-.rc-popover .react-calendar__month-view__weekdays__weekday {
-  font-size: 0.7rem;
-  padding: 0.35rem 0;
-}
-
-/* mer luft mellom dager, litt mindre tiles */
-.rc-popover .react-calendar__month-view__days {
-  gap: 0.3rem;
-  padding: 0.25rem 0.4rem;
-}
-.rc-popover .react-calendar__tile {
-  padding: 0.25rem;
-  border-radius: 0.45rem;
-  line-height: 1.25;
-}
-
-/* — Hover-fix (ikke fyll hele tile, bruk “outline”) — */
+/* Popover hover: outline instead of fill */
 .rc-popover .react-calendar__tile:enabled:hover,
 .rc-popover .react-calendar__tile--hover {
   background: transparent !important;
@@ -245,23 +199,7 @@
   box-shadow: inset 0 0 0 2px var(--cal-hover, #6199a8);
 }
 
-/* behold fyll på valgte datoer */
-.rc-popover .react-calendar__tile--active,
-.rc-popover .react-calendar__tile--rangeStart,
-.rc-popover .react-calendar__tile--rangeEnd,
-.rc-popover .react-calendar__tile--rangeBothEnds {
-  background: var(--cal-accent, var(--color-highlight, #6199a8)) !important;
-  color: #fff !important;
-}
-
-/* Disabled */
-.rc-popover .react-calendar__tile:disabled {
-  color: #d1d5db;
-  text-decoration: line-through;
-  cursor: not-allowed;
-}
-
-/* Popover-breddesikring på små skjermer */
+/* Popover container width on small screens */
 .rc-popover {
   max-width: min(92vw, 360px);
 }
