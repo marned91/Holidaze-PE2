@@ -170,12 +170,12 @@ export function SignUpPage() {
             </h2>
             {isVenueManager ? (
               <p className="text-sm text-gray-600 font-text">
-                Create and manage venues, set availability and prices, and view upcoming bookings
-                for your venues.
+                Create and manage venues, view upcoming bookings for your venues and manage your own
+                bookings.
               </p>
             ) : (
               <p className="text-sm text-gray-600 font-text">
-                Discover and book venues securely, manage your reservations, and save favourites.
+                Discover and book venues, view and manage your reservations.
               </p>
             )}
           </div>
